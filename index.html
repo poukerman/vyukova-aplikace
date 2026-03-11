@@ -57,7 +57,7 @@
     .welcome-text{text-align:center;margin-bottom:24px;}
     .welcome-text h2{font-family:'Fredoka One',cursive;font-size:1.9rem;color:var(--dark);}
     .welcome-text .username{color:var(--orange);}
-    .welcome-title{font-family:'Fredoka One',cursive;font-size:1.4rem;color:var(--dark);text-align:center;margin-bottom:20px;}
+    .welcome-title{font-family:'Fredoka One',cursive;font-size:1.3rem;color:var(--dark);text-align:center;margin-bottom:16px;}
     .score-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;}
     .score-box{border-radius:14px;padding:16px;text-align:center;}
     .score-box.personal{background:#fff3e0;border:2px solid var(--yellow);}
@@ -66,6 +66,16 @@
     .score-box .score-value{font-family:'Fredoka One',cursive;font-size:2rem;}
     .score-box.personal .score-value{color:var(--orange);}
     .score-box.global .score-value{color:var(--blue);}
+
+    /* KATEGORIE */
+    .kategorie-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+    .kat-btn{padding:14px 8px;border-radius:12px;border:2.5px solid #e0e0e0;background:white;font-family:'Fredoka One',cursive;font-size:1.4rem;cursor:pointer;transition:all .2s;color:#aaa;text-align:center;}
+    .kat-btn:hover{border-color:var(--purple);color:var(--purple);}
+    .kat-btn.selected{background:#f0e8ff;border-color:var(--purple);color:var(--purple);box-shadow:0 4px 0 #8a3dcc;}
+    .kat-label{font-size:.7rem;font-weight:800;display:block;text-transform:uppercase;letter-spacing:.05em;margin-top:2px;}
+    .kategorie-error{color:var(--red);font-size:.85rem;font-weight:700;text-align:center;margin-bottom:12px;min-height:18px;}
+    .vyber-vse{text-align:center;font-size:.85rem;color:var(--blue);cursor:pointer;font-weight:700;text-decoration:underline;margin-bottom:14px;}
+
     .game-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
     .game-stat{text-align:center;}
     .game-stat .stat-label{font-size:.75rem;font-weight:700;text-transform:uppercase;color:#aaa;letter-spacing:.05em;}
@@ -185,13 +195,25 @@
       <div class="nav-link" id="btn-zebricek-welcome-nas">🏆 <span>Žebříček násobilky</span></div>
     </div>
 
-    <!-- UVÍTÁNÍ VYJMENOVANÁ -->
+    <!-- UVÍTÁNÍ VYJMENOVANÁ + VÝBĚR KATEGORIÍ -->
     <div id="screen-welcome-vyjmenovana" class="screen">
       <div class="welcome-text"><h2>📝 Vyjmenovaná slova</h2></div>
       <div class="score-grid">
         <div class="score-box personal"><div class="score-label">Tvůj rekord</div><div class="score-value" id="lbl-osobni-vyjm">0</div></div>
         <div class="score-box global"><div class="score-label">Rekord školy</div><div class="score-value" id="lbl-global-vyjm">0</div></div>
       </div>
+      <div class="welcome-title">Vyber kategorie:</div>
+      <div class="vyber-vse" id="btn-vyber-vse">Vybrat vše / Zrušit výběr</div>
+      <div class="kategorie-grid">
+        <button class="kat-btn" data-kat="b">B<span class="kat-label">být, bydlit...</span></button>
+        <button class="kat-btn" data-kat="l">L<span class="kat-label">lyže, lýtko...</span></button>
+        <button class="kat-btn" data-kat="m">M<span class="kat-label">mýt, myslit...</span></button>
+        <button class="kat-btn" data-kat="p">P<span class="kat-label">pytel, pýcha...</span></button>
+        <button class="kat-btn" data-kat="s">S<span class="kat-label">syn, sýr...</span></button>
+        <button class="kat-btn" data-kat="v">V<span class="kat-label">vít, výr...</span></button>
+        <button class="kat-btn" data-kat="z">Z<span class="kat-label">zýkat, zítra...</span></button>
+      </div>
+      <div class="kategorie-error" id="kat-error"></div>
       <button class="btn btn-purple" id="btn-start-vyjmenovana">▶ Začít hru</button>
       <button class="btn btn-outline mt12" id="btn-zpet-vyjmenovana">← Zpět na výběr</button>
       <div class="nav-link" id="btn-zebricek-welcome-vyjm">🏆 <span>Žebříček vyjmenovaných</span></div>
@@ -303,6 +325,8 @@
   let aktualniSlovo = null;
   let lbZpetScreen = 'screen-vyber';
   let lbAktualniTab = 'nasobilka';
+  let vybranéKategorie = new Set();
+  const VSECHNY_KAT = ['b','l','m','p','s','v','z'];
   const CAS = 15;
 
   // OBRAZOVKY
@@ -311,7 +335,7 @@
     document.getElementById(id).classList.add('active');
   }
 
-  // FIREBASE HELPERS
+  // FIREBASE
   async function nactiHrace(username) {
     const snap = await get(ref(db, `hrace/${username}`));
     return snap.exists() ? snap.val() : null;
@@ -330,18 +354,22 @@
   async function nactiZebricek(hra) {
     const snap = await get(ref(db, 'hrace'));
     if (!snap.exists()) return [];
-    const data = snap.val();
-    return Object.entries(data)
+    return Object.entries(snap.val())
       .map(([name, val]) => ({ name, max: (val && val[hra]) ? val[hra] : 0 }))
       .filter(h => h.max > 0)
       .sort((a, b) => b.max - a.max)
       .slice(0, 20);
   }
 
-  async function nactiVyjmenovana() {
-    const snap = await get(ref(db, 'vyjmenovana'));
-    if (!snap.exists()) return [];
-    return Object.values(snap.val());
+  async function nactiVyjmenovanaKategorie(kategorie) {
+    const vysledky = [];
+    for (const kat of kategorie) {
+      const snap = await get(ref(db, `vyjmenovana/${kat}`));
+      if (snap.exists()) {
+        Object.values(snap.val()).forEach(s => vysledky.push(s));
+      }
+    }
+    return vysledky;
   }
 
   // PŘIHLÁŠENÍ
@@ -382,8 +410,35 @@
     }
   }
 
+  // KATEGORIE — toggle
+  document.querySelectorAll('.kat-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const kat = btn.dataset.kat;
+      if (vybranéKategorie.has(kat)) {
+        vybranéKategorie.delete(kat);
+        btn.classList.remove('selected');
+      } else {
+        vybranéKategorie.add(kat);
+        btn.classList.add('selected');
+      }
+      document.getElementById('kat-error').textContent = '';
+    });
+  });
+
+  document.getElementById('btn-vyber-vse').addEventListener('click', () => {
+    const vsechnyVybrany = VSECHNY_KAT.every(k => vybranéKategorie.has(k));
+    if (vsechnyVybrany) {
+      vybranéKategorie.clear();
+      document.querySelectorAll('.kat-btn').forEach(b => b.classList.remove('selected'));
+    } else {
+      VSECHNY_KAT.forEach(k => vybranéKategorie.add(k));
+      document.querySelectorAll('.kat-btn').forEach(b => b.classList.add('selected'));
+    }
+    document.getElementById('kat-error').textContent = '';
+  });
+
   // TIMER
-  function startTimer(casId, progressId, isVyjm, onEnd) {
+  function startTimer(casId, progressId, onEnd) {
     casZbyva = CAS;
     document.getElementById(casId).textContent = CAS;
     document.getElementById(progressId).style.width = '100%';
@@ -416,7 +471,7 @@
     showScreen('screen-game-nasobilka');
     novyPrikladNas();
     document.getElementById('inp-odpoved-nas').focus();
-    startTimer('lbl-cas-nas', 'progress-nas', false, () => vyhodnoceni('nasobilka'));
+    startTimer('lbl-cas-nas', 'progress-nas', () => vyhodnoceni('nasobilka'));
   }
 
   function novyPrikladNas() {
@@ -451,6 +506,11 @@
 
   // ═══ VYJMENOVANÁ SLOVA ════════════════════════════════
   async function startVyjmenovana() {
+    if (vybranéKategorie.size === 0) {
+      document.getElementById('kat-error').textContent = '⚠️ Vyber aspoň jednu kategorii!';
+      return;
+    }
+
     body = 0;
     document.getElementById('lbl-body-vyjm').textContent = 0;
     document.getElementById('lbl-rekord-vyjm').textContent = osobniMaxVyjm;
@@ -460,13 +520,14 @@
     document.getElementById('lbl-veta').textContent = 'Načítám...';
     showScreen('screen-game-vyjmenovana');
 
-    vyjmSlova = await nactiVyjmenovana();
+    vyjmSlova = await nactiVyjmenovanaKategorie([...vybranéKategorie]);
     if (vyjmSlova.length === 0) {
-      document.getElementById('lbl-veta').textContent = '⚠️ V databázi nejsou žádná slova!';
+      document.getElementById('lbl-veta').textContent = '⚠️ V databázi nejsou žádná slova pro vybrané kategorie!';
       return;
     }
+
     noveSlovoVyjm();
-    startTimer('lbl-cas-vyjm', 'progress-vyjm', true, () => vyhodnoceni('vyjmenovana'));
+    startTimer('lbl-cas-vyjm', 'progress-vyjm', () => vyhodnoceni('vyjmenovana'));
   }
 
   function noveSlovoVyjm() {
@@ -562,7 +623,7 @@
   document.getElementById('btn-potvrdit-nas').addEventListener('click', zkontrolovatNas);
   document.getElementById('inp-odpoved-nas').addEventListener('keydown', e => { if (e.key==='Enter') zkontrolovatNas(); });
   document.querySelectorAll('.vyjm-btn').forEach(btn => btn.addEventListener('click', () => odpovezVyjm(btn.dataset.val)));
-  document.getElementById('btn-znovu').addEventListener('click', () => { if (aktualniHra==='nasobilka') startNasobilka(); else startVyjmenovana(); });
+  document.getElementById('btn-znovu').addEventListener('click', () => { if (aktualniHra==='nasobilka') startNasobilka(); else showScreen('screen-welcome-vyjmenovana'); });
   document.getElementById('btn-jina-hra').addEventListener('click', () => showScreen('screen-vyber'));
   document.getElementById('btn-zebricek-result').addEventListener('click', () => showLeaderboard('screen-result', aktualniHra));
   document.getElementById('btn-zebricek-login').addEventListener('click', () => showLeaderboard('screen-login', 'nasobilka'));
