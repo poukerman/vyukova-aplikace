@@ -567,33 +567,31 @@
 <!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-  // ╔══════════════════════════════════════════════════════╗
-  // ║  TADY VLOŽ SVOU FIREBASE KONFIGURACI                ║
-  // ║  (viz návod níže)                                    ║
-  // ╚══════════════════════════════════════════════════════╝
+  const firebaseConfig = {
+    // SEM VLOŽ SVOJI KONFIGURACI — ale vynech řádek s analyticsId
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "...",
+  apiKey: "AIzaSyAE_kjebwQrSzeEz9-3c_Y66TUBAvRIjB4",
   authDomain: "malanasobilka.firebaseapp.com",
-  databaseURL: "https://malanasobilka-default-rtdb.firebaseio.com",
   projectId: "malanasobilka",
-  storageBucket: "malanasobilka.appspot.com",
-  messagingSenderId: "...",
-  appId: "..."
+  storageBucket: "malanasobilka.firebasestorage.app",
+  messagingSenderId: "712520835692",
+  appId: "1:712520835692:web:6746f62321750e264a6e49",
+
 };
+    // ← measurementId řádek SMAŽ pokud tam je
+  };
 
- const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
 
-  // Zpřístupni funkce globálně
   window._db = db;
   window._ref = ref;
   window._get = get;
   window._set = set;
-  window._onValue = onValue;
   window._firebaseReady = true;
-  window.dispatchEvent(new Event('firebaseReady'));
 </script>
 
 <script>
