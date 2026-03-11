@@ -569,12 +569,13 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-  const firebaseConfig = {
+  
     // SEM VLOŽ SVOJI KONFIGURACI — ale vynech řádek s analyticsId
     // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyAE_kjebwQrSzeEz9-3c_Y66TUBAvRIjB4",
   authDomain: "malanasobilka.firebaseapp.com",
+  databaseURL: "https://malanasobilka-default-rtdb.firebaseio.com",
   projectId: "malanasobilka",
   storageBucket: "malanasobilka.firebasestorage.app",
   messagingSenderId: "712520835692",
