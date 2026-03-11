@@ -279,9 +279,10 @@
 
     try {
       let hrac = await nactiHrace(username);
-      if (!hrac) {
-        await set(ref(db, `hrace/${username}`), { max: 0 });
-        hrac = { max: 0 };
+if (!hrac) {
+  err.textContent = '❌ Uživatelské jméno nebylo nalezeno.';
+  return;
+}
       }
       osobniMax = hrac.max || 0;
 
