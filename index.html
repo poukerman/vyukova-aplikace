@@ -446,7 +446,7 @@
   document.getElementById('btn-zebricek-login').addEventListener('click', showLeaderboard);
   document.getElementById('btn-zebricek-welcome').addEventListener('click', showLeaderboard);
   document.getElementById('btn-zebricek-result').addEventListener('click', showLeaderboard);
-  document.getElementById('btn-zpet').addEventListener('click', () => showScreen('screen-welcome'));
+  document.getElementById('btn-zpet').addEventListener('click', () => {showScreen(jmeno ? 'screen-welcome' : 'screen-login');});
 </script>
 
 </body>
