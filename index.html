@@ -573,16 +573,14 @@
   // ║  TADY VLOŽ SVOU FIREBASE KONFIGURACI                ║
   // ║  (viz návod níže)                                    ║
   // ╚══════════════════════════════════════════════════════╝
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";  
 const firebaseConfig = {
-  apiKey: "AIzaSyAE_kjebwQrSzeEz9-3c_Y66TUBAvRIjB4",
+  apiKey: "...",
   authDomain: "malanasobilka.firebaseapp.com",
+  databaseURL: "https://malanasobilka-default-rtdb.firebaseio.com",  // ← toto je důležité
   projectId: "malanasobilka",
-  storageBucket: "malanasobilka.firebasestorage.app",
-  messagingSenderId: "712520835692",
-  appId: "1:712520835692:web:6746f62321750e264a6e49",
-  measurementId: "G-J1L2RS6XW4"
+  storageBucket: "malanasobilka.appspot.com",
+  messagingSenderId: "...",
+  appId: "..."
 };
 
  const app = initializeApp(firebaseConfig);
