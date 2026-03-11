@@ -7,472 +7,104 @@
   <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --yellow: #FFD93D;
-      --orange: #FF6B35;
-      --green: #6BCB77;
-      --blue: #4D96FF;
-      --purple: #C77DFF;
-      --dark: #1a1a2e;
-      --card: #ffffff;
-      --text: #1a1a2e;
-      --radius: 20px;
+      --yellow: #FFD93D; --orange: #FF6B35; --green: #6BCB77;
+      --blue: #4D96FF; --purple: #C77DFF; --dark: #1a1a2e;
+      --card: #ffffff; --radius: 20px;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: 'Nunito', sans-serif;
-      background: var(--dark);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-
-    /* Animované hvězdičky na pozadí */
-    .stars {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-    }
-    .star {
-      position: absolute;
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: white;
-      opacity: 0;
-      animation: twinkle var(--d) var(--delay) infinite;
-    }
-    @keyframes twinkle {
-      0%, 100% { opacity: 0; transform: scale(0.5); }
-      50% { opacity: 0.7; transform: scale(1.2); }
-    }
-
-    .wrapper {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      max-width: 480px;
-      padding: 20px;
-    }
-
-    .card {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 40px 36px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-      animation: slideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(40px) scale(0.95); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    .logo {
-      text-align: center;
-      margin-bottom: 28px;
-    }
-    .logo-icon {
-      font-size: 52px;
-      display: block;
-      animation: bounce 2s ease-in-out infinite;
-    }
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
-    }
-    .logo h1 {
-      font-family: 'Fredoka One', cursive;
-      font-size: 2.2rem;
-      color: var(--dark);
-      line-height: 1.1;
-    }
-    .logo p {
-      color: #888;
-      font-size: 0.95rem;
-      margin-top: 4px;
-    }
-
-    /* ── PŘIHLÁŠENÍ ── */
-    #screen-login { display: block; }
-
-    .input-group {
-      margin-bottom: 16px;
-    }
-    .input-group label {
-      display: block;
-      font-weight: 700;
-      font-size: 0.9rem;
-      color: #555;
-      margin-bottom: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    .input-group input {
-      width: 100%;
-      padding: 14px 18px;
-      border: 2.5px solid #e0e0e0;
-      border-radius: 12px;
-      font-family: 'Nunito', sans-serif;
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--dark);
-      transition: border-color 0.2s;
-      outline: none;
-    }
-    .input-group input:focus {
-      border-color: var(--blue);
-    }
-
-    .btn {
-      width: 100%;
-      padding: 16px;
-      border: none;
-      border-radius: 14px;
-      font-family: 'Fredoka One', cursive;
-      font-size: 1.3rem;
-      cursor: pointer;
-      transition: transform 0.15s, box-shadow 0.15s;
-      letter-spacing: 0.03em;
-    }
+    body { font-family: 'Nunito', sans-serif; background: var(--dark); min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .star { position: absolute; width: 6px; height: 6px; border-radius: 50%; background: white; opacity: 0; animation: twinkle var(--d) var(--delay) infinite; }
+    @keyframes twinkle { 0%, 100% { opacity: 0; transform: scale(0.5); } 50% { opacity: 0.7; transform: scale(1.2); } }
+    .wrapper { position: relative; z-index: 1; width: 100%; max-width: 480px; padding: 20px; }
+    .card { background: var(--card); border-radius: var(--radius); padding: 40px 36px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); animation: slideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(40px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .logo { text-align: center; margin-bottom: 28px; }
+    .logo-icon { font-size: 52px; display: block; animation: bounce 2s ease-in-out infinite; }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    .logo h1 { font-family: 'Fredoka One', cursive; font-size: 2.2rem; color: var(--dark); line-height: 1.1; }
+    .logo p { color: #888; font-size: 0.95rem; margin-top: 4px; }
+    .input-group { margin-bottom: 16px; }
+    .input-group label { display: block; font-weight: 700; font-size: 0.9rem; color: #555; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .input-group input { width: 100%; padding: 14px 18px; border: 2.5px solid #e0e0e0; border-radius: 12px; font-family: 'Nunito', sans-serif; font-size: 1.1rem; font-weight: 600; color: var(--dark); transition: border-color 0.2s; outline: none; }
+    .input-group input:focus { border-color: var(--blue); }
+    .btn { width: 100%; padding: 16px; border: none; border-radius: 14px; font-family: 'Fredoka One', cursive; font-size: 1.3rem; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; letter-spacing: 0.03em; }
     .btn:active { transform: scale(0.97); }
-
-    .btn-primary {
-      background: var(--orange);
-      color: white;
-      box-shadow: 0 6px 0 #c44a1a;
-    }
+    .btn-primary { background: var(--orange); color: white; box-shadow: 0 6px 0 #c44a1a; }
     .btn-primary:hover { box-shadow: 0 4px 0 #c44a1a; transform: translateY(2px); }
-
-    .btn-green {
-      background: var(--green);
-      color: white;
-      box-shadow: 0 6px 0 #3d9e4a;
-    }
+    .btn-green { background: var(--green); color: white; box-shadow: 0 6px 0 #3d9e4a; }
     .btn-green:hover { box-shadow: 0 4px 0 #3d9e4a; transform: translateY(2px); }
-
-    .btn-blue {
-      background: var(--blue);
-      color: white;
-      box-shadow: 0 6px 0 #1a5fcc;
-    }
+    .btn-blue { background: var(--blue); color: white; box-shadow: 0 6px 0 #1a5fcc; }
     .btn-blue:hover { box-shadow: 0 4px 0 #1a5fcc; transform: translateY(2px); }
-
-    .error-msg {
-      color: var(--orange);
-      font-size: 0.9rem;
-      font-weight: 700;
-      text-align: center;
-      margin-top: 10px;
-      min-height: 20px;
-    }
-
-    /* ── UVÍTÁNÍ ── */
-    #screen-welcome { display: none; }
-
-    .welcome-text {
-      text-align: center;
-      margin-bottom: 24px;
-    }
-    .welcome-text h2 {
-      font-family: 'Fredoka One', cursive;
-      font-size: 1.9rem;
-      color: var(--dark);
-    }
-    .welcome-text .username {
-      color: var(--orange);
-    }
-
-    .score-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-bottom: 24px;
-    }
-    .score-box {
-      border-radius: 14px;
-      padding: 16px;
-      text-align: center;
-    }
-    .score-box.personal {
-      background: #fff3e0;
-      border: 2px solid var(--yellow);
-    }
-    .score-box.global {
-      background: #e8f4fd;
-      border: 2px solid var(--blue);
-    }
-    .score-box .score-label {
-      font-size: 0.78rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: #888;
-      margin-bottom: 4px;
-    }
-    .score-box .score-value {
-      font-family: 'Fredoka One', cursive;
-      font-size: 2rem;
-      color: var(--dark);
-    }
+    .error-msg { color: var(--orange); font-size: 0.9rem; font-weight: 700; text-align: center; margin-top: 10px; min-height: 20px; }
+    .welcome-text { text-align: center; margin-bottom: 24px; }
+    .welcome-text h2 { font-family: 'Fredoka One', cursive; font-size: 1.9rem; color: var(--dark); }
+    .welcome-text .username { color: var(--orange); }
+    .score-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+    .score-box { border-radius: 14px; padding: 16px; text-align: center; }
+    .score-box.personal { background: #fff3e0; border: 2px solid var(--yellow); }
+    .score-box.global { background: #e8f4fd; border: 2px solid var(--blue); }
+    .score-box .score-label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #888; margin-bottom: 4px; }
+    .score-box .score-value { font-family: 'Fredoka One', cursive; font-size: 2rem; }
     .score-box.personal .score-value { color: var(--orange); }
     .score-box.global .score-value { color: var(--blue); }
-
-    /* ── HRA ── */
-    #screen-game { display: none; }
-
-    .game-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-    .game-stat {
-      text-align: center;
-    }
-    .game-stat .stat-label {
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      color: #aaa;
-      letter-spacing: 0.05em;
-    }
-    .game-stat .stat-value {
-      font-family: 'Fredoka One', cursive;
-      font-size: 1.6rem;
-      color: var(--dark);
-    }
+    .game-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .game-stat { text-align: center; }
+    .game-stat .stat-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #aaa; letter-spacing: 0.05em; }
+    .game-stat .stat-value { font-family: 'Fredoka One', cursive; font-size: 1.6rem; color: var(--dark); }
     .stat-value.timer { color: var(--orange); }
     .stat-value.score-live { color: var(--green); }
-
-    .progress-bar-wrap {
-      background: #f0f0f0;
-      border-radius: 999px;
-      height: 10px;
-      margin-bottom: 28px;
-      overflow: hidden;
-    }
-    .progress-bar-fill {
-      height: 100%;
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--orange), var(--yellow));
-      transition: width 1s linear;
-      width: 100%;
-    }
-
-    .priklad-wrap {
-      text-align: center;
-      margin-bottom: 24px;
-    }
-    .priklad {
-      font-family: 'Fredoka One', cursive;
-      font-size: 3.5rem;
-      color: var(--dark);
-      line-height: 1;
-      animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    @keyframes popIn {
-      from { transform: scale(0.7); opacity: 0; }
-      to   { transform: scale(1); opacity: 1; }
-    }
-    .komentar {
-      min-height: 24px;
-      font-size: 1rem;
-      font-weight: 700;
-      color: #888;
-      margin-top: 6px;
-      transition: color 0.2s;
-    }
+    .progress-bar-wrap { background: #f0f0f0; border-radius: 999px; height: 10px; margin-bottom: 28px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--orange), var(--yellow)); transition: width 1s linear; width: 100%; }
+    .priklad-wrap { text-align: center; margin-bottom: 24px; }
+    .priklad { font-family: 'Fredoka One', cursive; font-size: 3.5rem; color: var(--dark); line-height: 1; }
+    @keyframes popIn { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .komentar { min-height: 24px; font-size: 1rem; font-weight: 700; color: #888; margin-top: 6px; }
     .komentar.correct { color: var(--green); }
-    .komentar.wrong   { color: var(--orange); }
-
-    .answer-row {
-      display: flex;
-      gap: 10px;
-    }
-    .answer-row input {
-      flex: 1;
-      padding: 16px;
-      border: 2.5px solid #e0e0e0;
-      border-radius: 14px;
-      font-family: 'Fredoka One', cursive;
-      font-size: 1.8rem;
-      text-align: center;
-      color: var(--dark);
-      outline: none;
-      transition: border-color 0.2s;
-    }
+    .komentar.wrong { color: var(--orange); }
+    .answer-row { display: flex; gap: 10px; }
+    .answer-row input { flex: 1; padding: 16px; border: 2.5px solid #e0e0e0; border-radius: 14px; font-family: 'Fredoka One', cursive; font-size: 1.8rem; text-align: center; color: var(--dark); outline: none; transition: border-color 0.2s; }
     .answer-row input:focus { border-color: var(--blue); }
-    .answer-row input.shake {
-      animation: shake 0.3s;
-      border-color: var(--orange);
-    }
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-6px); }
-      75% { transform: translateX(6px); }
-    }
-    .answer-row button {
-      padding: 16px 24px;
-      background: var(--blue);
-      color: white;
-      border: none;
-      border-radius: 14px;
-      font-size: 1.6rem;
-      cursor: pointer;
-      box-shadow: 0 5px 0 #1a5fcc;
-      transition: transform 0.1s, box-shadow 0.1s;
-    }
-    .answer-row button:active {
-      transform: translateY(3px);
-      box-shadow: 0 2px 0 #1a5fcc;
-    }
-
-    .record-hint {
-      text-align: center;
-      margin-top: 14px;
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: #bbb;
-      min-height: 20px;
-    }
+    .answer-row input.shake { animation: shake 0.3s; border-color: var(--orange); }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+    .answer-row button { padding: 16px 24px; background: var(--blue); color: white; border: none; border-radius: 14px; font-size: 1.6rem; cursor: pointer; box-shadow: 0 5px 0 #1a5fcc; transition: transform 0.1s, box-shadow 0.1s; }
+    .answer-row button:active { transform: translateY(3px); box-shadow: 0 2px 0 #1a5fcc; }
+    .record-hint { text-align: center; margin-top: 14px; font-size: 0.9rem; font-weight: 700; color: #bbb; min-height: 20px; }
     .record-hint.beating { color: var(--purple); }
-
-    /* ── VÝSLEDKY ── */
-    #screen-result { display: none; }
-
     .result-center { text-align: center; }
-    .result-emoji {
-      font-size: 64px;
-      display: block;
-      margin-bottom: 8px;
-      animation: bounce 1s ease-in-out infinite;
-    }
-    .result-title {
-      font-family: 'Fredoka One', cursive;
-      font-size: 2rem;
-      color: var(--dark);
-      margin-bottom: 6px;
-    }
-    .result-score {
-      font-family: 'Fredoka One', cursive;
-      font-size: 4rem;
-      color: var(--orange);
-      line-height: 1;
-    }
-    .result-sub {
-      color: #888;
-      font-size: 1rem;
-      margin-bottom: 24px;
-    }
-    .result-new-record {
-      background: linear-gradient(135deg, var(--yellow), var(--orange));
-      color: white;
-      border-radius: 12px;
-      padding: 12px 20px;
-      font-weight: 800;
-      font-size: 1rem;
-      margin-bottom: 24px;
-      display: none;
-    }
-
-    .btn-row {
-      display: flex;
-      gap: 10px;
-    }
+    .result-emoji { font-size: 64px; display: block; margin-bottom: 8px; animation: bounce 1s ease-in-out infinite; }
+    .result-title { font-family: 'Fredoka One', cursive; font-size: 2rem; color: var(--dark); margin-bottom: 6px; }
+    .result-score { font-family: 'Fredoka One', cursive; font-size: 4rem; color: var(--orange); line-height: 1; }
+    .result-sub { color: #888; font-size: 1rem; margin-bottom: 24px; }
+    .result-new-record { background: linear-gradient(135deg, var(--yellow), var(--orange)); color: white; border-radius: 12px; padding: 12px 20px; font-weight: 800; font-size: 1rem; margin-bottom: 24px; display: none; }
+    .btn-row { display: flex; gap: 10px; }
     .btn-row .btn { flex: 1; }
-
-    /* ── ŽEBŘÍČEK ── */
-    #screen-leaderboard { display: none; }
-
-    .lb-title {
-      font-family: 'Fredoka One', cursive;
-      font-size: 1.6rem;
-      color: var(--dark);
-      margin-bottom: 18px;
-      text-align: center;
-    }
-    .lb-list {
-      list-style: none;
-      max-height: 300px;
-      overflow-y: auto;
-      margin-bottom: 20px;
-    }
+    .lb-title { font-family: 'Fredoka One', cursive; font-size: 1.6rem; color: var(--dark); margin-bottom: 18px; text-align: center; }
+    .lb-list { list-style: none; max-height: 300px; overflow-y: auto; margin-bottom: 20px; }
     .lb-list::-webkit-scrollbar { width: 4px; }
     .lb-list::-webkit-scrollbar-thumb { background: #ddd; border-radius: 999px; }
-
-    .lb-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 14px;
-      border-radius: 12px;
-      margin-bottom: 8px;
-      background: #f9f9f9;
-      transition: background 0.2s;
-    }
+    .lb-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px; margin-bottom: 8px; background: #f9f9f9; }
     .lb-item.me { background: #fff3e0; }
-    .lb-item.gold   { background: #fffbe6; }
+    .lb-item.gold { background: #fffbe6; }
     .lb-item.silver { background: #f5f5f5; }
     .lb-item.bronze { background: #fff3e8; }
-
-    .lb-rank {
-      font-family: 'Fredoka One', cursive;
-      font-size: 1.3rem;
-      width: 32px;
-      text-align: center;
-    }
-    .lb-name {
-      flex: 1;
-      font-weight: 700;
-      font-size: 1rem;
-      color: var(--dark);
-    }
-    .lb-score {
-      font-family: 'Fredoka One', cursive;
-      font-size: 1.4rem;
-      color: var(--orange);
-    }
-
+    .lb-rank { font-family: 'Fredoka One', cursive; font-size: 1.3rem; width: 32px; text-align: center; }
+    .lb-name { flex: 1; font-weight: 700; font-size: 1rem; color: var(--dark); }
+    .lb-score { font-family: 'Fredoka One', cursive; font-size: 1.4rem; color: var(--orange); }
     .screen { display: none; }
     .screen.active { display: block; }
-
-    .nav-link {
-      text-align: center;
-      margin-top: 16px;
-      font-size: 0.9rem;
-      color: #aaa;
-      cursor: pointer;
-      font-weight: 600;
-    }
+    .nav-link { text-align: center; margin-top: 16px; font-size: 0.9rem; color: #aaa; cursor: pointer; font-weight: 600; }
     .nav-link span { color: var(--blue); text-decoration: underline; cursor: pointer; }
-
-    /* Loading spinner */
-    .spinner {
-      display: inline-block;
-      width: 20px; height: 20px;
-      border: 3px solid rgba(255,255,255,0.4);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      vertical-align: middle;
-      margin-right: 6px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
 
-<!-- Hvězdičky -->
 <div class="stars" id="stars"></div>
 
 <div class="wrapper">
   <div class="card">
 
-    <!-- ── PŘIHLÁŠENÍ ── -->
+    <!-- PŘIHLÁŠENÍ -->
     <div id="screen-login" class="screen active">
       <div class="logo">
         <span class="logo-icon">✖️</span>
@@ -483,12 +115,12 @@
         <label>Uživatelské jméno</label>
         <input type="text" id="inp-username" placeholder="např. jana123" autocomplete="off" />
       </div>
-      <button class="btn btn-primary" onclick="prihlasit()">Hrát! 🚀</button>
+      <button class="btn btn-primary" id="btn-prihlasit">Hrát! 🚀</button>
       <div class="error-msg" id="login-error"></div>
-      <div class="nav-link" onclick="showLeaderboard()">🏆 <span>Zobrazit žebříček</span></div>
+      <div class="nav-link" id="btn-zebricek-login">🏆 <span>Zobrazit žebříček</span></div>
     </div>
 
-    <!-- ── UVÍTÁNÍ ── -->
+    <!-- UVÍTÁNÍ -->
     <div id="screen-welcome" class="screen">
       <div class="welcome-text">
         <h2>Vítej, <span class="username" id="lbl-username"></span>! 👋</h2>
@@ -503,11 +135,11 @@
           <div class="score-value" id="lbl-global">0</div>
         </div>
       </div>
-      <button class="btn btn-green" onclick="startHra()">▶ Začít hru</button>
-      <div class="nav-link" onclick="showLeaderboard()">🏆 <span>Žebříček</span></div>
+      <button class="btn btn-green" id="btn-start">▶ Začít hru</button>
+      <div class="nav-link" id="btn-zebricek-welcome">🏆 <span>Žebříček</span></div>
     </div>
 
-    <!-- ── HRA ── -->
+    <!-- HRA -->
     <div id="screen-game" class="screen">
       <div class="game-header">
         <div class="game-stat">
@@ -532,12 +164,12 @@
       </div>
       <div class="answer-row">
         <input type="number" id="inp-odpoved" placeholder="?" min="1" max="100" autocomplete="off" />
-        <button onclick="zkontrolovat()">✓</button>
+        <button id="btn-potvrdit">✓</button>
       </div>
       <div class="record-hint" id="record-hint"></div>
     </div>
 
-    <!-- ── VÝSLEDKY ── -->
+    <!-- VÝSLEDKY -->
     <div id="screen-result" class="screen">
       <div class="result-center">
         <span class="result-emoji" id="result-emoji">🎉</span>
@@ -547,55 +179,42 @@
         <div class="result-new-record" id="result-new-record">🏆 Nový rekord!</div>
       </div>
       <div class="btn-row">
-        <button class="btn btn-green" onclick="startHra()">↺ Znovu</button>
-        <button class="btn btn-blue" onclick="showLeaderboard()">🏆 Žebříček</button>
+        <button class="btn btn-green" id="btn-znovu">↺ Znovu</button>
+        <button class="btn btn-blue" id="btn-zebricek-result">🏆 Žebříček</button>
       </div>
     </div>
 
-    <!-- ── ŽEBŘÍČEK ── -->
+    <!-- ŽEBŘÍČEK -->
     <div id="screen-leaderboard" class="screen">
       <div class="lb-title">🏆 Žebříček školy</div>
       <ul class="lb-list" id="lb-list">
         <li style="text-align:center;color:#aaa;padding:20px">Načítám...</li>
       </ul>
-      <button class="btn btn-primary" onclick="showScreen('screen-welcome')">← Zpět</button>
+      <button class="btn btn-primary" id="btn-zpet">← Zpět</button>
     </div>
 
   </div>
 </div>
 
-<!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-  
-    // SEM VLOŽ SVOJI KONFIGURACI — ale vynech řádek s analyticsId
-    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyAE_kjebwQrSzeEz9-3c_Y66TUBAvRIjB4",
-  authDomain: "malanasobilka.firebaseapp.com",
-  databaseURL: "https://malanasobilka-default-rtdb.firebaseio.com",
-  projectId: "malanasobilka",
-  storageBucket: "malanasobilka.firebasestorage.app",
-  messagingSenderId: "712520835692",
-  appId: "1:712520835692:web:6746f62321750e264a6e49",
-
-};
-
+  // ── FIREBASE KONFIGURACE ──────────────────────────────
+  const firebaseConfig = {
+    apiKey: "AIzaSyAE_kjebwQrSzeEz9-3c_Y66TUBAvRIjB4",
+    authDomain: "malanasobilka.firebaseapp.com",
+    databaseURL: "https://malanasobilka-default-rtdb.firebaseio.com",
+    projectId: "malanasobilka",
+    storageBucket: "malanasobilka.firebasestorage.app",
+    messagingSenderId: "712520835692",
+    appId: "1:712520835692:web:6746f62321750e264a6e49"
+  };
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
-  window._db = db;
-  window._ref = ref;
-  window._get = get;
-  window._set = set;
-  window._firebaseReady = true;
-</script>
-
-<script>
-  // ── HVĚZDIČKY ──────────────────────────────────────────
+  // ── HVĚZDIČKY ─────────────────────────────────────────
   const starsEl = document.getElementById('stars');
   for (let i = 0; i < 60; i++) {
     const s = document.createElement('div');
@@ -604,7 +223,7 @@ const firebaseConfig = {
     starsEl.appendChild(s);
   }
 
-  // ── STAV HRY ───────────────────────────────────────────
+  // ── STAV HRY ──────────────────────────────────────────
   let jmeno = '';
   let osobniMax = 0;
   let globalMax = 0;
@@ -614,15 +233,15 @@ const firebaseConfig = {
   let a, b, soucin;
   const CAS_CELKEM = 15;
 
-  // ── OBRAZOVKY ──────────────────────────────────────────
+  // ── OBRAZOVKY ─────────────────────────────────────────
   function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
   }
 
-  // ── FIREBASE HELPERS ───────────────────────────────────
+  // ── FIREBASE HELPERS ──────────────────────────────────
   async function nactiHrace(username) {
-    const snap = await window._get(window._ref(window._db, `hrace/${username}`));
+    const snap = await get(ref(db, `hrace/${username}`));
     return snap.exists() ? snap.val() : null;
   }
 
@@ -630,64 +249,63 @@ const firebaseConfig = {
     const hrac = await nactiHrace(username);
     const staryMax = hrac ? (hrac.max || 0) : 0;
     if (skore > staryMax) {
-      await window._set(window._ref(window._db, `hrace/${username}/max`), skore);
-      return true; // nový rekord
+      await set(ref(db, `hrace/${username}/max`), skore);
+      return true;
     }
     return false;
   }
 
   async function nactiZebricek() {
-    const snap = await window._get(window._ref(window._db, 'hrace'));
+    const snap = await get(ref(db, 'hrace'));
     if (!snap.exists()) return [];
     const data = snap.val();
     return Object.entries(data)
-      .map(([name, val]) => ({ name, max: val.max || 0 }))
+      .map(([name, val]) => ({ name, max: (val && val.max) ? val.max : 0 }))
       .sort((a, b) => b.max - a.max)
       .slice(0, 20);
   }
 
-  // ── PŘIHLÁŠENÍ ─────────────────────────────────────────
-  window.prihlasit = async function() {
+  // ── PŘIHLÁŠENÍ ────────────────────────────────────────
+  async function prihlasit() {
     const inp = document.getElementById('inp-username');
     const err = document.getElementById('login-error');
     const username = inp.value.trim().toLowerCase();
 
     if (!username) { err.textContent = 'Zadej uživatelské jméno!'; return; }
     if (username.length < 2) { err.textContent = 'Jméno musí mít aspoň 2 znaky.'; return; }
-    if (!/^[a-z0-9._-]+$/.test(username)) { err.textContent = 'Pouze písmena, čísla, . _ -'; return; }
 
-    err.textContent = '';
+    err.textContent = 'Přihlašuji...';
     jmeno = username;
 
-    // Načti nebo vytvoř hráče
-    let hrac = await nactiHrace(username);
-    if (!hrac) {
-      await window._set(window._ref(window._db, `hrace/${username}`), { max: 0 });
-      hrac = { max: 0 };
+    try {
+      let hrac = await nactiHrace(username);
+      if (!hrac) {
+        await set(ref(db, `hrace/${username}`), { max: 0 });
+        hrac = { max: 0 };
+      }
+      osobniMax = hrac.max || 0;
+
+      const zebricek = await nactiZebricek();
+      globalMax = zebricek.length > 0 ? zebricek[0].max : 0;
+
+      document.getElementById('lbl-username').textContent = username;
+      document.getElementById('lbl-osobni').textContent = osobniMax;
+      document.getElementById('lbl-global').textContent = globalMax;
+
+      err.textContent = '';
+      showScreen('screen-welcome');
+    } catch(e) {
+      err.textContent = 'Chyba: ' + e.message;
     }
-    osobniMax = hrac.max || 0;
-
-    // Globální rekord
-    const zebricek = await nactiZebricek();
-    globalMax = zebricek.length > 0 ? zebricek[0].max : 0;
-
-    document.getElementById('lbl-username').textContent = username;
-    document.getElementById('lbl-osobni').textContent = osobniMax;
-    document.getElementById('lbl-global').textContent = globalMax;
-
-    showScreen('screen-welcome');
   }
 
-  document.getElementById('inp-username').addEventListener('keydown', e => {
-    if (e.key === 'Enter') window.prihlasit();
-  });
-
-  // ── START HRY ──────────────────────────────────────────
-  window.startHra = function() {
+  // ── START HRY ─────────────────────────────────────────
+  function startHra() {
     body = 0;
     casZbyva = CAS_CELKEM;
     document.getElementById('lbl-body').textContent = 0;
     document.getElementById('lbl-rekord-live').textContent = osobniMax;
+    document.getElementById('lbl-cas').textContent = CAS_CELKEM;
     document.getElementById('lbl-komentar').textContent = '';
     document.getElementById('lbl-komentar').className = 'komentar';
     document.getElementById('record-hint').textContent = '';
@@ -710,20 +328,20 @@ const firebaseConfig = {
     }, 1000);
   }
 
-  // ── NOVÝ PŘÍKLAD ───────────────────────────────────────
+  // ── NOVÝ PŘÍKLAD ──────────────────────────────────────
   function novyPriklad() {
     a = Math.floor(Math.random() * 9) + 1;
     b = Math.floor(Math.random() * 9) + 1;
     soucin = a * b;
     const lbl = document.getElementById('lbl-priklad');
-    lbl.textContent = `${a} × ${b}`;
     lbl.style.animation = 'none';
-    requestAnimationFrame(() => { lbl.style.animation = ''; });
+    lbl.textContent = `${a} × ${b}`;
+    requestAnimationFrame(() => { lbl.style.animation = 'popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'; });
     document.getElementById('inp-odpoved').value = '';
   }
 
-  // ── KONTROLA ───────────────────────────────────────────
-  window.zkontrolovat = function() {
+  // ── KONTROLA ──────────────────────────────────────────
+  function zkontrolovat() {
     const inp = document.getElementById('inp-odpoved');
     const val = parseInt(inp.value);
     const komentar = document.getElementById('lbl-komentar');
@@ -740,16 +358,18 @@ const firebaseConfig = {
       komentar.textContent = '✓ Správně!';
       komentar.className = 'komentar correct';
 
-      // Hint na rekord
       const hint = document.getElementById('record-hint');
-      if (body >= osobniMax && osobniMax > 0) {
-        hint.textContent = body === osobniMax ? '🔥 Vyrovnáváš svůj rekord!' : `🚀 Překonáváš rekord! (${body} > ${osobniMax})`;
+      if (osobniMax > 0 && body === osobniMax) {
+        hint.textContent = '🔥 Vyrovnáváš svůj rekord!';
         hint.className = 'record-hint beating';
-      } else if (body >= globalMax && globalMax > 0) {
-        hint.textContent = `👑 Míříš na rekord školy! (${body}/${globalMax})`;
+      } else if (osobniMax > 0 && body > osobniMax) {
+        hint.textContent = `🚀 Překonáváš rekord! (${body} > ${osobniMax})`;
+        hint.className = 'record-hint beating';
+      } else if (globalMax > 0 && body >= globalMax) {
+        hint.textContent = '👑 Míříš na rekord školy!';
         hint.className = 'record-hint beating';
       } else {
-        hint.textContent = osobniMax > 0 ? `Do tvého rekordu zbývá ${osobniMax - body} bodů` : '';
+        hint.textContent = osobniMax > 0 ? `Do rekordu zbývá ${osobniMax - body} bodů` : '';
         hint.className = 'record-hint';
       }
 
@@ -765,65 +385,68 @@ const firebaseConfig = {
     }
   }
 
-  document.getElementById('inp-odpoved').addEventListener('keydown', e => {
-    if (e.key === 'Enter') window.zkontrolovat();
-  });
-
-  // ── VYHODNOCENÍ ────────────────────────────────────────
+  // ── VYHODNOCENÍ ───────────────────────────────────────
   async function vyhodnoceni() {
     showScreen('screen-result');
-
     const emojis = body === 0 ? '😅' : body < 5 ? '🙂' : body < 10 ? '😊' : body < 15 ? '🔥' : '👑';
     document.getElementById('result-emoji').textContent = emojis;
     document.getElementById('result-score').textContent = body;
 
-    const jeNovyRekord = await ulozSkore(jmeno, body);
-
-    if (jeNovyRekord) {
-      osobniMax = body;
-      document.getElementById('result-new-record').style.display = 'block';
-      document.getElementById('result-title').textContent = 'Nový rekord! 🎉';
-    } else {
-      document.getElementById('result-new-record').style.display = 'none';
-      document.getElementById('result-title').textContent = body >= 10 ? 'Skvělý výkon!' : 'Konec hry!';
+    try {
+      const jeNovyRekord = await ulozSkore(jmeno, body);
+      if (jeNovyRekord) {
+        osobniMax = body;
+        document.getElementById('result-new-record').style.display = 'block';
+        document.getElementById('result-title').textContent = 'Nový rekord! 🎉';
+      } else {
+        document.getElementById('result-new-record').style.display = 'none';
+        document.getElementById('result-title').textContent = body >= 10 ? 'Skvělý výkon!' : 'Konec hry!';
+      }
+      const zebricek = await nactiZebricek();
+      globalMax = zebricek.length > 0 ? zebricek[0].max : 0;
+      document.getElementById('lbl-osobni').textContent = osobniMax;
+      document.getElementById('lbl-global').textContent = globalMax;
+    } catch(e) {
+      document.getElementById('result-title').textContent = 'Konec hry!';
     }
-
-    // Aktualizuj globální max
-    const zebricek = await nactiZebricek();
-    globalMax = zebricek.length > 0 ? zebricek[0].max : 0;
-    document.getElementById('lbl-osobni').textContent = osobniMax;
-    document.getElementById('lbl-global').textContent = globalMax;
   }
 
-  // ── ŽEBŘÍČEK ───────────────────────────────────────────
-  window.showLeaderboard = async function() {
+  // ── ŽEBŘÍČEK ──────────────────────────────────────────
+  async function showLeaderboard() {
     showScreen('screen-leaderboard');
     const list = document.getElementById('lb-list');
     list.innerHTML = '<li style="text-align:center;color:#aaa;padding:20px">Načítám...</li>';
-
-    const zebricek = await nactiZebricek();
-    const medals = ['🥇', '🥈', '🥉'];
-    const classes = ['gold', 'silver', 'bronze'];
-
-    if (zebricek.length === 0) {
-      list.innerHTML = '<li style="text-align:center;color:#aaa;padding:20px">Zatím žádné skóre</li>';
-      return;
+    try {
+      const zebricek = await nactiZebricek();
+      const medals = ['🥇', '🥈', '🥉'];
+      const classes = ['gold', 'silver', 'bronze'];
+      if (zebricek.length === 0) {
+        list.innerHTML = '<li style="text-align:center;color:#aaa;padding:20px">Zatím žádné skóre</li>';
+        return;
+      }
+      list.innerHTML = zebricek.map((h, i) => `
+        <li class="lb-item ${i < 3 ? classes[i] : ''} ${h.name === jmeno ? 'me' : ''}">
+          <span class="lb-rank">${i < 3 ? medals[i] : i + 1}</span>
+          <span class="lb-name">${h.name}${h.name === jmeno ? ' (ty)' : ''}</span>
+          <span class="lb-score">${h.max}</span>
+        </li>
+      `).join('');
+    } catch(e) {
+      list.innerHTML = '<li style="text-align:center;color:#aaa;padding:20px">Chyba načítání</li>';
     }
-
-    list.innerHTML = zebricek.map((h, i) => `
-      <li class="lb-item ${i < 3 ? classes[i] : ''} ${h.name === jmeno ? 'me' : ''}">
-        <span class="lb-rank">${i < 3 ? medals[i] : i + 1}</span>
-        <span class="lb-name">${h.name}${h.name === jmeno ? ' (ty)' : ''}</span>
-        <span class="lb-score">${h.max}</span>
-      </li>
-    `).join('');
   }
 
-  // Čekej na Firebase
-  if (window._firebaseReady) { /* OK */ }
-  else {
-    window.addEventListener('firebaseReady', () => { /* Firebase připraven */ });
-  }
+  // ── TLAČÍTKA ──────────────────────────────────────────
+  document.getElementById('btn-prihlasit').addEventListener('click', prihlasit);
+  document.getElementById('inp-username').addEventListener('keydown', e => { if (e.key === 'Enter') prihlasit(); });
+  document.getElementById('btn-start').addEventListener('click', startHra);
+  document.getElementById('btn-znovu').addEventListener('click', startHra);
+  document.getElementById('btn-potvrdit').addEventListener('click', zkontrolovat);
+  document.getElementById('inp-odpoved').addEventListener('keydown', e => { if (e.key === 'Enter') zkontrolovat(); });
+  document.getElementById('btn-zebricek-login').addEventListener('click', showLeaderboard);
+  document.getElementById('btn-zebricek-welcome').addEventListener('click', showLeaderboard);
+  document.getElementById('btn-zebricek-result').addEventListener('click', showLeaderboard);
+  document.getElementById('btn-zpet').addEventListener('click', () => showScreen('screen-welcome'));
 </script>
 
 </body>
