@@ -267,38 +267,38 @@
 
   // ── PŘIHLÁŠENÍ ────────────────────────────────────────
   async function prihlasit() {
-    const inp = document.getElementById('inp-username');
-    const err = document.getElementById('login-error');
-    const username = inp.value.trim().toLowerCase();
+  const inp = document.getElementById('inp-username');
+  const err = document.getElementById('login-error');
+  const username = inp.value.trim().toLowerCase();
 
-    if (!username) { err.textContent = 'Zadej uživatelské jméno!'; return; }
-    if (username.length < 2) { err.textContent = 'Jméno musí mít aspoň 2 znaky.'; return; }
+  if (!username) { err.textContent = 'Zadej uživatelské jméno!'; return; }
+  if (username.length < 2) { err.textContent = 'Jméno musí mít aspoň 2 znaky.'; return; }
 
-    err.textContent = 'Přihlašuji...';
-    jmeno = username;
+  err.textContent = 'Přihlašuji...';
+  jmeno = username;
 
-    try {
-      let hrac = await nactiHrace(username);
-if (!hrac) {
-  err.textContent = '❌ Uživatelské jméno nebylo nalezeno.';
-  return;
-}
-      }
-      osobniMax = hrac.max || 0;
-
-      const zebricek = await nactiZebricek();
-      globalMax = zebricek.length > 0 ? zebricek[0].max : 0;
-
-      document.getElementById('lbl-username').textContent = username;
-      document.getElementById('lbl-osobni').textContent = osobniMax;
-      document.getElementById('lbl-global').textContent = globalMax;
-
-      err.textContent = '';
-      showScreen('screen-welcome');
-    } catch(e) {
-      err.textContent = 'Chyba: ' + e.message;
+  try {
+    let hrac = await nactiHrace(username);
+    if (!hrac) {
+      err.textContent = '❌ Uživatelské jméno nebylo nalezeno.';
+      jmeno = '';
+      return;
     }
+    osobniMax = hrac.max || 0;
+
+    const zebricek = await nactiZebricek();
+    globalMax = zebricek.length > 0 ? zebricek[0].max : 0;
+
+    document.getElementById('lbl-username').textContent = username;
+    document.getElementById('lbl-osobni').textContent = osobniMax;
+    document.getElementById('lbl-global').textContent = globalMax;
+
+    err.textContent = '';
+    showScreen('screen-welcome');
+  } catch(e) {
+    err.textContent = 'Chyba: ' + e.message;
   }
+}
 
   // ── START HRY ─────────────────────────────────────────
   function startHra() {
