@@ -1,724 +1,87 @@
-<!DOCTYPE html>
-<html lang="cs">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Soutěž</title>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
-  <style>
-    :root {
-      --yellow:#FFD93D;--orange:#FF6B35;--green:#6BCB77;
-      --blue:#4D96FF;--purple:#C77DFF;--red:#FF6B6B;
-      --dark:#1a1a2e;--card:#ffffff;--radius:20px;
-    }
-    *{box-sizing:border-box;margin:0;padding:0;}
-    body{font-family:'Nunito',sans-serif;background:var(--dark);min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-    .stars{position:fixed;inset:0;pointer-events:none;z-index:0;}
-    .star{position:absolute;width:6px;height:6px;border-radius:50%;background:white;opacity:0;animation:twinkle var(--d) var(--delay) infinite;}
-    @keyframes twinkle{0%,100%{opacity:0;transform:scale(.5)}50%{opacity:.7;transform:scale(1.2)}}
-    .wrapper{position:relative;z-index:1;width:100%;max-width:500px;padding:20px;}
-    .card{background:var(--card);border-radius:var(--radius);padding:40px 36px;box-shadow:0 20px 60px rgba(0,0,0,0.4);animation:slideUp .5s cubic-bezier(.34,1.56,.64,1);}
-    @keyframes slideUp{from{opacity:0;transform:translateY(40px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
-    .logo{text-align:center;margin-bottom:28px;}
-    .logo-icon{font-size:52px;display:block;animation:bounce 2s ease-in-out infinite;}
-    @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-    .logo h1{font-family:'Fredoka One',cursive;font-size:2.6rem;color:var(--dark);line-height:1.1;}
-    .logo p{color:#888;font-size:.95rem;margin-top:4px;}
-    .input-group{margin-bottom:16px;}
-    .input-group label{display:block;font-weight:700;font-size:.9rem;color:#555;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;}
-    .input-group input{width:100%;padding:14px 18px;border:2.5px solid #e0e0e0;border-radius:12px;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:600;color:var(--dark);transition:border-color .2s;outline:none;}
-    .input-group input:focus{border-color:var(--blue);}
-    .btn{width:100%;padding:16px;border:none;border-radius:14px;font-family:'Fredoka One',cursive;font-size:1.3rem;cursor:pointer;transition:transform .15s,box-shadow .15s;letter-spacing:.03em;}
-    .btn:active{transform:scale(.97);}
-    .btn-primary{background:var(--orange);color:white;box-shadow:0 6px 0 #c44a1a;}
-    .btn-primary:hover{box-shadow:0 4px 0 #c44a1a;transform:translateY(2px);}
-    .btn-green{background:var(--green);color:white;box-shadow:0 6px 0 #3d9e4a;}
-    .btn-green:hover{box-shadow:0 4px 0 #3d9e4a;transform:translateY(2px);}
-    .btn-blue{background:var(--blue);color:white;box-shadow:0 6px 0 #1a5fcc;}
-    .btn-blue:hover{box-shadow:0 4px 0 #1a5fcc;transform:translateY(2px);}
-    .btn-purple{background:var(--purple);color:white;box-shadow:0 6px 0 #8a3dcc;}
-    .btn-purple:hover{box-shadow:0 4px 0 #8a3dcc;transform:translateY(2px);}
-    .btn-outline{background:white;color:var(--dark);border:2.5px solid #e0e0e0;box-shadow:none;}
-    .btn-outline:hover{border-color:var(--blue);color:var(--blue);}
-    .btn-row{display:flex;gap:10px;}
-    .btn-row .btn{flex:1;}
-    .mt12{margin-top:12px;}
-    .error-msg{color:var(--orange);font-size:.9rem;font-weight:700;text-align:center;margin-top:10px;min-height:20px;}
-    .game-choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
-    .game-choice-card{border-radius:16px;padding:24px 16px;text-align:center;cursor:pointer;border:3px solid transparent;transition:transform .2s,border-color .2s,box-shadow .2s;}
-    .game-choice-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.12);}
-    .game-choice-card.nasobilka{background:#fff3e0;border-color:var(--yellow);}
-    .game-choice-card.nasobilka:hover{border-color:var(--orange);}
-    .game-choice-card.vyjmenovana{background:#f0e8ff;border-color:#d4b0ff;}
-    .game-choice-card.vyjmenovana:hover{border-color:var(--purple);}
-    .game-choice-icon{font-size:42px;display:block;margin-bottom:8px;}
-    .game-choice-title{font-family:'Fredoka One',cursive;font-size:1.2rem;color:var(--dark);}
-    .game-choice-sub{font-size:.8rem;color:#888;margin-top:4px;}
-    .welcome-text{text-align:center;margin-bottom:24px;}
-    .welcome-text h2{font-family:'Fredoka One',cursive;font-size:1.9rem;color:var(--dark);}
-    .welcome-text .username{color:var(--orange);}
-    .welcome-title{font-family:'Fredoka One',cursive;font-size:1.3rem;color:var(--dark);text-align:center;margin-bottom:16px;}
-    .score-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;}
-    .score-box{border-radius:14px;padding:16px;text-align:center;}
-    .score-box.personal{background:#fff3e0;border:2px solid var(--yellow);}
-    .score-box.global{background:#e8f4fd;border:2px solid var(--blue);}
-    .score-box .score-label{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#888;margin-bottom:4px;}
-    .score-box .score-value{font-family:'Fredoka One',cursive;font-size:2rem;}
-    .score-box.personal .score-value{color:var(--orange);}
-    .score-box.global .score-value{color:var(--blue);}
-    /* KATEGORIE */
-    .kategorie-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
-    .kat-btn{padding:14px 8px;border-radius:12px;border:2.5px solid #e0e0e0;background:white;font-family:'Fredoka One',cursive;font-size:1.4rem;cursor:pointer;transition:all .2s;color:#aaa;text-align:center;}
-    .kat-btn:hover{border-color:var(--purple);color:var(--purple);}
-    .kat-btn.selected{background:#f0e8ff;border-color:var(--purple);color:var(--purple);box-shadow:0 4px 0 #8a3dcc;}
-    .kat-label{font-size:.7rem;font-weight:800;display:block;text-transform:uppercase;letter-spacing:.05em;margin-top:2px;}
-    .kategorie-error{color:var(--red);font-size:.85rem;font-weight:700;text-align:center;margin-bottom:12px;min-height:18px;}
-    .vyber-vse{text-align:center;font-size:.85rem;color:var(--blue);cursor:pointer;font-weight:700;text-decoration:underline;margin-bottom:14px;}
-    /* GAME */
-    .game-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
-    .game-stat{text-align:center;}
-    .game-stat .stat-label{font-size:.75rem;font-weight:700;text-transform:uppercase;color:#aaa;letter-spacing:.05em;}
-    .game-stat .stat-value{font-family:'Fredoka One',cursive;font-size:1.6rem;color:var(--dark);}
-    .stat-value.timer{color:var(--orange);}
-    .stat-value.score-live{color:var(--green);}
-    .stat-value.priklad-count{color:var(--purple);}
-    .progress-bar-wrap{background:#f0f0f0;border-radius:999px;height:10px;margin-bottom:28px;overflow:hidden;}
-    .progress-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--orange),var(--yellow));transition:width 1s linear;width:100%;}
-    .progress-bar-fill.vyjm{background:linear-gradient(90deg,var(--purple),#f0b0ff);transition:width .4s ease;}
-    .priklad-wrap{text-align:center;margin-bottom:24px;}
-    .priklad{font-family:'Fredoka One',cursive;font-size:3.5rem;color:var(--dark);line-height:1;}
-    @keyframes popIn{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
-    .komentar{min-height:24px;font-size:1rem;font-weight:700;color:#888;margin-top:6px;text-align:center;}
-    .komentar.correct{color:var(--green);}
-    .komentar.wrong{color:var(--red);}
-    .answer-row{display:flex;gap:10px;}
-    .answer-row input{flex:1;padding:16px;border:2.5px solid #e0e0e0;border-radius:14px;font-family:'Fredoka One',cursive;font-size:1.8rem;text-align:center;color:var(--dark);outline:none;transition:border-color .2s;}
-    .answer-row input:focus{border-color:var(--blue);}
-    .answer-row input.shake{animation:shake .3s;border-color:var(--red);}
-    @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-    .answer-row button{padding:16px 24px;background:var(--blue);color:white;border:none;border-radius:14px;font-size:1.6rem;cursor:pointer;box-shadow:0 5px 0 #1a5fcc;transition:transform .1s,box-shadow .1s;}
-    .answer-row button:active{transform:translateY(3px);box-shadow:0 2px 0 #1a5fcc;}
-    .record-hint{text-align:center;margin-top:14px;font-size:.9rem;font-weight:700;color:#bbb;min-height:20px;}
-    .record-hint.beating{color:var(--purple);}
-    .vyjm-zadani{text-align:center;margin-bottom:16px;}
-    .vyjm-veta{font-family:'Fredoka One',cursive;font-size:1.8rem;color:var(--dark);line-height:1.4;margin-bottom:8px;word-break:break-word;}
-    .vyjm-veta .blank{color:var(--purple);border-bottom:3px solid var(--purple);padding:0 4px;min-width:40px;display:inline-block;}
-    .vyjm-buttons{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;}
-    .vyjm-btn{padding:18px;border:none;border-radius:14px;font-family:'Fredoka One',cursive;font-size:1.6rem;cursor:pointer;transition:transform .15s,box-shadow .15s;}
-    .vyjm-btn:active{transform:scale(.95);}
-    .vyjm-btn.y {background:#fff3e0;color:var(--orange);box-shadow:0 5px 0 #e8a020;border:2.5px solid var(--yellow);}
-    .vyjm-btn.i {background:#e8f4fd;color:var(--blue);  box-shadow:0 5px 0 #1a5fcc;border:2.5px solid var(--blue);}
-    .vyjm-btn.yy{background:#ffeef0;color:var(--red);   box-shadow:0 5px 0 #cc3030;border:2.5px solid var(--red);}
-    .vyjm-btn.ii{background:#f0e8ff;color:var(--purple);box-shadow:0 5px 0 #8a3dcc;border:2.5px solid var(--purple);}
-    .vyjm-btn.correct-flash{background:var(--green)!important;color:white!important;border-color:var(--green)!important;}
-    .vyjm-btn.wrong-flash{background:var(--red)!important;color:white!important;border-color:var(--red)!important;}
-    /* VÝSLEDKY */
-    .result-center{text-align:center;}
-    .result-emoji{font-size:56px;display:block;margin-bottom:6px;animation:bounce 1s ease-in-out infinite;}
-    .result-title{font-family:'Fredoka One',cursive;font-size:1.8rem;color:var(--dark);margin-bottom:4px;}
-    .result-score{font-family:'Fredoka One',cursive;font-size:3.5rem;color:var(--orange);line-height:1;}
-    .result-sub{color:#888;font-size:1rem;margin-bottom:16px;}
-    .result-uspesnost{font-family:'Fredoka One',cursive;font-size:1.2rem;color:var(--purple);margin-bottom:16px;}
-    .result-new-record{background:linear-gradient(135deg,var(--yellow),var(--orange));color:white;border-radius:12px;padding:10px 20px;font-weight:800;font-size:1rem;margin-bottom:16px;display:none;}
-    /* PŘEHLED ODPOVĚDÍ */
-    .prehled-wrap{margin-bottom:20px;max-height:200px;overflow-y:auto;border-radius:12px;}
-    .prehled-wrap::-webkit-scrollbar{width:4px;}
-    .prehled-wrap::-webkit-scrollbar-thumb{background:#ddd;border-radius:999px;}
-    .prehled-item{display:flex;align-items:flex-start;gap:10px;padding:8px 12px;border-radius:10px;margin-bottom:6px;font-size:.88rem;}
-    .prehled-item.ok{background:#edfff0;border-left:4px solid var(--green);}
-    .prehled-item.chyba{background:#fff0f0;border-left:4px solid var(--red);}
-    .prehled-icon{font-size:1rem;margin-top:1px;flex-shrink:0;}
-    .prehled-text{flex:1;}
-    .prehled-veta{display:block;font-weight:700;color:var(--dark);}
-    .prehled-veta strong{color:var(--green);}
-    .prehled-chyba-txt{display:block;font-size:.8rem;color:var(--red);margin-top:2px;}
-    /* ŽEBŘÍČEK */
-    .lb-tabs{display:flex;gap:8px;margin-bottom:18px;}
-    .lb-tab{flex:1;padding:10px;border:2.5px solid #e0e0e0;border-radius:10px;font-family:'Fredoka One',cursive;font-size:1rem;cursor:pointer;text-align:center;background:white;color:#aaa;transition:all .2s;}
-    .lb-tab.active{border-color:var(--orange);color:var(--orange);background:#fff3e0;}
-    .lb-tab.vyjm.active{border-color:var(--purple);color:var(--purple);background:#f0e8ff;}
-    .lb-title{font-family:'Fredoka One',cursive;font-size:1.6rem;color:var(--dark);margin-bottom:18px;text-align:center;}
-    .lb-list{list-style:none;max-height:280px;overflow-y:auto;margin-bottom:20px;}
-    .lb-list::-webkit-scrollbar{width:4px;}
-    .lb-list::-webkit-scrollbar-thumb{background:#ddd;border-radius:999px;}
-    .lb-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;margin-bottom:8px;background:#f9f9f9;}
-    .lb-item.me{background:#fff3e0;}
-    .lb-item.gold{background:#fffbe6;}
-    .lb-item.silver{background:#f5f5f5;}
-    .lb-item.bronze{background:#fff3e8;}
-    .lb-rank{font-family:'Fredoka One',cursive;font-size:1.3rem;width:32px;text-align:center;}
-    .lb-name{flex:1;font-weight:700;font-size:1rem;color:var(--dark);}
-    .lb-score{font-family:'Fredoka One',cursive;font-size:1.4rem;color:var(--orange);}
-    .screen{display:none;}
-    .screen.active{display:block;}
-    .nav-link{text-align:center;margin-top:16px;font-size:.9rem;color:#aaa;cursor:pointer;font-weight:600;}
-    .nav-link span{color:var(--blue);text-decoration:underline;}
-  </style>
-</head>
-<body>
+// ═══════════════════════════════════════════════════════
+// vysledky.js  —  Obrazovka výsledků
+// ═══════════════════════════════════════════════════════
 
-<div class="stars" id="stars"></div>
-<div class="wrapper">
-  <div class="card">
+import { stav, showScreen, ulozSkore, nactiZebricek } from './main.js';
+import { initNasobilka } from './nasobilka.js';
+import { initZebricek } from './zebricek.js';
 
-    <!-- PŘIHLÁŠENÍ -->
-    <div id="screen-login" class="screen active">
-      <div class="logo">
-        <span class="logo-icon">🏆</span>
-        <h1>Soutěž</h1>
-        <p>Přihlaš se a hraj!</p>
-      </div>
-      <div class="input-group">
-        <label>Uživatelské jméno</label>
-        <input type="text" id="inp-username" placeholder="např. jana123" autocomplete="off"/>
-      </div>
-      <button class="btn btn-primary" id="btn-prihlasit">Přihlásit se 🚀</button>
-      <div class="error-msg" id="login-error"></div>
-      <div class="nav-link" id="btn-zebricek-login">🏆 <span>Zobrazit žebříček</span></div>
-    </div>
+// ── Inicializace tlačítek na obrazovce výsledků ───────
+export function initVysledky() {
+  document.getElementById('btn-znovu').onclick         = znovu;
+  document.getElementById('btn-jina-hra').onclick      = () => showScreen('screen-vyber');
+  document.getElementById('btn-zebricek-result').onclick = () => initZebricek('screen-result', stav.aktualniHra);
+}
 
-    <!-- VÝBĚR HRY -->
-    <div id="screen-vyber" class="screen">
-      <div class="welcome-text">
-        <h2>Vítej, <span class="username" id="lbl-username"></span>! 👋</h2>
-      </div>
-      <div class="welcome-title">Vyber si hru:</div>
-      <div class="game-choice-grid">
-        <div class="game-choice-card nasobilka" id="btn-volba-nasobilka">
-          <span class="game-choice-icon">✖️</span>
-          <div class="game-choice-title">Malá násobilka</div>
-          <div class="game-choice-sub">Počítej příklady</div>
-        </div>
-        <div class="game-choice-card vyjmenovana" id="btn-volba-vyjmenovana">
-          <span class="game-choice-icon">📝</span>
-          <div class="game-choice-title">Vyjmenovaná slova</div>
-          <div class="game-choice-sub">Doplňuj y/i</div>
-        </div>
-      </div>
-      <div class="nav-link" id="btn-zebricek-vyber">🏆 <span>Žebříček</span></div>
-    </div>
-
-    <!-- UVÍTÁNÍ NÁSOBILKA -->
-    <div id="screen-welcome-nasobilka" class="screen">
-      <div class="welcome-text"><h2>✖️ Malá násobilka</h2></div>
-      <div class="score-grid">
-        <div class="score-box personal"><div class="score-label">Tvůj rekord</div><div class="score-value" id="lbl-osobni-nas">0</div></div>
-        <div class="score-box global"><div class="score-label">Rekord školy</div><div class="score-value" id="lbl-global-nas">0</div></div>
-      </div>
-      <button class="btn btn-green" id="btn-start-nasobilka">▶ Začít hru</button>
-      <button class="btn btn-outline mt12" id="btn-zpet-nasobilka">← Zpět na výběr</button>
-      <div class="nav-link" id="btn-zebricek-welcome-nas">🏆 <span>Žebříček násobilky</span></div>
-    </div>
-
-    <!-- UVÍTÁNÍ VYJMENOVANÁ + VÝBĚR KATEGORIÍ -->
-    <div id="screen-welcome-vyjmenovana" class="screen">
-      <div class="welcome-text"><h2>📝 Vyjmenovaná slova</h2></div>
-      <div class="score-grid">
-        <div class="score-box personal"><div class="score-label">Tvůj rekord</div><div class="score-value" id="lbl-osobni-vyjm">0</div></div>
-        <div class="score-box global"><div class="score-label">Rekord školy</div><div class="score-value" id="lbl-global-vyjm">0</div></div>
-      </div>
-      <div class="welcome-title">Vyber kategorie:</div>
-      <div class="vyber-vse" id="btn-vyber-vse">Vybrat vše / Zrušit výběr</div>
-      <div class="kategorie-grid">
-        <button class="kat-btn" data-kat="b">B<span class="kat-label">být, bydlit...</span></button>
-        <button class="kat-btn" data-kat="l">L<span class="kat-label">lyže, lýtko...</span></button>
-        <button class="kat-btn" data-kat="m">M<span class="kat-label">mýt, myslit...</span></button>
-        <button class="kat-btn" data-kat="p">P<span class="kat-label">pytel, pýcha...</span></button>
-        <button class="kat-btn" data-kat="s">S<span class="kat-label">syn, sýr...</span></button>
-        <button class="kat-btn" data-kat="v">V<span class="kat-label">vít, výr...</span></button>
-        <button class="kat-btn" data-kat="z">Z<span class="kat-label">zýkat, zítra...</span></button>
-      </div>
-      <div class="kategorie-error" id="kat-error"></div>
-      <button class="btn btn-purple" id="btn-start-vyjmenovana">▶ Začít hru</button>
-      <button class="btn btn-outline mt12" id="btn-zpet-vyjmenovana">← Zpět na výběr</button>
-      <div class="nav-link" id="btn-zebricek-welcome-vyjm">🏆 <span>Žebříček vyjmenovaných</span></div>
-    </div>
-
-    <!-- HRA NÁSOBILKA -->
-    <div id="screen-game-nasobilka" class="screen">
-      <div class="game-header">
-        <div class="game-stat"><div class="stat-label">Čas</div><div class="stat-value timer" id="lbl-cas-nas">15</div></div>
-        <div class="game-stat"><div class="stat-label">Body</div><div class="stat-value score-live" id="lbl-body-nas">0</div></div>
-        <div class="game-stat"><div class="stat-label">Rekord</div><div class="stat-value" id="lbl-rekord-nas">0</div></div>
-      </div>
-      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-nas"></div></div>
-      <div class="priklad-wrap">
-        <div class="priklad" id="lbl-priklad">? × ?</div>
-        <div class="komentar" id="lbl-komentar-nas"></div>
-      </div>
-      <div class="answer-row">
-        <input type="number" id="inp-odpoved-nas" placeholder="?" min="1" max="100" autocomplete="off"/>
-        <button id="btn-potvrdit-nas">✓</button>
-      </div>
-      <div class="record-hint" id="record-hint-nas"></div>
-    </div>
-
-    <!-- HRA VYJMENOVANÁ -->
-    <div id="screen-game-vyjmenovana" class="screen">
-      <div class="game-header">
-        <div class="game-stat"><div class="stat-label">Příklad</div><div class="stat-value priklad-count" id="lbl-priklad-vyjm">0/10</div></div>
-        <div class="game-stat"><div class="stat-label">Správně</div><div class="stat-value score-live" id="lbl-body-vyjm">0</div></div>
-        <div class="game-stat"><div class="stat-label">Rekord</div><div class="stat-value" id="lbl-rekord-vyjm">0</div></div>
-      </div>
-      <div class="progress-bar-wrap"><div class="progress-bar-fill vyjm" id="progress-vyjm" style="width:0%"></div></div>
-      <div class="vyjm-zadani">
-        <div class="vyjm-veta" id="lbl-veta">Načítám...</div>
-        <div class="komentar" id="lbl-komentar-vyjm"></div>
-      </div>
-      <div class="vyjm-buttons">
-        <button class="vyjm-btn y"  data-val="y">y</button>
-        <button class="vyjm-btn i"  data-val="i">i</button>
-        <button class="vyjm-btn yy" data-val="ý">ý</button>
-        <button class="vyjm-btn ii" data-val="í">í</button>
-      </div>
-      <div class="record-hint" id="record-hint-vyjm"></div>
-    </div>
-
-    <!-- VÝSLEDKY -->
-    <div id="screen-result" class="screen">
-      <div class="result-center">
-        <span class="result-emoji" id="result-emoji">🎉</span>
-        <div class="result-title" id="result-title">Konec hry!</div>
-        <div class="result-score" id="result-score">0</div>
-        <div class="result-sub" id="result-sub">bodů</div>
-        <div class="result-uspesnost" id="result-uspesnost"></div>
-        <div class="result-new-record" id="result-new-record">🏆 Nový rekord!</div>
-      </div>
-      <div class="prehled-wrap" id="result-prehled"></div>
-      <div class="btn-row">
-        <button class="btn btn-green" id="btn-znovu">↺ Znovu</button>
-        <button class="btn btn-blue" id="btn-zebricek-result">🏆 Žebříček</button>
-      </div>
-      <button class="btn btn-outline mt12" id="btn-jina-hra">← Jiná hra</button>
-    </div>
-
-    <!-- ŽEBŘÍČEK -->
-    <div id="screen-leaderboard" class="screen">
-      <div class="lb-title">🏆 Žebříček</div>
-      <div class="lb-tabs">
-        <div class="lb-tab active" id="lb-tab-nas">✖️ Násobilka</div>
-        <div class="lb-tab vyjm" id="lb-tab-vyjm">📝 Vyjmenovaná</div>
-      </div>
-      <ul class="lb-list" id="lb-list"><li style="text-align:center;color:#aaa;padding:20px">Načítám...</li></ul>
-      <button class="btn btn-primary" id="btn-zpet-lb">← Zpět</button>
-    </div>
-
-  </div>
-</div>
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyAE_kjebwQrSzeEz9-3c_Y66TUBAvRIjB4",
-    authDomain: "malanasobilka.firebaseapp.com",
-    databaseURL: "https://malanasobilka-default-rtdb.firebaseio.com",
-    projectId: "malanasobilka",
-    storageBucket: "malanasobilka.firebasestorage.app",
-    messagingSenderId: "712520835692",
-    appId: "1:712520835692:web:6746f62321750e264a6e49"
-  };
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-
-  // HVĚZDIČKY
-  const starsEl = document.getElementById('stars');
-  for (let i = 0; i < 60; i++) {
-    const s = document.createElement('div');
-    s.className = 'star';
-    s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--delay:${Math.random()*5}s`;
-    starsEl.appendChild(s);
+function znovu() {
+  if (stav.aktualniHra === 'nasobilka') {
+    initNasobilka();
+    document.getElementById('btn-start-nasobilka').click();
+  } else {
+    showScreen('screen-welcome-vyjmenovana');
   }
+}
 
-  // STAV
-  let jmeno = '';
-  let aktualniHra = '';
-  let osobniMaxNas = 0, globalMaxNas = 0;
-  let osobniMaxVyjm = 0, globalMaxVyjm = 0;
-  let body = 0, casZbyva = 15, timerInterval = null;
-  let nasA, nasB, soucin;
-  let vyjmSlova = [];
-  let aktualniSlovo = null;
-  let celkemOtazek = 0;
-  let historiePrikladu = [];
-  let lbZpetScreen = 'screen-vyber';
-  let lbAktualniTab = 'nasobilka';
-  let vybranéKategorie = new Set();
-  const VSECHNY_KAT = ['b','l','m','p','s','v','z'];
-  const CAS = 15;
-  const POCET_PRIKLADU = 10;
+// ── Výsledky násobilky ────────────────────────────────
+export async function zobrazVysledkyNasobilka(body) {
+  showScreen('screen-result');
+  document.getElementById('result-sub').textContent        = 'bodů za 15 sekund';
+  document.getElementById('result-uspesnost').textContent  = '';
+  document.getElementById('result-prehled').innerHTML      = '';
 
-  // OBRAZOVKY
-  function showScreen(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-  }
+  const emoji = body === 0 ? '😅' : body < 5 ? '🙂' : body < 10 ? '😊' : body < 15 ? '🔥' : '👑';
+  document.getElementById('result-emoji').textContent = emoji;
+  document.getElementById('result-score').textContent = body;
 
-  // FIREBASE
-  async function nactiHrace(username) {
-    const snap = await get(ref(db, `hrace/${username}`));
-    return snap.exists() ? snap.val() : null;
-  }
-
-  async function ulozSkore(username, hra, skore) {
-    const hrac = await nactiHrace(username);
-    const staryMax = hrac ? (hrac[hra] || 0) : 0;
-    if (skore > staryMax) {
-      await set(ref(db, `hrace/${username}/${hra}`), skore);
-      return true;
-    }
-    return false;
-  }
-
-  async function nactiZebricek(hra) {
-    const snap = await get(ref(db, 'hrace'));
-    if (!snap.exists()) return [];
-    return Object.entries(snap.val())
-      .map(([name, val]) => ({ name, max: (val && val[hra]) ? val[hra] : 0 }))
-      .filter(h => h.max > 0)
-      .sort((a, b) => b.max - a.max)
-      .slice(0, 20);
-  }
-
-  async function nactiVyjmenovanaKategorie(kategorie) {
-    const vysledky = [];
-    for (const kat of kategorie) {
-      const snap = await get(ref(db, `vyjmenovana/${kat}`));
-      if (snap.exists()) Object.values(snap.val()).forEach(s => vysledky.push(s));
-    }
-    return vysledky;
-  }
-
-  // PŘIHLÁŠENÍ
-  async function prihlasit() {
-    const inp = document.getElementById('inp-username');
-    const err = document.getElementById('login-error');
-    const username = inp.value.trim().toLowerCase();
-    if (!username) { err.textContent = 'Zadej uživatelské jméno!'; return; }
-    if (username.length < 2) { err.textContent = 'Jméno musí mít aspoň 2 znaky.'; return; }
-    err.textContent = 'Přihlašuji...';
-    try {
-      const hrac = await nactiHrace(username);
-      if (!hrac) { err.textContent = '❌ Uživatelské jméno nebylo nalezeno.'; return; }
-      jmeno = username;
-      osobniMaxNas  = hrac.nasobilka   || 0;
-      osobniMaxVyjm = hrac.vyjmenovana || 0;
-      const zbNas  = await nactiZebricek('nasobilka');
-      const zbVyjm = await nactiZebricek('vyjmenovana');
-      globalMaxNas  = zbNas.length  > 0 ? zbNas[0].max  : 0;
-      globalMaxVyjm = zbVyjm.length > 0 ? zbVyjm[0].max : 0;
-      document.getElementById('lbl-username').textContent = username;
-      err.textContent = '';
-      showScreen('screen-vyber');
-    } catch(e) { err.textContent = 'Chyba: ' + e.message; }
-  }
-
-  // VOLBA HRY
-  function volbaHry(hra) {
-    aktualniHra = hra;
-    if (hra === 'nasobilka') {
-      document.getElementById('lbl-osobni-nas').textContent = osobniMaxNas;
-      document.getElementById('lbl-global-nas').textContent = globalMaxNas;
-      showScreen('screen-welcome-nasobilka');
+  try {
+    const jeNovy = await ulozSkore(stav.jmeno, 'nasobilka', body);
+    if (jeNovy) {
+      stav.osobniMaxNas = body;
+      document.getElementById('result-new-record').style.display = 'block';
+      document.getElementById('result-title').textContent        = 'Nový rekord! 🎉';
     } else {
-      document.getElementById('lbl-osobni-vyjm').textContent = osobniMaxVyjm;
-      document.getElementById('lbl-global-vyjm').textContent = globalMaxVyjm;
-      showScreen('screen-welcome-vyjmenovana');
+      document.getElementById('result-new-record').style.display = 'none';
+      document.getElementById('result-title').textContent        = body >= 10 ? 'Skvělý výkon!' : 'Konec hry!';
     }
-  }
+    const zb = await nactiZebricek('nasobilka');
+    stav.globalMaxNas = zb.length > 0 ? zb[0].max : 0;
+  } catch(e) { document.getElementById('result-title').textContent = 'Konec hry!'; }
+}
 
-  // KATEGORIE — toggle
-  document.querySelectorAll('.kat-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const kat = btn.dataset.kat;
-      if (vybranéKategorie.has(kat)) { vybranéKategorie.delete(kat); btn.classList.remove('selected'); }
-      else { vybranéKategorie.add(kat); btn.classList.add('selected'); }
-      document.getElementById('kat-error').textContent = '';
-    });
-  });
+// ── Výsledky vyjmenovaných slov ───────────────────────
+export async function zobrazVysledkyVyjmenovana(body, pocet, historie) {
+  showScreen('screen-result');
 
-  document.getElementById('btn-vyber-vse').addEventListener('click', () => {
-    const vsechnyVybrany = VSECHNY_KAT.every(k => vybranéKategorie.has(k));
-    if (vsechnyVybrany) {
-      vybranéKategorie.clear();
-      document.querySelectorAll('.kat-btn').forEach(b => b.classList.remove('selected'));
+  const uspesnost = Math.round((body / pocet) * 100);
+  const emoji     = uspesnost < 40 ? '😅' : uspesnost < 60 ? '🙂' : uspesnost < 80 ? '😊' : uspesnost < 100 ? '🔥' : '👑';
+
+  document.getElementById('result-emoji').textContent      = emoji;
+  document.getElementById('result-score').textContent      = `${body}/${pocet}`;
+  document.getElementById('result-sub').textContent        = 'správných odpovědí';
+  document.getElementById('result-uspesnost').textContent  = `Úspěšnost: ${uspesnost} %`;
+
+  // Přehled odpovědí
+  document.getElementById('result-prehled').innerHTML = historie.map(h => `
+    <div class="prehled-item ${h.spravne ? 'ok' : 'chyba'}">
+      <span class="prehled-icon">${h.spravne ? '✓' : '✗'}</span>
+      <span class="prehled-text">
+        <span class="prehled-veta">${h.vetaHotova}</span>
+        ${!h.spravne ? `<span class="prehled-chyba-txt">Tvá odpověď: ${h.uzivatelovaOdpoved}</span>` : ''}
+      </span>
+    </div>`).join('');
+
+  try {
+    const jeNovy = await ulozSkore(stav.jmeno, 'vyjmenovana', body);
+    if (jeNovy) {
+      stav.osobniMaxVyjm = body;
+      document.getElementById('result-new-record').style.display = 'block';
+      document.getElementById('result-title').textContent        = 'Nový rekord! 🎉';
     } else {
-      VSECHNY_KAT.forEach(k => vybranéKategorie.add(k));
-      document.querySelectorAll('.kat-btn').forEach(b => b.classList.add('selected'));
+      document.getElementById('result-new-record').style.display = 'none';
+      document.getElementById('result-title').textContent        =
+        uspesnost === 100 ? 'Perfektní! 👑' : uspesnost >= 80 ? 'Skvělý výkon! 🔥' : uspesnost >= 50 ? 'Dobrá práce! 😊' : 'Příště lépe! 💪';
     }
-    document.getElementById('kat-error').textContent = '';
-  });
-
-  // TIMER (násobilka)
-  function startTimer(onEnd) {
-    casZbyva = CAS;
-    document.getElementById('lbl-cas-nas').textContent = CAS;
-    document.getElementById('progress-nas').style.width = '100%';
-    if (timerInterval) clearInterval(timerInterval);
-    timerInterval = setInterval(() => {
-      casZbyva--;
-      document.getElementById('lbl-cas-nas').textContent = casZbyva;
-      document.getElementById('progress-nas').style.width = (casZbyva / CAS * 100) + '%';
-      if (casZbyva <= 0) { clearInterval(timerInterval); onEnd(); }
-    }, 1000);
-  }
-
-  // HINT
-  function updateHint(id, b, osobni, glob) {
-    const hint = document.getElementById(id);
-    if (osobni > 0 && b === osobni) { hint.textContent = '🔥 Vyrovnáváš svůj rekord!'; hint.className = 'record-hint beating'; }
-    else if (osobni > 0 && b > osobni) { hint.textContent = `🚀 Překonáváš rekord! (${b} > ${osobni})`; hint.className = 'record-hint beating'; }
-    else if (glob > 0 && b >= glob) { hint.textContent = '👑 Míříš na rekord školy!'; hint.className = 'record-hint beating'; }
-    else { hint.textContent = osobni > 0 ? `Do rekordu zbývá ${osobni - b} bodů` : ''; hint.className = 'record-hint'; }
-  }
-
-  // ═══ NÁSOBILKA ═══════════════════════════════════════
-  function startNasobilka() {
-    body = 0;
-    document.getElementById('lbl-body-nas').textContent = 0;
-    document.getElementById('lbl-rekord-nas').textContent = osobniMaxNas;
-    document.getElementById('lbl-komentar-nas').textContent = '';
-    document.getElementById('lbl-komentar-nas').className = 'komentar';
-    document.getElementById('record-hint-nas').textContent = '';
-    showScreen('screen-game-nasobilka');
-    novyPrikladNas();
-    document.getElementById('inp-odpoved-nas').focus();
-    startTimer(() => vyhodnoceniNasobilka());
-  }
-
-  function novyPrikladNas() {
-    nasA = Math.floor(Math.random() * 9) + 1;
-    nasB = Math.floor(Math.random() * 9) + 1;
-    soucin = nasA * nasB;
-    const lbl = document.getElementById('lbl-priklad');
-    lbl.style.animation = 'none';
-    lbl.textContent = `${nasA} × ${nasB}`;
-    requestAnimationFrame(() => { lbl.style.animation = 'popIn .3s cubic-bezier(.34,1.56,.64,1)'; });
-    document.getElementById('inp-odpoved-nas').value = '';
-  }
-
-  function zkontrolovatNas() {
-    const inp = document.getElementById('inp-odpoved-nas');
-    const val = parseInt(inp.value);
-    const kom = document.getElementById('lbl-komentar-nas');
-    if (isNaN(val)) { kom.textContent = 'Napiš číslo!'; kom.className = 'komentar wrong'; return; }
-    if (val === soucin) {
-      body++;
-      document.getElementById('lbl-body-nas').textContent = body;
-      kom.textContent = '✓ Správně!'; kom.className = 'komentar correct';
-      updateHint('record-hint-nas', body, osobniMaxNas, globalMaxNas);
-      novyPrikladNas();
-      document.getElementById('inp-odpoved-nas').focus();
-    } else {
-      inp.classList.remove('shake'); void inp.offsetWidth; inp.classList.add('shake');
-      kom.textContent = `✗ Správně bylo ${soucin}`; kom.className = 'komentar wrong';
-      inp.value = '';
-    }
-  }
-
-  async function vyhodnoceniNasobilka() {
-    if (timerInterval) clearInterval(timerInterval);
-    showScreen('screen-result');
-    document.getElementById('result-sub').textContent = 'bodů za 15 sekund';
-    document.getElementById('result-uspesnost').textContent = '';
-    document.getElementById('result-prehled').innerHTML = '';
-    const emojis = body === 0 ? '😅' : body < 5 ? '🙂' : body < 10 ? '😊' : body < 15 ? '🔥' : '👑';
-    document.getElementById('result-emoji').textContent = emojis;
-    document.getElementById('result-score').textContent = body;
-    try {
-      const jeNovy = await ulozSkore(jmeno, 'nasobilka', body);
-      if (jeNovy) {
-        osobniMaxNas = body;
-        document.getElementById('result-new-record').style.display = 'block';
-        document.getElementById('result-title').textContent = 'Nový rekord! 🎉';
-      } else {
-        document.getElementById('result-new-record').style.display = 'none';
-        document.getElementById('result-title').textContent = body >= 10 ? 'Skvělý výkon!' : 'Konec hry!';
-      }
-      const zb = await nactiZebricek('nasobilka');
-      globalMaxNas = zb.length > 0 ? zb[0].max : 0;
-    } catch(e) { document.getElementById('result-title').textContent = 'Konec hry!'; }
-  }
-
-  // ═══ VYJMENOVANÁ SLOVA ════════════════════════════════
-  async function startVyjmenovana() {
-    if (vybranéKategorie.size === 0) {
-      document.getElementById('kat-error').textContent = '⚠️ Vyber aspoň jednu kategorii!';
-      return;
-    }
-    body = 0;
-    celkemOtazek = 0;
-    historiePrikladu = [];
-    document.getElementById('lbl-body-vyjm').textContent = 0;
-    document.getElementById('lbl-rekord-vyjm').textContent = osobniMaxVyjm;
-    document.getElementById('lbl-priklad-vyjm').textContent = `0/${POCET_PRIKLADU}`;
-    document.getElementById('progress-vyjm').style.width = '0%';
-    document.getElementById('lbl-komentar-vyjm').textContent = '';
-    document.getElementById('lbl-komentar-vyjm').className = 'komentar';
-    document.getElementById('record-hint-vyjm').textContent = '';
-    document.getElementById('lbl-veta').textContent = 'Načítám...';
-    showScreen('screen-game-vyjmenovana');
-
-    // Zablokuj tlačítka během načítání
-    document.querySelectorAll('.vyjm-btn').forEach(b => b.disabled = true);
-
-    vyjmSlova = await nactiVyjmenovanaKategorie([...vybranéKategorie]);
-    if (vyjmSlova.length === 0) {
-      document.getElementById('lbl-veta').textContent = '⚠️ V databázi nejsou žádná slova pro vybrané kategorie!';
-      return;
-    }
-
-    document.querySelectorAll('.vyjm-btn').forEach(b => b.disabled = false);
-    noveSlovoVyjm();
-  }
-
-  function noveSlovoVyjm() {
-    // Aktualizuj počítadlo a progress
-    document.getElementById('lbl-priklad-vyjm').textContent = `${celkemOtazek}/${POCET_PRIKLADU}`;
-    document.getElementById('progress-vyjm').style.width = (celkemOtazek / POCET_PRIKLADU * 100) + '%';
-
-    const idx = Math.floor(Math.random() * vyjmSlova.length);
-    aktualniSlovo = vyjmSlova[idx];
-    const veta = aktualniSlovo.veta.replace('___', '<span class="blank">___</span>');
-    document.getElementById('lbl-veta').innerHTML = veta;
-    document.getElementById('lbl-komentar-vyjm').textContent = '';
-    document.getElementById('lbl-komentar-vyjm').className = 'komentar';
-  }
-
-  function odpovezVyjm(val) {
-    if (!aktualniSlovo) return;
-    // Zablokuj tlačítka dokud se nezobrazí nová otázka
-    document.querySelectorAll('.vyjm-btn').forEach(b => b.disabled = true);
-
-    const kom = document.getElementById('lbl-komentar-vyjm');
-    const tlacitka = document.querySelectorAll('.vyjm-btn');
-    const spravne = val === aktualniSlovo.odpoved;
-    const vetaSSpravnou = aktualniSlovo.veta.replace('___', aktualniSlovo.odpoved);
-
-    // Ulož do historie
-    historiePrikladu.push({
-      veta: aktualniSlovo.veta,
-      spravnaOdpoved: aktualniSlovo.odpoved,
-      uzivatelovaOdpoved: val,
-      spravne,
-      vetaSSpravnou
-    });
-
-    celkemOtazek++;
-
-    if (spravne) {
-      body++;
-      document.getElementById('lbl-body-vyjm').textContent = body;
-      kom.textContent = `✓ ${vetaSSpravnou}`;
-      kom.className = 'komentar correct';
-      updateHint('record-hint-vyjm', body, osobniMaxVyjm, globalMaxVyjm);
-      tlacitka.forEach(t => { if (t.dataset.val === val) { t.classList.add('correct-flash'); setTimeout(() => t.classList.remove('correct-flash'), 400); } });
-    } else {
-      kom.textContent = `✗ Správně: ${vetaSSpravnou}`;
-      kom.className = 'komentar wrong';
-      tlacitka.forEach(t => { if (t.dataset.val === val) { t.classList.add('wrong-flash'); setTimeout(() => t.classList.remove('wrong-flash'), 400); } });
-    }
-
-    aktualniSlovo = null;
-    const prodleva = spravne ? 600 : 1000;
-
-    if (celkemOtazek >= POCET_PRIKLADU) {
-      setTimeout(() => vyhodnoceniVyjm(), prodleva);
-    } else {
-      setTimeout(() => {
-        document.querySelectorAll('.vyjm-btn').forEach(b => b.disabled = false);
-        noveSlovoVyjm();
-      }, prodleva);
-    }
-  }
-
-  async function vyhodnoceniVyjm() {
-    showScreen('screen-result');
-    const uspesnost = Math.round((body / POCET_PRIKLADU) * 100);
-    const emojis = uspesnost < 40 ? '😅' : uspesnost < 60 ? '🙂' : uspesnost < 80 ? '😊' : uspesnost < 100 ? '🔥' : '👑';
-    document.getElementById('result-emoji').textContent = emojis;
-    document.getElementById('result-score').textContent = `${body}/${POCET_PRIKLADU}`;
-    document.getElementById('result-sub').textContent = 'správných odpovědí';
-    document.getElementById('result-uspesnost').textContent = `Úspěšnost: ${uspesnost} %`;
-
-    // Přehled odpovědí
-    document.getElementById('result-prehled').innerHTML = historiePrikladu.map(h => `
-      <div class="prehled-item ${h.spravne ? 'ok' : 'chyba'}">
-        <span class="prehled-icon">${h.spravne ? '✓' : '✗'}</span>
-        <span class="prehled-text">
-          <span class="prehled-veta">${h.vetaSSpravnou}</span>
-          ${!h.spravne ? `<span class="prehled-chyba-txt">Tvá odpověď: ${h.uzivatelovaOdpoved}</span>` : ''}
-        </span>
-      </div>`).join('');
-
-    try {
-      const jeNovy = await ulozSkore(jmeno, 'vyjmenovana', body);
-      if (jeNovy) {
-        osobniMaxVyjm = body;
-        document.getElementById('result-new-record').style.display = 'block';
-        document.getElementById('result-title').textContent = 'Nový rekord! 🎉';
-      } else {
-        document.getElementById('result-new-record').style.display = 'none';
-        document.getElementById('result-title').textContent =
-          uspesnost === 100 ? 'Perfektní! 👑' : uspesnost >= 80 ? 'Skvělý výkon! 🔥' : uspesnost >= 50 ? 'Dobrá práce! 😊' : 'Příště lépe! 💪';
-      }
-      const zb = await nactiZebricek('vyjmenovana');
-      globalMaxVyjm = zb.length > 0 ? zb[0].max : 0;
-    } catch(e) { document.getElementById('result-title').textContent = 'Konec hry!'; }
-  }
-
-  // ═══ ŽEBŘÍČEK ═════════════════════════════════════════
-  async function showLeaderboard(zpetScreen, tab) {
-    lbZpetScreen = zpetScreen || 'screen-vyber';
-    lbAktualniTab = tab || 'nasobilka';
-    showScreen('screen-leaderboard');
-    document.getElementById('lb-tab-nas').classList.toggle('active', lbAktualniTab === 'nasobilka');
-    document.getElementById('lb-tab-vyjm').classList.toggle('active', lbAktualniTab === 'vyjmenovana');
-    await renderZebricek(lbAktualniTab);
-  }
-
-  async function renderZebricek(hra) {
-    const list = document.getElementById('lb-list');
-    list.innerHTML = '<li style="text-align:center;color:#aaa;padding:20px">Načítám...</li>';
-    try {
-      const zb = await nactiZebricek(hra);
-      const medals = ['🥇','🥈','🥉'], classes = ['gold','silver','bronze'];
-      if (zb.length === 0) { list.innerHTML = '<li style="text-align:center;color:#aaa;padding:20px">Zatím žádné skóre</li>'; return; }
-      list.innerHTML = zb.map((h,i) => `
-        <li class="lb-item ${i<3?classes[i]:''} ${h.name===jmeno?'me':''}">
-          <span class="lb-rank">${i<3?medals[i]:i+1}</span>
-          <span class="lb-name">${h.name}${h.name===jmeno?' (ty)':''}</span>
-          <span class="lb-score">${h.max}</span>
-        </li>`).join('');
-    } catch(e) { list.innerHTML = '<li style="text-align:center;color:#aaa;padding:20px">Chyba načítání</li>'; }
-  }
-
-  // TLAČÍTKA
-  document.getElementById('btn-prihlasit').addEventListener('click', prihlasit);
-  document.getElementById('inp-username').addEventListener('keydown', e => { if (e.key==='Enter') prihlasit(); });
-  document.getElementById('btn-volba-nasobilka').addEventListener('click', () => volbaHry('nasobilka'));
-  document.getElementById('btn-volba-vyjmenovana').addEventListener('click', () => volbaHry('vyjmenovana'));
-  document.getElementById('btn-start-nasobilka').addEventListener('click', startNasobilka);
-  document.getElementById('btn-start-vyjmenovana').addEventListener('click', startVyjmenovana);
-  document.getElementById('btn-zpet-nasobilka').addEventListener('click', () => showScreen('screen-vyber'));
-  document.getElementById('btn-zpet-vyjmenovana').addEventListener('click', () => showScreen('screen-vyber'));
-  document.getElementById('btn-potvrdit-nas').addEventListener('click', zkontrolovatNas);
-  document.getElementById('inp-odpoved-nas').addEventListener('keydown', e => { if (e.key==='Enter') zkontrolovatNas(); });
-  document.querySelectorAll('.vyjm-btn').forEach(btn => btn.addEventListener('click', () => odpovezVyjm(btn.dataset.val)));
-  document.getElementById('btn-znovu').addEventListener('click', () => {
-    if (aktualniHra === 'nasobilka') startNasobilka();
-    else showScreen('screen-welcome-vyjmenovana');
-  });
-  document.getElementById('btn-jina-hra').addEventListener('click', () => showScreen('screen-vyber'));
-  document.getElementById('btn-zebricek-result').addEventListener('click', () => showLeaderboard('screen-result', aktualniHra));
-  document.getElementById('btn-zebricek-login').addEventListener('click', () => showLeaderboard('screen-login', 'nasobilka'));
-  document.getElementById('btn-zebricek-vyber').addEventListener('click', () => showLeaderboard('screen-vyber', 'nasobilka'));
-  document.getElementById('btn-zebricek-welcome-nas').addEventListener('click', () => showLeaderboard('screen-welcome-nasobilka', 'nasobilka'));
-  document.getElementById('btn-zebricek-welcome-vyjm').addEventListener('click', () => showLeaderboard('screen-welcome-vyjmenovana', 'vyjmenovana'));
-  document.getElementById('lb-tab-nas').addEventListener('click', () => { lbAktualniTab='nasobilka'; document.getElementById('lb-tab-nas').classList.add('active'); document.getElementById('lb-tab-vyjm').classList.remove('active'); renderZebricek('nasobilka'); });
-  document.getElementById('lb-tab-vyjm').addEventListener('click', () => { lbAktualniTab='vyjmenovana'; document.getElementById('lb-tab-vyjm').classList.add('active'); document.getElementById('lb-tab-nas').classList.remove('active'); renderZebricek('vyjmenovana'); });
-  document.getElementById('btn-zpet-lb').addEventListener('click', () => showScreen(jmeno ? lbZpetScreen : 'screen-login'));
-</script>
-</body>
-</html>
+    const zb = await nactiZebricek('vyjmenovana');
+    stav.globalMaxVyjm = zb.length > 0 ? zb[0].max : 0;
+  } catch(e) { document.getElementById('result-title').textContent = 'Konec hry!'; }
+}
