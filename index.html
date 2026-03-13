@@ -238,42 +238,130 @@
       <div class="record-hint" id="record-hint-nas"></div>
     </div>
 
-    <!-- HRA VYJMENOVANÁ -->
-    <div id="screen-game-vyjmenovana" class="screen">
-      <div class="game-header">
-        <div class="game-stat"><div class="stat-label">Čas</div><div class="stat-value timer" id="lbl-cas-vyjm">15</div></div>
-        <div class="game-stat"><div class="stat-label">Body</div><div class="stat-value score-live" id="lbl-body-vyjm">0</div></div>
-        <div class="game-stat"><div class="stat-label">Rekord</div><div class="stat-value" id="lbl-rekord-vyjm">0</div></div>
-      </div>
-      <div class="progress-bar-wrap"><div class="progress-bar-fill vyjm" id="progress-vyjm"></div></div>
-      <div class="vyjm-zadani">
-        <div class="vyjm-veta" id="lbl-veta">Načítám...</div>
-        <div class="komentar" id="lbl-komentar-vyjm"></div>
-      </div>
-      <div class="vyjm-buttons">
-        <button class="vyjm-btn y"  data-val="y">y</button>
-        <button class="vyjm-btn i"  data-val="i">i</button>
-        <button class="vyjm-btn yy" data-val="ý">ý</button>
-        <button class="vyjm-btn ii" data-val="í">í</button>
-      </div>
-      <div class="record-hint" id="record-hint-vyjm"></div>
-    </div>
+    // ═══ VYJMENOVANÁ SLOVA ════════════════════════════════
+const POCET_PRIKLADU = 10;
+let celkemOtazek = 0;
+let historiePrikladu = [];
 
-    <!-- VÝSLEDKY -->
-    <div id="screen-result" class="screen">
-      <div class="result-center">
-        <span class="result-emoji" id="result-emoji">🎉</span>
-        <div class="result-title" id="result-title">Konec hry!</div>
-        <div class="result-score" id="result-score">0</div>
-        <div class="result-sub">bodů</div>
-        <div class="result-new-record" id="result-new-record">🏆 Nový rekord!</div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-green" id="btn-znovu">↺ Znovu</button>
-        <button class="btn btn-blue" id="btn-zebricek-result">🏆 Žebříček</button>
-      </div>
-      <button class="btn btn-outline mt12" id="btn-jina-hra">← Jiná hra</button>
+async function startVyjmenovana() {
+  if (vybranéKategorie.size === 0) {
+    document.getElementById('kat-error').textContent = '⚠️ Vyber aspoň jednu kategorii!';
+    return;
+  }
+
+  body = 0;
+  celkemOtazek = 0;
+  historiePrikladu = [];
+  document.getElementById('lbl-body-vyjm').textContent = 0;
+  document.getElementById('lbl-rekord-vyjm').textContent = osobniMaxVyjm;
+  document.getElementById('lbl-komentar-vyjm').textContent = '';
+  document.getElementById('lbl-komentar-vyjm').className = 'komentar';
+  document.getElementById('record-hint-vyjm').textContent = '';
+  document.getElementById('lbl-veta').textContent = 'Načítám...';
+
+  // Skryj progress čas, ukaž progress příklady
+  document.getElementById('progress-vyjm').style.width = '0%';
+  document.getElementById('lbl-cas-vyjm').textContent = `0/${POCET_PRIKLADU}`;
+
+  showScreen('screen-game-vyjmenovana');
+
+  vyjmSlova = await nactiVyjmenovanaKategorie([...vybranéKategorie]);
+  if (vyjmSlova.length === 0) {
+    document.getElementById('lbl-veta').textContent = '⚠️ V databázi nejsou žádná slova pro vybrané kategorie!';
+    return;
+  }
+
+  noveSlovoVyjm();
+}
+
+function noveSlovoVyjm() {
+  const idx = Math.floor(Math.random() * vyjmSlova.length);
+  aktualniSlovo = vyjmSlova[idx];
+  const veta = aktualniSlovo.veta.replace('___', '<span class="blank">___</span>');
+  document.getElementById('lbl-veta').innerHTML = veta;
+  document.getElementById('lbl-komentar-vyjm').textContent = '';
+  document.getElementById('lbl-komentar-vyjm').className = 'komentar';
+
+  // Aktualizuj progress
+  document.getElementById('lbl-cas-vyjm').textContent = `${celkemOtazek}/${POCET_PRIKLADU}`;
+  document.getElementById('progress-vyjm').style.width = (celkemOtazek / POCET_PRIKLADU * 100) + '%';
+}
+
+function odpovezVyjm(val) {
+  if (!aktualniSlovo) return;
+  const kom = document.getElementById('lbl-komentar-vyjm');
+  const tlacitka = document.querySelectorAll('.vyjm-btn');
+  const spravne = val === aktualniSlovo.odpoved;
+
+  // Ulož do historie
+  historiePrikladu.push({
+    veta: aktualniSlovo.veta,
+    spravnaOdpoved: aktualniSlovo.odpoved,
+    uzivatelovaOdpoved: val,
+    spravne
+  });
+
+  celkemOtazek++;
+
+  if (spravne) {
+    body++;
+    document.getElementById('lbl-body-vyjm').textContent = body;
+    kom.textContent = `✓ ${aktualniSlovo.veta.replace('___', aktualniSlovo.odpoved)}`;
+    kom.className = 'komentar correct';
+    updateHint('record-hint-vyjm', body, osobniMaxVyjm, globalMaxVyjm);
+    tlacitka.forEach(t => { if (t.dataset.val === val) { t.classList.add('correct-flash'); setTimeout(() => t.classList.remove('correct-flash'), 400); } });
+  } else {
+    kom.textContent = `✗ Správně: ${aktualniSlovo.veta.replace('___', aktualniSlovo.odpoved)}`;
+    kom.className = 'komentar wrong';
+    tlacitka.forEach(t => { if (t.dataset.val === val) { t.classList.add('wrong-flash'); setTimeout(() => t.classList.remove('wrong-flash'), 400); } });
+  }
+
+  aktualniSlovo = null;
+
+  if (celkemOtazek >= POCET_PRIKLADU) {
+    setTimeout(() => vyhodnoceniVyjm(), spravne ? 600 : 900);
+  } else {
+    setTimeout(() => noveSlovoVyjm(), spravne ? 600 : 900);
+  }
+}
+
+// ═══ VYHODNOCENÍ VYJMENOVANÁ ══════════════════════════
+async function vyhodnoceniVyjm() {
+  // Aktualizuj progress na 100%
+  document.getElementById('progress-vyjm').style.width = '100%';
+  document.getElementById('lbl-cas-vyjm').textContent = `${POCET_PRIKLADU}/${POCET_PRIKLADU}`;
+
+  showScreen('screen-result');
+
+  const uspesnost = Math.round((body / POCET_PRIKLADU) * 100);
+  const emojis = uspesnost < 40 ? '😅' : uspesnost < 60 ? '🙂' : uspesnost < 80 ? '😊' : uspesnost < 100 ? '🔥' : '👑';
+  document.getElementById('result-emoji').textContent = emojis;
+  document.getElementById('result-score').textContent = `${body}/${POCET_PRIKLADU}`;
+  document.getElementById('result-sub').textContent = `Úspěšnost: ${uspesnost} %`;
+
+  // Přehled odpovědí
+  const prehled = document.getElementById('result-prehled');
+  prehled.innerHTML = historiePrikladu.map(h => `
+    <div class="prehled-item ${h.spravne ? 'ok' : 'chyba'}">
+      <span class="prehled-veta">${h.veta.replace('___', `<strong>${h.spravnaOdpoved}</strong>`)}</span>
+      ${!h.spravne ? `<span class="prehled-chyba">Tvá odpověď: ${h.uzivatelovaOdpoved}</span>` : ''}
     </div>
+  `).join('');
+
+  try {
+    const jeNovy = await ulozSkore(jmeno, 'vyjmenovana', body);
+    if (jeNovy) {
+      osobniMaxVyjm = body;
+      document.getElementById('result-new-record').style.display = 'block';
+      document.getElementById('result-title').textContent = 'Nový rekord! 🎉';
+    } else {
+      document.getElementById('result-new-record').style.display = 'none';
+      document.getElementById('result-title').textContent = uspesnost === 100 ? 'Perfektní! 🎉' : uspesnost >= 80 ? 'Skvělý výkon!' : 'Konec hry!';
+    }
+    const zb = await nactiZebricek('vyjmenovana');
+    globalMaxVyjm = zb.length > 0 ? zb[0].max : 0;
+  } catch(e) { document.getElementById('result-title').textContent = 'Konec hry!'; }
+}
 
     <!-- ŽEBŘÍČEK -->
     <div id="screen-leaderboard" class="screen">
