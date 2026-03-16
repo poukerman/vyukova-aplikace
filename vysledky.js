@@ -1,86 +1,87 @@
 // ═══════════════════════════════════════════════════════
-// nasobilka.js  —  Hra: Malá násobilka
+// vysledky.js  —  Obrazovka výsledků
 // ═══════════════════════════════════════════════════════
 
-import { stav, showScreen, updateHint } from './main.js';
-import { zobrazVysledkyNasobilka } from './vysledky.js';
+import { stav, showScreen, ulozSkore, nactiZebricek } from './main.js';
 import { initZebricek } from './zebricek.js';
 
-// ── Konfigurace ───────────────────────────────────────
-const CAS = 15; // sekundy
-
-// ── Lokální stav ──────────────────────────────────────
-let body = 0;
-let casZbyva = CAS;
-let timerInterval = null;
-let nasA, nasB, soucin;
-
-// ── Inicializace (volá se při přechodu na uvítací obrazovku) ──
-export function initNasobilka() {
-  document.getElementById('btn-start-nasobilka').onclick    = startHra;
-  document.getElementById('btn-zpet-nasobilka').onclick     = () => showScreen('screen-vyber');
-  document.getElementById('btn-potvrdit-nas').onclick       = zkontrolovat;
-  document.getElementById('btn-zebricek-welcome-nas').onclick = () => initZebricek('screen-welcome-nasobilka', 'nasobilka');
-  document.getElementById('inp-odpoved-nas').onkeydown      = e => { if (e.key === 'Enter') zkontrolovat(); };
+// ── Inicializace tlačítek na obrazovce výsledků ───────
+export function initVysledky() {
+  document.getElementById('btn-znovu').onclick           = znovu;
+  document.getElementById('btn-jina-hra').onclick        = () => showScreen('screen-vyber');
+  document.getElementById('btn-zebricek-result').onclick = () => initZebricek('screen-result', stav.aktualniHra);
 }
 
-// ── Spuštění hry ──────────────────────────────────────
-function startHra() {
-  body = 0;
-  document.getElementById('lbl-body-nas').textContent     = 0;
-  document.getElementById('lbl-rekord-nas').textContent   = stav.osobniMaxNas;
-  document.getElementById('lbl-komentar-nas').textContent = '';
-  document.getElementById('lbl-komentar-nas').className   = 'komentar';
-  document.getElementById('record-hint-nas').textContent  = '';
-  showScreen('screen-game-nasobilka');
-  novyPriklad();
-  document.getElementById('inp-odpoved-nas').focus();
-  startTimer();
-}
-
-// ── Nový příklad ──────────────────────────────────────
-function novyPriklad() {
-  nasA   = Math.floor(Math.random() * 9) + 1;
-  nasB   = Math.floor(Math.random() * 9) + 1;
-  soucin = nasA * nasB;
-  const lbl = document.getElementById('lbl-priklad');
-  lbl.style.animation = 'none';
-  lbl.textContent = `${nasA} × ${nasB}`;
-  requestAnimationFrame(() => { lbl.style.animation = 'popIn .3s cubic-bezier(.34,1.56,.64,1)'; });
-  document.getElementById('inp-odpoved-nas').value = '';
-}
-
-// ── Zkontrolování odpovědi ────────────────────────────
-function zkontrolovat() {
-  const inp = document.getElementById('inp-odpoved-nas');
-  const val = parseInt(inp.value);
-  const kom = document.getElementById('lbl-komentar-nas');
-  if (isNaN(val)) { kom.textContent = 'Napiš číslo!'; kom.className = 'komentar wrong'; return; }
-
-  if (val === soucin) {
-    body++;
-    document.getElementById('lbl-body-nas').textContent = body;
-    kom.textContent = '✓ Správně!'; kom.className = 'komentar correct';
-    updateHint('record-hint-nas', body, stav.osobniMaxNas, stav.globalMaxNas);
-    novyPriklad();
-    document.getElementById('inp-odpoved-nas').focus();
+function znovu() {
+  if (stav.aktualniHra === 'nasobilka') {
+    // Přejdeme na uvítací obrazovku násobilky a necháme hráče kliknout Začít
+    // (initNasobilka se zavolalo už při volbě hry, handlery jsou nastaveny)
+    showScreen('screen-welcome-nasobilka');
   } else {
-    inp.classList.remove('shake'); void inp.offsetWidth; inp.classList.add('shake');
-    kom.textContent = `✗ Správně bylo ${soucin}`; kom.className = 'komentar wrong';
-    inp.value = '';
+    showScreen('screen-welcome-vyjmenovana');
   }
 }
 
-// ── Časovač ───────────────────────────────────────────
-function startTimer() {
-  casZbyva = CAS;
-  document.getElementById('lbl-cas-nas').textContent    = CAS;
-  document.getElementById('progress-nas').style.width   = '100%';
-  if (timerInterval) clearInterval(timerInterval);
-  timerInterval = setInterval(() => {
-    casZbyva--;
-    document.getElementById('lbl-cas-nas').textContent  = casZbyva;
-    document.getElementById('progress-nas').style.width = (casZbyva / CAS * 100) + '%';
-    if (casZbyva <= 0) { clearInterval(timerInterval); zobrazVysledkyNasobilka(body); }
-  }, 1000);
+// ── Výsledky násobilky ────────────────────────────────
+export async function zobrazVysledkyNasobilka(body) {
+  showScreen('screen-result');
+  document.getElementById('result-sub').textContent        = 'bodů za 15 sekund';
+  document.getElementById('result-uspesnost').textContent  = '';
+  document.getElementById('result-prehled').innerHTML      = '';
+
+  const emoji = body === 0 ? '😅' : body < 5 ? '🙂' : body < 10 ? '😊' : body < 15 ? '🔥' : '👑';
+  document.getElementById('result-emoji').textContent = emoji;
+  document.getElementById('result-score').textContent = body;
+
+  try {
+    const jeNovy = await ulozSkore(stav.jmeno, 'nasobilka', body);
+    if (jeNovy) {
+      stav.osobniMaxNas = body;
+      document.getElementById('result-new-record').style.display = 'block';
+      document.getElementById('result-title').textContent        = 'Nový rekord! 🎉';
+    } else {
+      document.getElementById('result-new-record').style.display = 'none';
+      document.getElementById('result-title').textContent        = body >= 10 ? 'Skvělý výkon!' : 'Konec hry!';
+    }
+    const zb = await nactiZebricek('nasobilka');
+    stav.globalMaxNas = zb.length > 0 ? zb[0].max : 0;
+  } catch(e) { document.getElementById('result-title').textContent = 'Konec hry!'; }
+}
+
+// ── Výsledky vyjmenovaných slov ───────────────────────
+export async function zobrazVysledkyVyjmenovana(body, pocet, historie) {
+  showScreen('screen-result');
+
+  const uspesnost = Math.round((body / pocet) * 100);
+  const emoji     = uspesnost < 40 ? '😅' : uspesnost < 60 ? '🙂' : uspesnost < 80 ? '😊' : uspesnost < 100 ? '🔥' : '👑';
+
+  document.getElementById('result-emoji').textContent      = emoji;
+  document.getElementById('result-score').textContent      = `${body}/${pocet}`;
+  document.getElementById('result-sub').textContent        = 'správných odpovědí';
+  document.getElementById('result-uspesnost').textContent  = `Úspěšnost: ${uspesnost} %`;
+
+  // Přehled odpovědí
+  document.getElementById('result-prehled').innerHTML = historie.map(h => `
+    <div class="prehled-item ${h.spravne ? 'ok' : 'chyba'}">
+      <span class="prehled-icon">${h.spravne ? '✓' : '✗'}</span>
+      <span class="prehled-text">
+        <span class="prehled-veta">${h.vetaHotova}</span>
+        ${!h.spravne ? `<span class="prehled-chyba-txt">Tvá odpověď: ${h.uzivatelovaOdpoved}</span>` : ''}
+      </span>
+    </div>`).join('');
+
+  try {
+    const jeNovy = await ulozSkore(stav.jmeno, 'vyjmenovana', body);
+    if (jeNovy) {
+      stav.osobniMaxVyjm = body;
+      document.getElementById('result-new-record').style.display = 'block';
+      document.getElementById('result-title').textContent        = 'Nový rekord! 🎉';
+    } else {
+      document.getElementById('result-new-record').style.display = 'none';
+      document.getElementById('result-title').textContent        =
+        uspesnost === 100 ? 'Perfektní! 👑' : uspesnost >= 80 ? 'Skvělý výkon! 🔥' : uspesnost >= 50 ? 'Dobrá práce! 😊' : 'Příště lépe! 💪';
+    }
+    const zb = await nactiZebricek('vyjmenovana');
+    stav.globalMaxVyjm = zb.length > 0 ? zb[0].max : 0;
+  } catch(e) { document.getElementById('result-title').textContent = 'Konec hry!'; }
 }

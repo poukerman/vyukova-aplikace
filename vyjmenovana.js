@@ -1,85 +1,163 @@
 // ═══════════════════════════════════════════════════════
-// main.js  —  Firebase, sdílený stav, pomocné funkce
+// vyjmenovana.js  —  Hra: Vyjmenovaná slova
+//
+// Chceš přidat novou kategorii?
+//   1. Přidej písmeno do VSECHNY_KAT
+//   2. Přidej tlačítko do HTML (screen-welcome-vyjmenovana)
+//   3. Přidej slova do Firebase pod vyjmenovana/<písmeno>/
+//
+// Chceš změnit počet příkladů?
+//   Uprav konstantu POCET_PRIKLADU níže.
 // ═══════════════════════════════════════════════════════
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { stav, showScreen, db, ref, get, ulozSkore, nactiZebricek, updateHint } from './main.js';
+import { zobrazVysledkyVyjmenovana } from './vysledky.js';
+import { initZebricek } from './zebricek.js';
 
-// ── Firebase konfigurace ──────────────────────────────
-const firebaseConfig = {
-  apiKey: "AIzaSyAE_kjebwQrSzeEz9-3c_Y66TUBAvRIjB4",
-  authDomain: "malanasobilka.firebaseapp.com",
-  databaseURL: "https://malanasobilka-default-rtdb.firebaseio.com",
-  projectId: "malanasobilka",
-  storageBucket: "malanasobilka.firebasestorage.app",
-  messagingSenderId: "712520835692",
-  appId: "1:712520835692:web:6746f62321750e264a6e49"
-};
+// ── Konfigurace ───────────────────────────────────────
+const POCET_PRIKLADU = 10;
+const VSECHNY_KAT    = ['b', 'l', 'm', 'p', 's', 'v', 'z'];
 
-const app = initializeApp(firebaseConfig);
-export const db = getDatabase(app);
-export { ref, get, set };
+// ── Lokální stav ──────────────────────────────────────
+let body           = 0;
+let celkemOtazek   = 0;
+let historiePrikladu = [];
+let vyjmSlova      = [];
+let aktualniSlovo  = null;
+let vybranéKategorie = new Set();
 
-// ── Sdílený stav (čte i zapisuje více modulů) ─────────
-export const stav = {
-  jmeno: '',
-  aktualniHra: '',        // 'nasobilka' | 'vyjmenovana'
-  osobniMaxNas: 0,
-  globalMaxNas: 0,
-  osobniMaxVyjm: 0,
-  globalMaxVyjm: 0,
-};
+// ── Inicializace (volá se při přechodu na uvítací obrazovku) ──
+export function initVyjmenovana() {
+  document.getElementById('btn-start-vyjmenovana').onclick      = startHra;
+  document.getElementById('btn-zpet-vyjmenovana').onclick       = () => showScreen('screen-vyber');
+  document.getElementById('btn-vyber-vse').onclick              = vyberVse;
+  document.getElementById('btn-zebricek-welcome-vyjm').onclick  = () => initZebricek('screen-welcome-vyjmenovana', 'vyjmenovana');
 
-// ── Pomocná funkce: přepnutí obrazovky ────────────────
-export function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.kat-btn').forEach(btn => {
+    btn.onclick = () => toggleKategorie(btn);
+  });
+
+  document.querySelectorAll('.vyjm-btn').forEach(btn => {
+    btn.onclick = () => odpovez(btn.dataset.val);
+  });
 }
 
-// ── Firebase: načtení hráče ───────────────────────────
-export async function nactiHrace(username) {
-  const snap = await get(ref(db, `hrace/${username}`));
-  return snap.exists() ? snap.val() : null;
+// ── Toggle kategorie ──────────────────────────────────
+function toggleKategorie(btn) {
+  const kat = btn.dataset.kat;
+  if (vybranéKategorie.has(kat)) { vybranéKategorie.delete(kat); btn.classList.remove('selected'); }
+  else                           { vybranéKategorie.add(kat);    btn.classList.add('selected'); }
+  document.getElementById('kat-error').textContent = '';
 }
 
-// ── Firebase: uložení skóre (jen pokud je lepší) ──────
-export async function ulozSkore(username, hra, skore) {
-  const hrac = await nactiHrace(username);
-  const staryMax = hrac ? (hrac[hra] || 0) : 0;
-  if (skore > staryMax) {
-    await set(ref(db, `hrace/${username}/${hra}`), skore);
-    return true;
+function vyberVse() {
+  const vsechnyVybrany = VSECHNY_KAT.every(k => vybranéKategorie.has(k));
+  if (vsechnyVybrany) {
+    vybranéKategorie.clear();
+    document.querySelectorAll('.kat-btn').forEach(b => b.classList.remove('selected'));
+  } else {
+    VSECHNY_KAT.forEach(k => vybranéKategorie.add(k));
+    document.querySelectorAll('.kat-btn').forEach(b => b.classList.add('selected'));
   }
-  return false;
+  document.getElementById('kat-error').textContent = '';
 }
 
-// ── Firebase: žebříček ────────────────────────────────
-export async function nactiZebricek(hra) {
-  const snap = await get(ref(db, 'hrace'));
-  if (!snap.exists()) return [];
-  return Object.entries(snap.val())
-    .map(([name, val]) => ({ name, max: (val && val[hra]) ? val[hra] : 0 }))
-    .filter(h => h.max > 0)
-    .sort((a, b) => b.max - a.max)
-    .slice(0, 20);
+// ── Spuštění hry ──────────────────────────────────────
+async function startHra() {
+  if (vybranéKategorie.size === 0) {
+    document.getElementById('kat-error').textContent = '⚠️ Vyber aspoň jednu kategorii!';
+    return;
+  }
+
+  body             = 0;
+  celkemOtazek     = 0;
+  historiePrikladu = [];
+
+  document.getElementById('lbl-body-vyjm').textContent      = 0;
+  document.getElementById('lbl-rekord-vyjm').textContent    = stav.osobniMaxVyjm;
+  document.getElementById('lbl-priklad-vyjm').textContent   = `0/${POCET_PRIKLADU}`;
+  document.getElementById('progress-vyjm').style.width      = '0%';
+  document.getElementById('lbl-komentar-vyjm').textContent  = '';
+  document.getElementById('lbl-komentar-vyjm').className    = 'komentar';
+  document.getElementById('record-hint-vyjm').textContent   = '';
+  document.getElementById('lbl-veta').textContent           = 'Načítám...';
+
+  showScreen('screen-game-vyjmenovana');
+  document.querySelectorAll('.vyjm-btn').forEach(b => b.disabled = true);
+
+  vyjmSlova = await nactiKategorie([...vybranéKategorie]);
+  if (vyjmSlova.length === 0) {
+    document.getElementById('lbl-veta').textContent = '⚠️ V databázi nejsou žádná slova!';
+    return;
+  }
+
+  document.querySelectorAll('.vyjm-btn').forEach(b => b.disabled = false);
+  novéSlovo();
 }
 
-// ── Hint: blížíš se k rekordu ─────────────────────────
-export function updateHint(id, b, osobni, glob) {
-  const hint = document.getElementById(id);
-  if (osobni > 0 && b === osobni)      { hint.textContent = '🔥 Vyrovnáváš svůj rekord!';            hint.className = 'record-hint beating'; }
-  else if (osobni > 0 && b > osobni)   { hint.textContent = `🚀 Překonáváš rekord! (${b} > ${osobni})`; hint.className = 'record-hint beating'; }
-  else if (glob > 0 && b >= glob)      { hint.textContent = '👑 Míříš na rekord školy!';              hint.className = 'record-hint beating'; }
-  else { hint.textContent = osobni > 0 ? `Do rekordu zbývá ${osobni - b} bodů` : ''; hint.className = 'record-hint'; }
+// ── Firebase: načtení slov vybraných kategorií ────────
+async function nactiKategorie(kategorie) {
+  const vysledky = [];
+  for (const kat of kategorie) {
+    const snap = await get(ref(db, `vyjmenovana/${kat}`));
+    if (snap.exists()) Object.values(snap.val()).forEach(s => vysledky.push(s));
+  }
+  return vysledky;
 }
 
-// ── Hvězdičky na pozadí ───────────────────────────────
-export function initHvezdicky() {
-  const el = document.getElementById('stars');
-  for (let i = 0; i < 60; i++) {
-    const s = document.createElement('div');
-    s.className = 'star';
-    s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--delay:${Math.random()*5}s`;
-    el.appendChild(s);
+// ── Nové slovo ────────────────────────────────────────
+function novéSlovo() {
+  document.getElementById('lbl-priklad-vyjm').textContent = `${celkemOtazek}/${POCET_PRIKLADU}`;
+  document.getElementById('progress-vyjm').style.width   = (celkemOtazek / POCET_PRIKLADU * 100) + '%';
+
+  const idx = Math.floor(Math.random() * vyjmSlova.length);
+  aktualniSlovo = vyjmSlova[idx];
+
+  document.getElementById('lbl-veta').innerHTML         = aktualniSlovo.veta.replace('___', '<span class="blank">___</span>');
+  document.getElementById('lbl-komentar-vyjm').textContent = '';
+  document.getElementById('lbl-komentar-vyjm').className   = 'komentar';
+}
+
+// ── Odpověď ───────────────────────────────────────────
+function odpovez(val) {
+  if (!aktualniSlovo) return;
+  document.querySelectorAll('.vyjm-btn').forEach(b => b.disabled = true);
+
+  const kom         = document.getElementById('lbl-komentar-vyjm');
+  const tlacitka    = document.querySelectorAll('.vyjm-btn');
+  const spravne     = val === aktualniSlovo.odpoved;
+  const vetaHotova  = aktualniSlovo.veta.replace('___', aktualniSlovo.odpoved);
+
+  historiePrikladu.push({
+    veta:             aktualniSlovo.veta,
+    spravnaOdpoved:   aktualniSlovo.odpoved,
+    uzivatelovaOdpoved: val,
+    spravne,
+    vetaHotova
+  });
+
+  celkemOtazek++;
+
+  if (spravne) {
+    body++;
+    document.getElementById('lbl-body-vyjm').textContent = body;
+    kom.textContent = `✓ ${vetaHotova}`; kom.className = 'komentar correct';
+    updateHint('record-hint-vyjm', body, stav.osobniMaxVyjm, stav.globalMaxVyjm);
+    tlacitka.forEach(t => { if (t.dataset.val === val) { t.classList.add('correct-flash'); setTimeout(() => t.classList.remove('correct-flash'), 400); } });
+  } else {
+    kom.textContent = `✗ Správně: ${vetaHotova}`; kom.className = 'komentar wrong';
+    tlacitka.forEach(t => { if (t.dataset.val === val) { t.classList.add('wrong-flash'); setTimeout(() => t.classList.remove('wrong-flash'), 400); } });
+  }
+
+  aktualniSlovo = null;
+  const prodleva = spravne ? 600 : 1000;
+
+  if (celkemOtazek >= POCET_PRIKLADU) {
+    setTimeout(() => zobrazVysledkyVyjmenovana(body, POCET_PRIKLADU, historiePrikladu), prodleva);
+  } else {
+    setTimeout(() => {
+      document.querySelectorAll('.vyjm-btn').forEach(b => b.disabled = false);
+      novéSlovo();
+    }, prodleva);
   }
 }

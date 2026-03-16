@@ -1,0 +1,166 @@
+:root {
+  --yellow:#FFD93D;--orange:#FF6B35;--green:#6BCB77;
+  --blue:#4D96FF;--purple:#C77DFF;--red:#FF6B6B;
+  --dark:#1a1a2e;--card:#ffffff;--radius:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;background:var(--dark);min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.stars{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.star{position:absolute;width:6px;height:6px;border-radius:50%;background:white;opacity:0;animation:twinkle var(--d) var(--delay) infinite;}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.5)}50%{opacity:.7;transform:scale(1.2)}}
+.wrapper{position:relative;z-index:1;width:100%;max-width:500px;padding:20px;}
+.card{background:var(--card);border-radius:var(--radius);padding:40px 36px;box-shadow:0 20px 60px rgba(0,0,0,0.4);animation:slideUp .5s cubic-bezier(.34,1.56,.64,1);}
+@keyframes slideUp{from{opacity:0;transform:translateY(40px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+/* LOGO */
+.logo{text-align:center;margin-bottom:28px;}
+.logo-icon{font-size:52px;display:block;animation:bounce 2s ease-in-out infinite;}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.logo h1{font-family:'Fredoka One',cursive;font-size:2.6rem;color:var(--dark);line-height:1.1;}
+.logo p{color:#888;font-size:.95rem;margin-top:4px;}
+
+/* FORMULÁŘ */
+.input-group{margin-bottom:16px;}
+.input-group label{display:block;font-weight:700;font-size:.9rem;color:#555;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;}
+.input-group input{width:100%;padding:14px 18px;border:2.5px solid #e0e0e0;border-radius:12px;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:600;color:var(--dark);transition:border-color .2s;outline:none;}
+.input-group input:focus{border-color:var(--blue);}
+
+/* TLAČÍTKA */
+.btn{width:100%;padding:16px;border:none;border-radius:14px;font-family:'Fredoka One',cursive;font-size:1.3rem;cursor:pointer;transition:transform .15s,box-shadow .15s;letter-spacing:.03em;}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:var(--orange);color:white;box-shadow:0 6px 0 #c44a1a;}
+.btn-primary:hover{box-shadow:0 4px 0 #c44a1a;transform:translateY(2px);}
+.btn-green{background:var(--green);color:white;box-shadow:0 6px 0 #3d9e4a;}
+.btn-green:hover{box-shadow:0 4px 0 #3d9e4a;transform:translateY(2px);}
+.btn-blue{background:var(--blue);color:white;box-shadow:0 6px 0 #1a5fcc;}
+.btn-blue:hover{box-shadow:0 4px 0 #1a5fcc;transform:translateY(2px);}
+.btn-purple{background:var(--purple);color:white;box-shadow:0 6px 0 #8a3dcc;}
+.btn-purple:hover{box-shadow:0 4px 0 #8a3dcc;transform:translateY(2px);}
+.btn-outline{background:white;color:var(--dark);border:2.5px solid #e0e0e0;box-shadow:none;}
+.btn-outline:hover{border-color:var(--blue);color:var(--blue);}
+.btn-row{display:flex;gap:10px;}
+.btn-row .btn{flex:1;}
+.mt12{margin-top:12px;}
+.error-msg{color:var(--orange);font-size:.9rem;font-weight:700;text-align:center;margin-top:10px;min-height:20px;}
+
+/* VÝBĚR HRY */
+.game-choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+.game-choice-card{border-radius:16px;padding:24px 16px;text-align:center;cursor:pointer;border:3px solid transparent;transition:transform .2s,border-color .2s,box-shadow .2s;}
+.game-choice-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.12);}
+.game-choice-card.nasobilka{background:#fff3e0;border-color:var(--yellow);}
+.game-choice-card.nasobilka:hover{border-color:var(--orange);}
+.game-choice-card.vyjmenovana{background:#f0e8ff;border-color:#d4b0ff;}
+.game-choice-card.vyjmenovana:hover{border-color:var(--purple);}
+.game-choice-icon{font-size:42px;display:block;margin-bottom:8px;}
+.game-choice-title{font-family:'Fredoka One',cursive;font-size:1.2rem;color:var(--dark);}
+.game-choice-sub{font-size:.8rem;color:#888;margin-top:4px;}
+
+/* UVÍTÁNÍ */
+.welcome-text{text-align:center;margin-bottom:24px;}
+.welcome-text h2{font-family:'Fredoka One',cursive;font-size:1.9rem;color:var(--dark);}
+.welcome-text .username{color:var(--orange);}
+.welcome-title{font-family:'Fredoka One',cursive;font-size:1.3rem;color:var(--dark);text-align:center;margin-bottom:16px;}
+.score-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;}
+.score-box{border-radius:14px;padding:16px;text-align:center;}
+.score-box.personal{background:#fff3e0;border:2px solid var(--yellow);}
+.score-box.global{background:#e8f4fd;border:2px solid var(--blue);}
+.score-box .score-label{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#888;margin-bottom:4px;}
+.score-box .score-value{font-family:'Fredoka One',cursive;font-size:2rem;}
+.score-box.personal .score-value{color:var(--orange);}
+.score-box.global .score-value{color:var(--blue);}
+
+/* KATEGORIE VYJMENOVANÝCH */
+.kategorie-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+.kat-btn{padding:14px 8px;border-radius:12px;border:2.5px solid #e0e0e0;background:white;font-family:'Fredoka One',cursive;font-size:1.4rem;cursor:pointer;transition:all .2s;color:#aaa;text-align:center;}
+.kat-btn:hover{border-color:var(--purple);color:var(--purple);}
+.kat-btn.selected{background:#f0e8ff;border-color:var(--purple);color:var(--purple);box-shadow:0 4px 0 #8a3dcc;}
+.kat-label{font-size:.7rem;font-weight:800;display:block;text-transform:uppercase;letter-spacing:.05em;margin-top:2px;}
+.kategorie-error{color:var(--red);font-size:.85rem;font-weight:700;text-align:center;margin-bottom:12px;min-height:18px;}
+.vyber-vse{text-align:center;font-size:.85rem;color:var(--blue);cursor:pointer;font-weight:700;text-decoration:underline;margin-bottom:14px;}
+
+/* HERNÍ HLAVIČKA */
+.game-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.game-stat{text-align:center;}
+.game-stat .stat-label{font-size:.75rem;font-weight:700;text-transform:uppercase;color:#aaa;letter-spacing:.05em;}
+.game-stat .stat-value{font-family:'Fredoka One',cursive;font-size:1.6rem;color:var(--dark);}
+.stat-value.timer{color:var(--orange);}
+.stat-value.score-live{color:var(--green);}
+.stat-value.priklad-count{color:var(--purple);}
+.progress-bar-wrap{background:#f0f0f0;border-radius:999px;height:10px;margin-bottom:28px;overflow:hidden;}
+.progress-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--orange),var(--yellow));transition:width 1s linear;width:100%;}
+.progress-bar-fill.vyjm{background:linear-gradient(90deg,var(--purple),#f0b0ff);transition:width .4s ease;}
+
+/* NÁSOBILKA */
+.priklad-wrap{text-align:center;margin-bottom:24px;}
+.priklad{font-family:'Fredoka One',cursive;font-size:3.5rem;color:var(--dark);line-height:1;}
+@keyframes popIn{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+.komentar{min-height:24px;font-size:1rem;font-weight:700;color:#888;margin-top:6px;text-align:center;}
+.komentar.correct{color:var(--green);}
+.komentar.wrong{color:var(--red);}
+.answer-row{display:flex;gap:10px;}
+.answer-row input{flex:1;padding:16px;border:2.5px solid #e0e0e0;border-radius:14px;font-family:'Fredoka One',cursive;font-size:1.8rem;text-align:center;color:var(--dark);outline:none;transition:border-color .2s;}
+.answer-row input:focus{border-color:var(--blue);}
+.answer-row input.shake{animation:shake .3s;border-color:var(--red);}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.answer-row button{padding:16px 24px;background:var(--blue);color:white;border:none;border-radius:14px;font-size:1.6rem;cursor:pointer;box-shadow:0 5px 0 #1a5fcc;transition:transform .1s,box-shadow .1s;}
+.answer-row button:active{transform:translateY(3px);box-shadow:0 2px 0 #1a5fcc;}
+.record-hint{text-align:center;margin-top:14px;font-size:.9rem;font-weight:700;color:#bbb;min-height:20px;}
+.record-hint.beating{color:var(--purple);}
+
+/* VYJMENOVANÁ SLOVA */
+.vyjm-zadani{text-align:center;margin-bottom:16px;}
+.vyjm-veta{font-family:'Fredoka One',cursive;font-size:1.8rem;color:var(--dark);line-height:1.4;margin-bottom:8px;word-break:break-word;}
+.vyjm-veta .blank{color:var(--purple);border-bottom:3px solid var(--purple);padding:0 4px;min-width:40px;display:inline-block;}
+.vyjm-buttons{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;}
+.vyjm-btn{padding:18px;border:none;border-radius:14px;font-family:'Fredoka One',cursive;font-size:1.6rem;cursor:pointer;transition:transform .15s,box-shadow .15s;}
+.vyjm-btn:active{transform:scale(.95);}
+.vyjm-btn.y {background:#fff3e0;color:var(--orange);box-shadow:0 5px 0 #e8a020;border:2.5px solid var(--yellow);}
+.vyjm-btn.i {background:#e8f4fd;color:var(--blue);  box-shadow:0 5px 0 #1a5fcc;border:2.5px solid var(--blue);}
+.vyjm-btn.yy{background:#ffeef0;color:var(--red);   box-shadow:0 5px 0 #cc3030;border:2.5px solid var(--red);}
+.vyjm-btn.ii{background:#f0e8ff;color:var(--purple);box-shadow:0 5px 0 #8a3dcc;border:2.5px solid var(--purple);}
+.vyjm-btn.correct-flash{background:var(--green)!important;color:white!important;border-color:var(--green)!important;}
+.vyjm-btn.wrong-flash{background:var(--red)!important;color:white!important;border-color:var(--red)!important;}
+
+/* VÝSLEDKY */
+.result-center{text-align:center;}
+.result-emoji{font-size:56px;display:block;margin-bottom:6px;animation:bounce 1s ease-in-out infinite;}
+.result-title{font-family:'Fredoka One',cursive;font-size:1.8rem;color:var(--dark);margin-bottom:4px;}
+.result-score{font-family:'Fredoka One',cursive;font-size:3.5rem;color:var(--orange);line-height:1;}
+.result-sub{color:#888;font-size:1rem;margin-bottom:16px;}
+.result-uspesnost{font-family:'Fredoka One',cursive;font-size:1.2rem;color:var(--purple);margin-bottom:16px;}
+.result-new-record{background:linear-gradient(135deg,var(--yellow),var(--orange));color:white;border-radius:12px;padding:10px 20px;font-weight:800;font-size:1rem;margin-bottom:16px;display:none;}
+.prehled-wrap{margin-bottom:20px;max-height:200px;overflow-y:auto;border-radius:12px;}
+.prehled-wrap::-webkit-scrollbar{width:4px;}
+.prehled-wrap::-webkit-scrollbar-thumb{background:#ddd;border-radius:999px;}
+.prehled-item{display:flex;align-items:flex-start;gap:10px;padding:8px 12px;border-radius:10px;margin-bottom:6px;font-size:.88rem;}
+.prehled-item.ok{background:#edfff0;border-left:4px solid var(--green);}
+.prehled-item.chyba{background:#fff0f0;border-left:4px solid var(--red);}
+.prehled-icon{font-size:1rem;margin-top:1px;flex-shrink:0;}
+.prehled-text{flex:1;}
+.prehled-veta{display:block;font-weight:700;color:var(--dark);}
+.prehled-veta strong{color:var(--green);}
+.prehled-chyba-txt{display:block;font-size:.8rem;color:var(--red);margin-top:2px;}
+
+/* ŽEBŘÍČEK */
+.lb-tabs{display:flex;gap:8px;margin-bottom:18px;}
+.lb-tab{flex:1;padding:10px;border:2.5px solid #e0e0e0;border-radius:10px;font-family:'Fredoka One',cursive;font-size:1rem;cursor:pointer;text-align:center;background:white;color:#aaa;transition:all .2s;}
+.lb-tab.active{border-color:var(--orange);color:var(--orange);background:#fff3e0;}
+.lb-tab.vyjm.active{border-color:var(--purple);color:var(--purple);background:#f0e8ff;}
+.lb-title{font-family:'Fredoka One',cursive;font-size:1.6rem;color:var(--dark);margin-bottom:18px;text-align:center;}
+.lb-list{list-style:none;max-height:280px;overflow-y:auto;margin-bottom:20px;}
+.lb-list::-webkit-scrollbar{width:4px;}
+.lb-list::-webkit-scrollbar-thumb{background:#ddd;border-radius:999px;}
+.lb-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;margin-bottom:8px;background:#f9f9f9;}
+.lb-item.me{background:#fff3e0;}
+.lb-item.gold{background:#fffbe6;}
+.lb-item.silver{background:#f5f5f5;}
+.lb-item.bronze{background:#fff3e8;}
+.lb-rank{font-family:'Fredoka One',cursive;font-size:1.3rem;width:32px;text-align:center;}
+.lb-name{flex:1;font-weight:700;font-size:1rem;color:var(--dark);}
+.lb-score{font-family:'Fredoka One',cursive;font-size:1.4rem;color:var(--orange);}
+
+/* OBECNÉ */
+.screen{display:none;}
+.screen.active{display:block;}
+.nav-link{text-align:center;margin-top:16px;font-size:.9rem;color:#aaa;cursor:pointer;font-weight:600;}
+.nav-link span{color:var(--blue);text-decoration:underline;}

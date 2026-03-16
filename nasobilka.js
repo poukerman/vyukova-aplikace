@@ -1,60 +1,86 @@
 // ═══════════════════════════════════════════════════════
-// auth.js  —  Přihlášení a výběr hry
+// nasobilka.js  —  Hra: Malá násobilka
 // ═══════════════════════════════════════════════════════
 
-import { stav, showScreen, nactiHrace, nactiZebricek } from './main.js';
-import { initNasobilka } from './nasobilka.js';
-import { initVyjmenovana } from './vyjmenovana.js';
+import { stav, showScreen, updateHint } from './main.js';
+import { zobrazVysledkyNasobilka } from './vysledky.js';
 import { initZebricek } from './zebricek.js';
 
-export function initAuth() {
-  document.getElementById('btn-prihlasit').addEventListener('click', prihlasit);
-  document.getElementById('inp-username').addEventListener('keydown', e => { if (e.key === 'Enter') prihlasit(); });
-  document.getElementById('btn-volba-nasobilka').addEventListener('click', () => volbaHry('nasobilka'));
-  document.getElementById('btn-volba-vyjmenovana').addEventListener('click', () => volbaHry('vyjmenovana'));
-  document.getElementById('btn-zebricek-login').addEventListener('click', () => initZebricek('screen-login', 'nasobilka'));
-  document.getElementById('btn-zebricek-vyber').addEventListener('click', () => initZebricek('screen-vyber', 'nasobilka'));
+// ── Konfigurace ───────────────────────────────────────
+const CAS = 15; // sekundy
+
+// ── Lokální stav ──────────────────────────────────────
+let body = 0;
+let casZbyva = CAS;
+let timerInterval = null;
+let nasA, nasB, soucin;
+
+// ── Inicializace (volá se při přechodu na uvítací obrazovku) ──
+export function initNasobilka() {
+  document.getElementById('btn-start-nasobilka').onclick    = startHra;
+  document.getElementById('btn-zpet-nasobilka').onclick     = () => showScreen('screen-vyber');
+  document.getElementById('btn-potvrdit-nas').onclick       = zkontrolovat;
+  document.getElementById('btn-zebricek-welcome-nas').onclick = () => initZebricek('screen-welcome-nasobilka', 'nasobilka');
+  document.getElementById('inp-odpoved-nas').onkeydown      = e => { if (e.key === 'Enter') zkontrolovat(); };
 }
 
-async function prihlasit() {
-  const inp = document.getElementById('inp-username');
-  const err = document.getElementById('login-error');
-  const username = inp.value.trim().toLowerCase();
-
-  if (!username)          { err.textContent = 'Zadej uživatelské jméno!'; return; }
-  if (username.length < 2) { err.textContent = 'Jméno musí mít aspoň 2 znaky.'; return; }
-
-  err.textContent = 'Přihlašuji...';
-  try {
-    const hrac = await nactiHrace(username);
-    if (!hrac) { err.textContent = '❌ Uživatelské jméno nebylo nalezeno.'; return; }
-
-    stav.jmeno        = username;
-    stav.osobniMaxNas  = hrac.nasobilka   || 0;
-    stav.osobniMaxVyjm = hrac.vyjmenovana || 0;
-
-    const zbNas  = await nactiZebricek('nasobilka');
-    const zbVyjm = await nactiZebricek('vyjmenovana');
-    stav.globalMaxNas  = zbNas.length  > 0 ? zbNas[0].max  : 0;
-    stav.globalMaxVyjm = zbVyjm.length > 0 ? zbVyjm[0].max : 0;
-
-    document.getElementById('lbl-username').textContent = username;
-    err.textContent = '';
-    showScreen('screen-vyber');
-  } catch(e) { err.textContent = 'Chyba: ' + e.message; }
+// ── Spuštění hry ──────────────────────────────────────
+function startHra() {
+  body = 0;
+  document.getElementById('lbl-body-nas').textContent     = 0;
+  document.getElementById('lbl-rekord-nas').textContent   = stav.osobniMaxNas;
+  document.getElementById('lbl-komentar-nas').textContent = '';
+  document.getElementById('lbl-komentar-nas').className   = 'komentar';
+  document.getElementById('record-hint-nas').textContent  = '';
+  showScreen('screen-game-nasobilka');
+  novyPriklad();
+  document.getElementById('inp-odpoved-nas').focus();
+  startTimer();
 }
 
-function volbaHry(hra) {
-  stav.aktualniHra = hra;
-  if (hra === 'nasobilka') {
-    document.getElementById('lbl-osobni-nas').textContent = stav.osobniMaxNas;
-    document.getElementById('lbl-global-nas').textContent = stav.globalMaxNas;
-    initNasobilka();   // předá řízení modulu násobilky
-    showScreen('screen-welcome-nasobilka');
+// ── Nový příklad ──────────────────────────────────────
+function novyPriklad() {
+  nasA   = Math.floor(Math.random() * 9) + 1;
+  nasB   = Math.floor(Math.random() * 9) + 1;
+  soucin = nasA * nasB;
+  const lbl = document.getElementById('lbl-priklad');
+  lbl.style.animation = 'none';
+  lbl.textContent = `${nasA} × ${nasB}`;
+  requestAnimationFrame(() => { lbl.style.animation = 'popIn .3s cubic-bezier(.34,1.56,.64,1)'; });
+  document.getElementById('inp-odpoved-nas').value = '';
+}
+
+// ── Zkontrolování odpovědi ────────────────────────────
+function zkontrolovat() {
+  const inp = document.getElementById('inp-odpoved-nas');
+  const val = parseInt(inp.value);
+  const kom = document.getElementById('lbl-komentar-nas');
+  if (isNaN(val)) { kom.textContent = 'Napiš číslo!'; kom.className = 'komentar wrong'; return; }
+
+  if (val === soucin) {
+    body++;
+    document.getElementById('lbl-body-nas').textContent = body;
+    kom.textContent = '✓ Správně!'; kom.className = 'komentar correct';
+    updateHint('record-hint-nas', body, stav.osobniMaxNas, stav.globalMaxNas);
+    novyPriklad();
+    document.getElementById('inp-odpoved-nas').focus();
   } else {
-    document.getElementById('lbl-osobni-vyjm').textContent = stav.osobniMaxVyjm;
-    document.getElementById('lbl-global-vyjm').textContent = stav.globalMaxVyjm;
-    initVyjmenovana(); // předá řízení modulu vyjmenovaných
-    showScreen('screen-welcome-vyjmenovana');
+    inp.classList.remove('shake'); void inp.offsetWidth; inp.classList.add('shake');
+    kom.textContent = `✗ Správně bylo ${soucin}`; kom.className = 'komentar wrong';
+    inp.value = '';
   }
+}
+
+// ── Časovač ───────────────────────────────────────────
+function startTimer() {
+  casZbyva = CAS;
+  document.getElementById('lbl-cas-nas').textContent    = CAS;
+  document.getElementById('progress-nas').style.width   = '100%';
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    casZbyva--;
+    document.getElementById('lbl-cas-nas').textContent  = casZbyva;
+    document.getElementById('progress-nas').style.width = (casZbyva / CAS * 100) + '%';
+    if (casZbyva <= 0) { clearInterval(timerInterval); zobrazVysledkyNasobilka(body); }
+  }, 1000);
 }
