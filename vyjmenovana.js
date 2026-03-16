@@ -32,6 +32,7 @@ export function initVyjmenovana() {
   document.getElementById('btn-zpet-vyjmenovana').onclick       = () => showScreen('screen-vyber');
   document.getElementById('btn-vyber-vse').onclick              = vyberVse;
   document.getElementById('btn-zebricek-welcome-vyjm').onclick  = () => initZebricek('screen-welcome-vyjmenovana', 'vyjmenovana');
+  document.getElementById('btn-ukoncit-vyjm').onclick = ukoncitHru;
 
   document.querySelectorAll('.kat-btn').forEach(btn => {
     btn.onclick = () => toggleKategorie(btn);
@@ -116,6 +117,12 @@ function novéSlovo() {
   document.getElementById('lbl-veta').innerHTML         = aktualniSlovo.veta.replace('___', '<span class="blank">___</span>');
   document.getElementById('lbl-komentar-vyjm').textContent = '';
   document.getElementById('lbl-komentar-vyjm').className   = 'komentar';
+}
+
+//----Ukončit hru ------
+function ukoncitHru() {
+  aktualniSlovo = null;
+  showScreen('screen-welcome-vyjmenovana');
 }
 
 // ── Odpověď ───────────────────────────────────────────
