@@ -2,7 +2,7 @@
 // nasobilka.js  —  Hra: Malá násobilka
 // ═══════════════════════════════════════════════════════
 
-import { stav, showScreen, ulozSkore, nactiZebricek, updateHint } from './main.js';
+import { stav, showScreen, updateHint } from './main.js';
 import { zobrazVysledkyNasobilka } from './vysledky.js';
 import { initZebricek } from './zebricek.js';
 

@@ -1,87 +1,174 @@
-// ═══════════════════════════════════════════════════════
-// vysledky.js  —  Obrazovka výsledků
-// ═══════════════════════════════════════════════════════
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Soutěž</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
 
-import { stav, showScreen, ulozSkore, nactiZebricek } from './main.js';
-import { initNasobilka } from './nasobilka.js';
-import { initZebricek } from './zebricek.js';
+<div class="stars" id="stars"></div>
+<div class="wrapper">
+  <div class="card">
 
-// ── Inicializace tlačítek na obrazovce výsledků ───────
-export function initVysledky() {
-  document.getElementById('btn-znovu').onclick         = znovu;
-  document.getElementById('btn-jina-hra').onclick      = () => showScreen('screen-vyber');
-  document.getElementById('btn-zebricek-result').onclick = () => initZebricek('screen-result', stav.aktualniHra);
-}
+    <!-- ═══ PŘIHLÁŠENÍ ═══════════════════════════════════ -->
+    <div id="screen-login" class="screen active">
+      <div class="logo">
+        <span class="logo-icon">🏆</span>
+        <h1>Soutěž</h1>
+        <p>Přihlaš se a hraj!</p>
+      </div>
+      <div class="input-group">
+        <label>Uživatelské jméno</label>
+        <input type="text" id="inp-username" placeholder="např. jana123" autocomplete="off"/>
+      </div>
+      <button class="btn btn-primary" id="btn-prihlasit">Přihlásit se 🚀</button>
+      <div class="error-msg" id="login-error"></div>
+      <div class="nav-link" id="btn-zebricek-login">🏆 <span>Zobrazit žebříček</span></div>
+    </div>
 
-function znovu() {
-  if (stav.aktualniHra === 'nasobilka') {
-    initNasobilka();
-    document.getElementById('btn-start-nasobilka').click();
-  } else {
-    showScreen('screen-welcome-vyjmenovana');
-  }
-}
+    <!-- ═══ VÝBĚR HRY ════════════════════════════════════ -->
+    <div id="screen-vyber" class="screen">
+      <div class="welcome-text">
+        <h2>Vítej, <span class="username" id="lbl-username"></span>! 👋</h2>
+      </div>
+      <div class="welcome-title">Vyber si hru:</div>
+      <div class="game-choice-grid">
+        <div class="game-choice-card nasobilka" id="btn-volba-nasobilka">
+          <span class="game-choice-icon">✖️</span>
+          <div class="game-choice-title">Malá násobilka</div>
+          <div class="game-choice-sub">Počítej příklady</div>
+        </div>
+        <div class="game-choice-card vyjmenovana" id="btn-volba-vyjmenovana">
+          <span class="game-choice-icon">📝</span>
+          <div class="game-choice-title">Vyjmenovaná slova</div>
+          <div class="game-choice-sub">Doplňuj y/i</div>
+        </div>
+      </div>
+      <div class="nav-link" id="btn-zebricek-vyber">🏆 <span>Žebříček</span></div>
+    </div>
 
-// ── Výsledky násobilky ────────────────────────────────
-export async function zobrazVysledkyNasobilka(body) {
-  showScreen('screen-result');
-  document.getElementById('result-sub').textContent        = 'bodů za 15 sekund';
-  document.getElementById('result-uspesnost').textContent  = '';
-  document.getElementById('result-prehled').innerHTML      = '';
+    <!-- ═══ UVÍTÁNÍ: NÁSOBILKA ═══════════════════════════ -->
+    <div id="screen-welcome-nasobilka" class="screen">
+      <div class="welcome-text"><h2>✖️ Malá násobilka</h2></div>
+      <div class="score-grid">
+        <div class="score-box personal"><div class="score-label">Tvůj rekord</div><div class="score-value" id="lbl-osobni-nas">0</div></div>
+        <div class="score-box global"><div class="score-label">Rekord školy</div><div class="score-value" id="lbl-global-nas">0</div></div>
+      </div>
+      <button class="btn btn-green" id="btn-start-nasobilka">▶ Začít hru</button>
+      <button class="btn btn-outline mt12" id="btn-zpet-nasobilka">← Zpět na výběr</button>
+      <div class="nav-link" id="btn-zebricek-welcome-nas">🏆 <span>Žebříček násobilky</span></div>
+    </div>
 
-  const emoji = body === 0 ? '😅' : body < 5 ? '🙂' : body < 10 ? '😊' : body < 15 ? '🔥' : '👑';
-  document.getElementById('result-emoji').textContent = emoji;
-  document.getElementById('result-score').textContent = body;
+    <!-- ═══ UVÍTÁNÍ: VYJMENOVANÁ + VÝBĚR KATEGORIÍ ══════ -->
+    <div id="screen-welcome-vyjmenovana" class="screen">
+      <div class="welcome-text"><h2>📝 Vyjmenovaná slova</h2></div>
+      <div class="score-grid">
+        <div class="score-box personal"><div class="score-label">Tvůj rekord</div><div class="score-value" id="lbl-osobni-vyjm">0</div></div>
+        <div class="score-box global"><div class="score-label">Rekord školy</div><div class="score-value" id="lbl-global-vyjm">0</div></div>
+      </div>
+      <div class="welcome-title">Vyber kategorie:</div>
+      <div class="vyber-vse" id="btn-vyber-vse">Vybrat vše / Zrušit výběr</div>
+      <div class="kategorie-grid">
+        <!-- Přidání nové kategorie: zkopíruj řádek níže, změň data-kat a popis -->
+        <button class="kat-btn" data-kat="b">B<span class="kat-label">být, bydlit...</span></button>
+        <button class="kat-btn" data-kat="l">L<span class="kat-label">lyže, lýtko...</span></button>
+        <button class="kat-btn" data-kat="m">M<span class="kat-label">mýt, myslit...</span></button>
+        <button class="kat-btn" data-kat="p">P<span class="kat-label">pytel, pýcha...</span></button>
+        <button class="kat-btn" data-kat="s">S<span class="kat-label">syn, sýr...</span></button>
+        <button class="kat-btn" data-kat="v">V<span class="kat-label">vít, výr...</span></button>
+        <button class="kat-btn" data-kat="z">Z<span class="kat-label">zýkat, zítra...</span></button>
+      </div>
+      <div class="kategorie-error" id="kat-error"></div>
+      <button class="btn btn-purple" id="btn-start-vyjmenovana">▶ Začít hru</button>
+      <button class="btn btn-outline mt12" id="btn-zpet-vyjmenovana">← Zpět na výběr</button>
+      <div class="nav-link" id="btn-zebricek-welcome-vyjm">🏆 <span>Žebříček vyjmenovaných</span></div>
+    </div>
 
-  try {
-    const jeNovy = await ulozSkore(stav.jmeno, 'nasobilka', body);
-    if (jeNovy) {
-      stav.osobniMaxNas = body;
-      document.getElementById('result-new-record').style.display = 'block';
-      document.getElementById('result-title').textContent        = 'Nový rekord! 🎉';
-    } else {
-      document.getElementById('result-new-record').style.display = 'none';
-      document.getElementById('result-title').textContent        = body >= 10 ? 'Skvělý výkon!' : 'Konec hry!';
-    }
-    const zb = await nactiZebricek('nasobilka');
-    stav.globalMaxNas = zb.length > 0 ? zb[0].max : 0;
-  } catch(e) { document.getElementById('result-title').textContent = 'Konec hry!'; }
-}
+    <!-- ═══ HRA: NÁSOBILKA ═══════════════════════════════ -->
+    <div id="screen-game-nasobilka" class="screen">
+      <div class="game-header">
+        <div class="game-stat"><div class="stat-label">Čas</div><div class="stat-value timer" id="lbl-cas-nas">15</div></div>
+        <div class="game-stat"><div class="stat-label">Body</div><div class="stat-value score-live" id="lbl-body-nas">0</div></div>
+        <div class="game-stat"><div class="stat-label">Rekord</div><div class="stat-value" id="lbl-rekord-nas">0</div></div>
+      </div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-nas"></div></div>
+      <div class="priklad-wrap">
+        <div class="priklad" id="lbl-priklad">? × ?</div>
+        <div class="komentar" id="lbl-komentar-nas"></div>
+      </div>
+      <div class="answer-row">
+        <input type="number" id="inp-odpoved-nas" placeholder="?" min="1" max="100" autocomplete="off"/>
+        <button id="btn-potvrdit-nas">✓</button>
+      </div>
+      <div class="record-hint" id="record-hint-nas"></div>
+    </div>
 
-// ── Výsledky vyjmenovaných slov ───────────────────────
-export async function zobrazVysledkyVyjmenovana(body, pocet, historie) {
-  showScreen('screen-result');
+    <!-- ═══ HRA: VYJMENOVANÁ ══════════════════════════════ -->
+    <div id="screen-game-vyjmenovana" class="screen">
+      <div class="game-header">
+        <div class="game-stat"><div class="stat-label">Příklad</div><div class="stat-value priklad-count" id="lbl-priklad-vyjm">0/10</div></div>
+        <div class="game-stat"><div class="stat-label">Správně</div><div class="stat-value score-live" id="lbl-body-vyjm">0</div></div>
+        <div class="game-stat"><div class="stat-label">Rekord</div><div class="stat-value" id="lbl-rekord-vyjm">0</div></div>
+      </div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill vyjm" id="progress-vyjm" style="width:0%"></div></div>
+      <div class="vyjm-zadani">
+        <div class="vyjm-veta" id="lbl-veta">Načítám...</div>
+        <div class="komentar" id="lbl-komentar-vyjm"></div>
+      </div>
+      <div class="vyjm-buttons">
+        <button class="vyjm-btn y"  data-val="y">y</button>
+        <button class="vyjm-btn i"  data-val="i">i</button>
+        <button class="vyjm-btn yy" data-val="ý">ý</button>
+        <button class="vyjm-btn ii" data-val="í">í</button>
+      </div>
+      <div class="record-hint" id="record-hint-vyjm"></div>
+    </div>
 
-  const uspesnost = Math.round((body / pocet) * 100);
-  const emoji     = uspesnost < 40 ? '😅' : uspesnost < 60 ? '🙂' : uspesnost < 80 ? '😊' : uspesnost < 100 ? '🔥' : '👑';
+    <!-- ═══ VÝSLEDKY ══════════════════════════════════════ -->
+    <div id="screen-result" class="screen">
+      <div class="result-center">
+        <span class="result-emoji" id="result-emoji">🎉</span>
+        <div class="result-title" id="result-title">Konec hry!</div>
+        <div class="result-score" id="result-score">0</div>
+        <div class="result-sub" id="result-sub">bodů</div>
+        <div class="result-uspesnost" id="result-uspesnost"></div>
+        <div class="result-new-record" id="result-new-record">🏆 Nový rekord!</div>
+      </div>
+      <div class="prehled-wrap" id="result-prehled"></div>
+      <div class="btn-row">
+        <button class="btn btn-green" id="btn-znovu">↺ Znovu</button>
+        <button class="btn btn-blue" id="btn-zebricek-result">🏆 Žebříček</button>
+      </div>
+      <button class="btn btn-outline mt12" id="btn-jina-hra">← Jiná hra</button>
+    </div>
 
-  document.getElementById('result-emoji').textContent      = emoji;
-  document.getElementById('result-score').textContent      = `${body}/${pocet}`;
-  document.getElementById('result-sub').textContent        = 'správných odpovědí';
-  document.getElementById('result-uspesnost').textContent  = `Úspěšnost: ${uspesnost} %`;
+    <!-- ═══ ŽEBŘÍČEK ══════════════════════════════════════ -->
+    <div id="screen-leaderboard" class="screen">
+      <div class="lb-title">🏆 Žebříček</div>
+      <div class="lb-tabs">
+        <div class="lb-tab active" id="lb-tab-nas">✖️ Násobilka</div>
+        <div class="lb-tab vyjm" id="lb-tab-vyjm">📝 Vyjmenovaná</div>
+      </div>
+      <ul class="lb-list" id="lb-list"><li style="text-align:center;color:#aaa;padding:20px">Načítám...</li></ul>
+      <button class="btn btn-primary" id="btn-zpet-lb">← Zpět</button>
+    </div>
 
-  // Přehled odpovědí
-  document.getElementById('result-prehled').innerHTML = historie.map(h => `
-    <div class="prehled-item ${h.spravne ? 'ok' : 'chyba'}">
-      <span class="prehled-icon">${h.spravne ? '✓' : '✗'}</span>
-      <span class="prehled-text">
-        <span class="prehled-veta">${h.vetaHotova}</span>
-        ${!h.spravne ? `<span class="prehled-chyba-txt">Tvá odpověď: ${h.uzivatelovaOdpoved}</span>` : ''}
-      </span>
-    </div>`).join('');
+  </div>
+</div>
 
-  try {
-    const jeNovy = await ulozSkore(stav.jmeno, 'vyjmenovana', body);
-    if (jeNovy) {
-      stav.osobniMaxVyjm = body;
-      document.getElementById('result-new-record').style.display = 'block';
-      document.getElementById('result-title').textContent        = 'Nový rekord! 🎉';
-    } else {
-      document.getElementById('result-new-record').style.display = 'none';
-      document.getElementById('result-title').textContent        =
-        uspesnost === 100 ? 'Perfektní! 👑' : uspesnost >= 80 ? 'Skvělý výkon! 🔥' : uspesnost >= 50 ? 'Dobrá práce! 😊' : 'Příště lépe! 💪';
-    }
-    const zb = await nactiZebricek('vyjmenovana');
-    stav.globalMaxVyjm = zb.length > 0 ? zb[0].max : 0;
-  } catch(e) { document.getElementById('result-title').textContent = 'Konec hry!'; }
-}
+<!-- Vstupní bod — spouští všechny moduly -->
+<script type="module">
+  import { initHvezdicky } from './js/main.js';
+  import { initAuth }      from './js/auth.js';
+  import { initVysledky }  from './js/vysledky.js';
+
+  initHvezdicky();
+  initAuth();
+  initVysledky();
+</script>
+
+</body>
+</html>
