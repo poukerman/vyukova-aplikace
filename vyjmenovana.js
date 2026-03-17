@@ -157,7 +157,7 @@ function odpovez(val) {
   }
 
   aktualniSlovo = null;
-  const prodleva = spravne ? 600 : 1000;
+  const prodleva = spravne ? 2000 : 2000;
 
   if (celkemOtazek >= POCET_PRIKLADU) {
     setTimeout(() => zobrazVysledkyVyjmenovana(body, POCET_PRIKLADU, historiePrikladu), prodleva);
