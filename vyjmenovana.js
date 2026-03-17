@@ -114,7 +114,7 @@ function novéSlovo() {
   const idx = Math.floor(Math.random() * vyjmSlova.length);
   aktualniSlovo = vyjmSlova[idx];
 
-  document.getElementById('lbl-veta').innerHTML         = aktualniSlovo.veta.replace('___', '<span class="blank">___</span>');
+  document.getElementById('lbl-veta').innerHTML         = aktualniSlovo.veta.replace('_', '<span class="blank">_</span>');
   document.getElementById('lbl-komentar-vyjm').textContent = '';
   document.getElementById('lbl-komentar-vyjm').className   = 'komentar';
 }
