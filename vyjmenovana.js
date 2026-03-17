@@ -148,11 +148,13 @@ function odpovez(val) {
   if (spravne) {
     body++;
     document.getElementById('lbl-body-vyjm').textContent = body;
-    kom.innerHTML = `✓ ${vetaHotova.replace(aktualniSlovo.odpoved, `<strong>${aktualniSlovo.odpoved}</strong>`)}`; kom.className = 'komentar correct';
+    document.getElementById('lbl-veta').textContent = aktualniSlovo.reseni;
+    kom.textContent = '✓ Správně!'; kom.className = 'komentar correct';
     updateHint('record-hint-vyjm', body, stav.osobniMaxVyjm, stav.globalMaxVyjm);
     tlacitka.forEach(t => { if (t.dataset.val === val) { t.classList.add('correct-flash'); setTimeout(() => t.classList.remove('correct-flash'), 400); } });
   } else {
-    kom.innerHTML = `✗ Správně: ${vetaHotova.replace(aktualniSlovo.odpoved, `<strong>${aktualniSlovo.odpoved}</strong>`)}`; kom.className = 'komentar wrong';
+    document.getElementById('lbl-veta').textContent = aktualniSlovo.reseni;
+    kom.textContent = '✗ Špatně!'; kom.className = 'komentar wrong';
     tlacitka.forEach(t => { if (t.dataset.val === val) { t.classList.add('wrong-flash'); setTimeout(() => t.classList.remove('wrong-flash'), 400); } });
   }
 
