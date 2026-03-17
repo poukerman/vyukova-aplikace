@@ -45,7 +45,7 @@ function novyPriklad() {
   soucin = nasA * nasB;
   const lbl = document.getElementById('lbl-priklad');
   lbl.style.animation = 'none';
-  lbl.textContent = `${nasA} × ${nasB}`;
+  lbl.textContent = `${nasA} • ${nasB}`;
   requestAnimationFrame(() => { lbl.style.animation = 'popIn .3s cubic-bezier(.34,1.56,.64,1)'; });
   document.getElementById('inp-odpoved-nas').value = '';
 }
