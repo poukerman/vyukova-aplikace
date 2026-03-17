@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Správa slov — Soutěž</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@600;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0f0f13;
+      --surface: #18181f;
+      --border: #2a2a35;
+      --accent: #7c6dfa;
+      --accent2: #fa6d8e;
+      --green: #4dfa9a;
+      --red: #fa4d6d;
+      --yellow: #fad44d;
+      --text: #e8e8f0;
+      --muted: #6b6b80;
+      --radius: 10px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'JetBrains Mono', monospace; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* HEADER */
+    header { border-bottom: 1px solid var(--border); padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--bg); z-index: 100; }
+    .logo { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; color: var(--accent); letter-spacing: -0.02em; }
+    .logo span { color: var(--accent2); }
+    .status { font-size: .75rem; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+    .status-dot.ok { background: var(--green); box-shadow: 0 0 8px var(--green); }
+
+    /* LAYOUT */
+    .container { max-width: 900px; margin: 0 auto; padding: 32px 24px; }
+
+    /* SEKCE */
+    .section { margin-bottom: 40px; }
+    .section-title { font-family: 'Syne', sans-serif; font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .15em; color: var(--muted); margin-bottom: 16px; }
+
+    /* KATEGORIE TABS */
+    .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 24px; }
+    .tab { padding: 6px 16px; border-radius: 6px; border: 1px solid var(--border); background: none; color: var(--muted); font-family: 'Syne', sans-serif; font-size: .85rem; font-weight: 600; cursor: pointer; transition: all .15s; }
+    .tab:hover { border-color: var(--accent); color: var(--accent); }
+    .tab.active { background: var(--accent); border-color: var(--accent); color: white; }
+    .tab .count { font-family: 'JetBrains Mono', monospace; font-size: .7rem; opacity: .7; margin-left: 4px; }
+
+    /* TABULKA SLOV */
+    .words-table { width: 100%; border-collapse: collapse; }
+    .words-table th { text-align: left; font-size: .65rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); padding: 8px 12px; border-bottom: 1px solid var(--border); }
+    .words-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: .85rem; vertical-align: middle; }
+    .words-table tr:last-child td { border-bottom: none; }
+    .words-table tr:hover td { background: var(--surface); }
+    .col-id { color: var(--muted); font-size: .75rem; width: 50px; }
+    .col-veta { color: var(--text); }
+    .col-odp { width: 60px; text-align: center; }
+    .odp-badge { display: inline-block; padding: 2px 10px; border-radius: 4px; background: var(--accent); color: white; font-weight: 600; font-size: .8rem; }
+    .col-reseni { color: var(--muted); font-size: .8rem; }
+    .col-akce { width: 80px; text-align: right; }
+    .btn-edit { padding: 4px 10px; border-radius: 5px; border: 1px solid var(--border); background: none; color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: .75rem; cursor: pointer; transition: all .15s; }
+    .btn-edit:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-del { padding: 4px 10px; border-radius: 5px; border: 1px solid var(--border); background: none; color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: .75rem; cursor: pointer; transition: all .15s; margin-left: 4px; }
+    .btn-del:hover { border-color: var(--red); color: var(--red); }
+    .empty-msg { text-align: center; padding: 40px; color: var(--muted); font-size: .85rem; }
+
+    /* FORMULÁŘ */
+    .form-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
+    .form-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem; color: var(--text); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .form-title .badge { font-size: .65rem; padding: 3px 8px; border-radius: 4px; background: var(--accent); color: white; font-family: 'JetBrains Mono', monospace; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+    .form-grid.full { grid-template-columns: 1fr; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-size: .65rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
+    .field input, .field select { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: .85rem; outline: none; transition: border-color .15s; width: 100%; }
+    .field input:focus, .field select:focus { border-color: var(--accent); }
+    .field input::placeholder { color: var(--muted); }
+    .field .hint { font-size: .7rem; color: var(--muted); }
+    .form-actions { display: flex; gap: 10px; margin-top: 4px; }
+    .btn-primary { padding: 10px 24px; background: var(--accent); border: none; border-radius: 6px; color: white; font-family: 'Syne', sans-serif; font-weight: 600; font-size: .85rem; cursor: pointer; transition: opacity .15s; }
+    .btn-primary:hover { opacity: .85; }
+    .btn-primary:disabled { opacity: .4; cursor: not-allowed; }
+    .btn-secondary { padding: 10px 20px; background: none; border: 1px solid var(--border); border-radius: 6px; color: var(--muted); font-family: 'Syne', sans-serif; font-weight: 600; font-size: .85rem; cursor: pointer; transition: all .15s; }
+    .btn-secondary:hover { border-color: var(--muted); color: var(--text); }
+    .form-msg { font-size: .8rem; padding: 8px 12px; border-radius: 6px; margin-top: 12px; display: none; }
+    .form-msg.ok  { background: rgba(77,250,154,.1); border: 1px solid var(--green); color: var(--green); display: block; }
+    .form-msg.err { background: rgba(250,77,109,.1); border: 1px solid var(--red);   color: var(--red);   display: block; }
+
+    /* HRÁČI */
+    .hrace-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; margin-bottom: 24px; }
+    .hrac-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+    .hrac-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: .9rem; color: var(--text); margin-bottom: 8px; }
+    .hrac-scores { display: flex; flex-direction: column; gap: 4px; }
+    .hrac-score { font-size: .75rem; color: var(--muted); display: flex; justify-content: space-between; }
+    .hrac-score span { color: var(--accent); font-weight: 600; }
+    .btn-del-hrac { margin-top: 10px; width: 100%; padding: 5px; border-radius: 5px; border: 1px solid var(--border); background: none; color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: .7rem; cursor: pointer; transition: all .15s; }
+    .btn-del-hrac:hover { border-color: var(--red); color: var(--red); }
+    .btn-reset-hrac { margin-top: 4px; width: 100%; padding: 5px; border-radius: 5px; border: 1px solid var(--border); background: none; color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: .7rem; cursor: pointer; transition: all .15s; }
+    .btn-reset-hrac:hover { border-color: var(--yellow); color: var(--yellow); }
+
+    /* LOADING */
+    .loading { text-align: center; padding: 40px; color: var(--muted); font-size: .85rem; }
+    .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .6s linear infinite; margin-right: 8px; vertical-align: middle; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* TOAST */
+    .toast { position: fixed; bottom: 24px; right: 24px; padding: 12px 20px; border-radius: 8px; font-size: .85rem; font-weight: 600; z-index: 999; animation: toastIn .2s ease; display: none; }
+    .toast.show { display: block; }
+    .toast.ok  { background: var(--green); color: #000; }
+    .toast.err { background: var(--red);   color: #fff; }
+    @keyframes toastIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
+
+    select option { background: var(--surface); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Soutěž <span>/ admin</span></div>
+  <div class="status">
+    <div class="status-dot" id="status-dot"></div>
+    <span id="status-text">Připojuji...</span>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- VYJMENOVANÁ SLOVA -->
+  <div class="section">
+    <div class="section-title">Vyjmenovaná slova</div>
+
+    <!-- Kategorie tabs -->
+    <div class="tabs" id="tabs">
+      <div class="loading"><span class="spinner"></span>Načítám...</div>
+    </div>
+
+    <!-- Tabulka slov -->
+    <div id="words-wrap">
+      <div class="loading"><span class="spinner"></span>Načítám slova...</div>
+    </div>
+
+    <!-- Formulář přidání / editace -->
+    <div class="form-card" style="margin-top:20px">
+      <div class="form-title">
+        <span id="form-title-text">Přidat slovo</span>
+        <span class="badge" id="form-badge">NOVÝ</span>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label>Kategorie</label>
+          <select id="f-kat">
+            <option value="b">B</option>
+            <option value="l">L</option>
+            <option value="m">M</option>
+            <option value="p">P</option>
+            <option value="s">S</option>
+            <option value="v">V</option>
+            <option value="z">Z</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Odpověď (y / i / ý / í)</label>
+          <select id="f-odp">
+            <option value="y">y</option>
+            <option value="i">i</option>
+            <option value="ý">ý</option>
+            <option value="í">í</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grid full">
+        <div class="field">
+          <label>Věta (místo písmena napiš _)</label>
+          <input type="text" id="f-veta" placeholder="např. v_soká hora"/>
+          <div class="hint">Použij _ (jedno podtržítko) místo y/i/ý/í</div>
+        </div>
+      </div>
+      <div class="form-grid full">
+        <div class="field">
+          <label>Řešení (celá věta se správným písmenem)</label>
+          <input type="text" id="f-reseni" placeholder="např. vysoká hora"/>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-primary" id="btn-ulozit">Uložit</button>
+        <button class="btn-secondary" id="btn-zrusit" style="display:none">Zrušit editaci</button>
+      </div>
+      <div class="form-msg" id="form-msg"></div>
+    </div>
+  </div>
+
+  <!-- HRÁČI -->
+  <div class="section">
+    <div class="section-title">Hráči</div>
+    <div id="hrace-wrap">
+      <div class="loading"><span class="spinner"></span>Načítám hráče...</div>
+    </div>
+
+    <!-- Přidat hráče -->
+    <div class="form-card" style="margin-top:20px">
+      <div class="form-title">Přidat hráče</div>
+      <div class="form-grid">
+        <div class="field">
+          <label>Uživatelské jméno</label>
+          <input type="text" id="f-hrac" placeholder="např. jana123"/>
+          <div class="hint">Bude převedeno na malá písmena</div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-primary" id="btn-pridat-hrace">Přidat hráče</button>
+      </div>
+      <div class="form-msg" id="hrac-msg"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, get, set, remove, push } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAE_kjebwQrSzeEz9-3c_Y66TUBAvRIjB4",
+    authDomain: "malanasobilka.firebaseapp.com",
+    databaseURL: "https://malanasobilka-default-rtdb.firebaseio.com",
+    projectId: "malanasobilka",
+    storageBucket: "malanasobilka.firebasestorage.app",
+    messagingSenderId: "712520835692",
+    appId: "1:712520835692:web:6746f62321750e264a6e49"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db  = getDatabase(app);
+
+  const KATEGORIE = ['b','l','m','p','s','v','z'];
+  let aktualniKat  = 'b';
+  let editKlic     = null; // klíč záznamu při editaci
+
+  // ── Status ──────────────────────────────────────────
+  async function testSpojeni() {
+    try {
+      await get(ref(db, 'hrace'));
+      document.getElementById('status-dot').className  = 'status-dot ok';
+      document.getElementById('status-text').textContent = 'Připojeno k Firebase';
+    } catch(e) {
+      document.getElementById('status-text').textContent = 'Chyba připojení';
+    }
+  }
+
+  // ── Toast ────────────────────────────────────────────
+  function toast(msg, typ = 'ok') {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = `toast show ${typ}`;
+    setTimeout(() => el.className = 'toast', 2500);
+  }
+
+  // ── Načtení a vykreslení tabs ─────────────────────────
+  async function nactiTabs() {
+    const tabsEl = document.getElementById('tabs');
+    tabsEl.innerHTML = '';
+    for (const kat of KATEGORIE) {
+      const snap  = await get(ref(db, `vyjmenovana/${kat}`));
+      const count = snap.exists() ? Object.keys(snap.val()).length : 0;
+      const btn   = document.createElement('button');
+      btn.className = 'tab' + (kat === aktualniKat ? ' active' : '');
+      btn.innerHTML = `${kat.toUpperCase()} <span class="count">${count}</span>`;
+      btn.onclick   = () => { aktualniKat = kat; nactiTabs(); nactiSlova(kat); document.getElementById('f-kat').value = kat; };
+      tabsEl.appendChild(btn);
+    }
+  }
+
+  // ── Načtení a vykreslení slov ─────────────────────────
+  async function nactiSlova(kat) {
+    const wrap = document.getElementById('words-wrap');
+    wrap.innerHTML = '<div class="loading"><span class="spinner"></span>Načítám...</div>';
+    const snap = await get(ref(db, `vyjmenovana/${kat}`));
+    if (!snap.exists()) { wrap.innerHTML = '<div class="empty-msg">Žádná slova v této kategorii.</div>'; return; }
+
+    const data = snap.val();
+    const rows = Object.entries(data).sort((a,b) => a[0].localeCompare(b[0])).map(([klic, s]) => `
+      <tr>
+        <td class="col-id">${klic}</td>
+        <td class="col-veta">${s.veta || ''}</td>
+        <td class="col-odp"><span class="odp-badge">${s.odpoved || ''}</span></td>
+        <td class="col-reseni">${s.reseni || '<span style="color:#3a3a50">—</span>'}</td>
+        <td class="col-akce">
+          <button class="btn-edit" onclick="window._editSlovo('${kat}','${klic}')">upravit</button>
+          <button class="btn-del"  onclick="window._smazSlovo('${kat}','${klic}')">smazat</button>
+        </td>
+      </tr>`).join('');
+
+    wrap.innerHTML = `
+      <table class="words-table">
+        <thead><tr>
+          <th>ID</th><th>Věta</th><th>Odpověď</th><th>Řešení</th><th></th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  }
+
+  // ── Uložení slova ─────────────────────────────────────
+  document.getElementById('btn-ulozit').onclick = async () => {
+    const kat    = document.getElementById('f-kat').value;
+    const veta   = document.getElementById('f-veta').value.trim();
+    const odp    = document.getElementById('f-odp').value;
+    const reseni = document.getElementById('f-reseni').value.trim();
+    const msg    = document.getElementById('form-msg');
+
+    if (!veta)   { msg.textContent = 'Zadej větu!';    msg.className = 'form-msg err'; return; }
+    if (!reseni) { msg.textContent = 'Zadej řešení!'; msg.className = 'form-msg err'; return; }
+
+    const data = { veta, odpoved: odp, reseni };
+
+    try {
+      if (editKlic) {
+        // Editace existujícího záznamu
+        await set(ref(db, `vyjmenovana/${kat}/${editKlic}`), data);
+        toast('✓ Slovo upraveno');
+      } else {
+        // Nový záznam — vygeneruj klíč jako třímístné číslo
+        const snap    = await get(ref(db, `vyjmenovana/${kat}`));
+        const existuj = snap.exists() ? Object.keys(snap.val()) : [];
+        const cisla   = existuj.map(k => parseInt(k)).filter(n => !isNaN(n));
+        const novyCis = cisla.length > 0 ? Math.max(...cisla) + 1 : 1;
+        const novyKlic = String(novyCis).padStart(3, '0');
+        await set(ref(db, `vyjmenovana/${kat}/${novyKlic}`), data);
+        toast('✓ Slovo přidáno');
+      }
+      msg.className = 'form-msg';
+      resetForm();
+      aktualniKat = kat;
+      await nactiTabs();
+      await nactiSlova(kat);
+    } catch(e) {
+      msg.textContent = 'Chyba: ' + e.message; msg.className = 'form-msg err';
+    }
+  };
+
+  // ── Editace slova ─────────────────────────────────────
+  window._editSlovo = async (kat, klic) => {
+    const snap = await get(ref(db, `vyjmenovana/${kat}/${klic}`));
+    if (!snap.exists()) return;
+    const s = snap.val();
+    editKlic = klic;
+    document.getElementById('f-kat').value    = kat;
+    document.getElementById('f-veta').value   = s.veta    || '';
+    document.getElementById('f-odp').value    = s.odpoved || 'y';
+    document.getElementById('f-reseni').value = s.reseni  || '';
+    document.getElementById('form-title-text').textContent = `Upravit slovo`;
+    document.getElementById('form-badge').textContent      = klic.toUpperCase();
+    document.getElementById('form-badge').style.background = '#fa6d8e';
+    document.getElementById('btn-zrusit').style.display    = 'inline-block';
+    document.getElementById('form-msg').className = 'form-msg';
+    document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // ── Smazání slova ─────────────────────────────────────
+  window._smazSlovo = async (kat, klic) => {
+    if (!confirm(`Smazat záznam ${klic} z kategorie ${kat.toUpperCase()}?`)) return;
+    try {
+      await remove(ref(db, `vyjmenovana/${kat}/${klic}`));
+      toast('Slovo smazáno', 'err');
+      await nactiTabs();
+      await nactiSlova(kat);
+    } catch(e) { toast('Chyba: ' + e.message, 'err'); }
+  };
+
+  // ── Reset formuláře ───────────────────────────────────
+  function resetForm() {
+    editKlic = null;
+    document.getElementById('f-veta').value   = '';
+    document.getElementById('f-reseni').value = '';
+    document.getElementById('form-title-text').textContent = 'Přidat slovo';
+    document.getElementById('form-badge').textContent      = 'NOVÝ';
+    document.getElementById('form-badge').style.background = '';
+    document.getElementById('btn-zrusit').style.display    = 'none';
+  }
+  document.getElementById('btn-zrusit').onclick = resetForm;
+
+  // ── Hráči ─────────────────────────────────────────────
+  async function nactiHrace() {
+    const wrap = document.getElementById('hrace-wrap');
+    const snap = await get(ref(db, 'hrace'));
+    if (!snap.exists()) { wrap.innerHTML = '<div class="empty-msg">Žádní hráči.</div>'; return; }
+    const data  = snap.val();
+    const karty = Object.entries(data).sort((a,b) => a[0].localeCompare(b[0])).map(([jmeno, val]) => `
+      <div class="hrac-card">
+        <div class="hrac-name">${jmeno}</div>
+        <div class="hrac-scores">
+          <div class="hrac-score">násobilka <span>${val.nasobilka || 0}</span></div>
+          <div class="hrac-score">vyjmenovaná <span>${val.vyjmenovana || 0}</span></div>
+        </div>
+        <button class="btn-reset-hrac" onclick="window._resetHrace('${jmeno}')">↺ resetovat skóre</button>
+        <button class="btn-del-hrac"   onclick="window._smazHrace('${jmeno}')">✕ smazat hráče</button>
+      </div>`).join('');
+    wrap.innerHTML = `<div class="hrace-grid">${karty}</div>`;
+  }
+
+  document.getElementById('btn-pridat-hrace').onclick = async () => {
+    const inp  = document.getElementById('f-hrac');
+    const msg  = document.getElementById('hrac-msg');
+    const jmeno = inp.value.trim().toLowerCase();
+    if (!jmeno) { msg.textContent = 'Zadej jméno!'; msg.className = 'form-msg err'; return; }
+    const snap = await get(ref(db, `hrace/${jmeno}`));
+    if (snap.exists()) { msg.textContent = 'Hráč už existuje!'; msg.className = 'form-msg err'; return; }
+    try {
+      await set(ref(db, `hrace/${jmeno}`), { nasobilka: 0, vyjmenovana: 0 });
+      toast(`✓ Hráč ${jmeno} přidán`);
+      inp.value = '';
+      msg.className = 'form-msg';
+      nactiHrace();
+    } catch(e) { msg.textContent = 'Chyba: ' + e.message; msg.className = 'form-msg err'; }
+  };
+
+  window._smazHrace = async (jmeno) => {
+    if (!confirm(`Smazat hráče ${jmeno}?`)) return;
+    await remove(ref(db, `hrace/${jmeno}`));
+    toast(`Hráč ${jmeno} smazán`, 'err');
+    nactiHrace();
+  };
+
+  window._resetHrace = async (jmeno) => {
+    if (!confirm(`Resetovat skóre hráče ${jmeno}?`)) return;
+    await set(ref(db, `hrace/${jmeno}`), { nasobilka: 0, vyjmenovana: 0 });
+    toast(`↺ Skóre ${jmeno} resetováno`);
+    nactiHrace();
+  };
+
+  // ── Sync výběru kategorie ve formuláři → tabs ─────────
+  document.getElementById('f-kat').onchange = e => {
+    aktualniKat = e.target.value;
+    nactiTabs();
+    nactiSlova(aktualniKat);
+  };
+
+  // ── Init ──────────────────────────────────────────────
+  await testSpojeni();
+  await nactiTabs();
+  await nactiSlova(aktualniKat);
+  await nactiHrace();
+</script>
+</body>
+</html>
