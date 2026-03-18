@@ -19,20 +19,20 @@ const POCET_PRIKLADU = 10;
 const VSECHNY_KAT    = ['b', 'l', 'm', 'p', 's', 'v', 'z'];
 
 // ── Lokální stav ──────────────────────────────────────
-let body           = 0;
-let celkemOtazek   = 0;
+let body             = 0;
+let celkemOtazek     = 0;
 let historiePrikladu = [];
-let vyjmSlova      = [];
-let aktualniSlovo  = null;
+let vyjmSlova        = [];
+let aktualniSlovo    = null;
 let vybranéKategorie = new Set();
 
 // ── Inicializace (volá se při přechodu na uvítací obrazovku) ──
 export function initVyjmenovana() {
-  document.getElementById('btn-start-vyjmenovana').onclick      = startHra;
-  document.getElementById('btn-zpet-vyjmenovana').onclick       = () => showScreen('screen-vyber');
-  document.getElementById('btn-vyber-vse').onclick              = vyberVse;
-  document.getElementById('btn-zebricek-welcome-vyjm').onclick  = () => initZebricek('screen-welcome-vyjmenovana', 'vyjmenovana');
-  document.getElementById('btn-ukoncit-vyjm').onclick = ukoncitHru;
+  document.getElementById('btn-start-vyjmenovana').onclick     = startHra;
+  document.getElementById('btn-zpet-vyjmenovana').onclick      = () => showScreen('screen-vyber');
+  document.getElementById('btn-vyber-vse').onclick             = vyberVse;
+  document.getElementById('btn-zebricek-welcome-vyjm').onclick = () => initZebricek('screen-welcome-vyjmenovana', 'vyjmenovana');
+  document.getElementById('btn-ukoncit-vyjm').onclick          = ukoncitHru;
 
   document.querySelectorAll('.kat-btn').forEach(btn => {
     btn.onclick = () => toggleKategorie(btn);
@@ -41,6 +41,12 @@ export function initVyjmenovana() {
   document.querySelectorAll('.vyjm-btn').forEach(btn => {
     btn.onclick = () => odpovez(btn.dataset.val);
   });
+}
+
+// ── Předčasné ukončení hry ────────────────────────────
+function ukoncitHru() {
+  aktualniSlovo = null; // zabrání zpracování případné odpovědi
+  showScreen('screen-welcome-vyjmenovana');
 }
 
 // ── Toggle kategorie ──────────────────────────────────
@@ -114,15 +120,9 @@ function novéSlovo() {
   const idx = Math.floor(Math.random() * vyjmSlova.length);
   aktualniSlovo = vyjmSlova[idx];
 
-  document.getElementById('lbl-veta').innerHTML         = aktualniSlovo.veta.replace('_', '<span class="blank">_</span>');
+  document.getElementById('lbl-veta').innerHTML            = aktualniSlovo.veta.replace('___', '<span class="blank">___</span>');
   document.getElementById('lbl-komentar-vyjm').textContent = '';
   document.getElementById('lbl-komentar-vyjm').className   = 'komentar';
-}
-
-//----Ukončit hru ------
-function ukoncitHru() {
-  aktualniSlovo = null;
-  showScreen('screen-welcome-vyjmenovana');
 }
 
 // ── Odpověď ───────────────────────────────────────────
@@ -130,14 +130,14 @@ function odpovez(val) {
   if (!aktualniSlovo) return;
   document.querySelectorAll('.vyjm-btn').forEach(b => b.disabled = true);
 
-  const kom         = document.getElementById('lbl-komentar-vyjm');
-  const tlacitka    = document.querySelectorAll('.vyjm-btn');
-  const spravne     = val === aktualniSlovo.odpoved;
-  const vetaHotova  = aktualniSlovo.veta.replace('___', aktualniSlovo.odpoved);
+  const kom        = document.getElementById('lbl-komentar-vyjm');
+  const tlacitka   = document.querySelectorAll('.vyjm-btn');
+  const spravne    = val === aktualniSlovo.odpoved;
+  const vetaHotova = aktualniSlovo.veta.replace('___', aktualniSlovo.odpoved);
 
   historiePrikladu.push({
-    veta:             aktualniSlovo.veta,
-    spravnaOdpoved:   aktualniSlovo.odpoved,
+    veta:               aktualniSlovo.veta,
+    spravnaOdpoved:     aktualniSlovo.odpoved,
     uzivatelovaOdpoved: val,
     spravne,
     vetaHotova
@@ -148,18 +148,16 @@ function odpovez(val) {
   if (spravne) {
     body++;
     document.getElementById('lbl-body-vyjm').textContent = body;
-    document.getElementById('lbl-veta').textContent = aktualniSlovo.reseni;
-    kom.textContent = '✓ Správně!'; kom.className = 'komentar correct';
+    kom.textContent = `✓ ${vetaHotova}`; kom.className = 'komentar correct';
     updateHint('record-hint-vyjm', body, stav.osobniMaxVyjm, stav.globalMaxVyjm);
     tlacitka.forEach(t => { if (t.dataset.val === val) { t.classList.add('correct-flash'); setTimeout(() => t.classList.remove('correct-flash'), 400); } });
   } else {
-    document.getElementById('lbl-veta').textContent = aktualniSlovo.reseni;
-    kom.textContent = '✗ Špatně!'; kom.className = 'komentar wrong';
+    kom.textContent = `✗ Správně: ${vetaHotova}`; kom.className = 'komentar wrong';
     tlacitka.forEach(t => { if (t.dataset.val === val) { t.classList.add('wrong-flash'); setTimeout(() => t.classList.remove('wrong-flash'), 400); } });
   }
 
   aktualniSlovo = null;
-  const prodleva = spravne ? 2000 : 2000;
+  const prodleva = spravne ? 600 : 1000;
 
   if (celkemOtazek >= POCET_PRIKLADU) {
     setTimeout(() => zobrazVysledkyVyjmenovana(body, POCET_PRIKLADU, historiePrikladu), prodleva);

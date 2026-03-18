@@ -20,9 +20,10 @@ const app = initializeApp(firebaseConfig);
 export const db = getDatabase(app);
 export { ref, get, set };
 
-// ── Sdílený stav (čte i zapisuje více modulů) ─────────
+// ── Sdílený stav ─────────────────────────────────────
 export const stav = {
   jmeno: '',
+  trida: '',              // třída přihlášeného žáka, např. "3A"
   aktualniHra: '',        // 'nasobilka' | 'vyjmenovana'
   osobniMaxNas: 0,
   globalMaxNas: 0,
@@ -30,7 +31,7 @@ export const stav = {
   globalMaxVyjm: 0,
 };
 
-// ── Pomocná funkce: přepnutí obrazovky ────────────────
+// ── Přepnutí obrazovky ────────────────────────────────
 export function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -53,12 +54,24 @@ export async function ulozSkore(username, hra, skore) {
   return false;
 }
 
-// ── Firebase: žebříček ────────────────────────────────
+// ── Firebase: globální žebříček ───────────────────────
 export async function nactiZebricek(hra) {
   const snap = await get(ref(db, 'hrace'));
   if (!snap.exists()) return [];
   return Object.entries(snap.val())
-    .map(([name, val]) => ({ name, max: (val && val[hra]) ? val[hra] : 0 }))
+    .map(([name, val]) => ({ name, trida: val.trida || '', max: (val && val[hra]) ? val[hra] : 0 }))
+    .filter(h => h.max > 0)
+    .sort((a, b) => b.max - a.max)
+    .slice(0, 20);
+}
+
+// ── Firebase: žebříček jen pro jednu třídu ────────────
+export async function nactiZebricekTridy(hra, trida) {
+  const snap = await get(ref(db, 'hrace'));
+  if (!snap.exists()) return [];
+  return Object.entries(snap.val())
+    .filter(([, val]) => (val.trida || '') === trida)
+    .map(([name, val]) => ({ name, trida: val.trida || '', max: (val && val[hra]) ? val[hra] : 0 }))
     .filter(h => h.max > 0)
     .sort((a, b) => b.max - a.max)
     .slice(0, 20);
@@ -67,9 +80,9 @@ export async function nactiZebricek(hra) {
 // ── Hint: blížíš se k rekordu ─────────────────────────
 export function updateHint(id, b, osobni, glob) {
   const hint = document.getElementById(id);
-  if (osobni > 0 && b === osobni)      { hint.textContent = '🔥 Vyrovnáváš svůj rekord!';            hint.className = 'record-hint beating'; }
-  else if (osobni > 0 && b > osobni)   { hint.textContent = `🚀 Překonáváš rekord! (${b} > ${osobni})`; hint.className = 'record-hint beating'; }
-  else if (glob > 0 && b >= glob)      { hint.textContent = '👑 Míříš na rekord školy!';              hint.className = 'record-hint beating'; }
+  if (osobni > 0 && b === osobni)    { hint.textContent = '🔥 Vyrovnáváš svůj rekord!';                hint.className = 'record-hint beating'; }
+  else if (osobni > 0 && b > osobni) { hint.textContent = `🚀 Překonáváš rekord! (${b} > ${osobni})`; hint.className = 'record-hint beating'; }
+  else if (glob > 0 && b >= glob)    { hint.textContent = '👑 Míříš na rekord školy!';                 hint.className = 'record-hint beating'; }
   else { hint.textContent = osobni > 0 ? `Do rekordu zbývá ${osobni - b} bodů` : ''; hint.className = 'record-hint'; }
 }
 

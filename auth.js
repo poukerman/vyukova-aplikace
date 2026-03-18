@@ -21,7 +21,7 @@ async function prihlasit() {
   const err = document.getElementById('login-error');
   const username = inp.value.trim().toLowerCase();
 
-  if (!username)          { err.textContent = 'Zadej uživatelské jméno!'; return; }
+  if (!username)           { err.textContent = 'Zadej uživatelské jméno!'; return; }
   if (username.length < 2) { err.textContent = 'Jméno musí mít aspoň 2 znaky.'; return; }
 
   err.textContent = 'Přihlašuji...';
@@ -29,9 +29,10 @@ async function prihlasit() {
     const hrac = await nactiHrace(username);
     if (!hrac) { err.textContent = '❌ Uživatelské jméno nebylo nalezeno.'; return; }
 
-    stav.jmeno        = username;
-    stav.osobniMaxNas  = hrac.nasobilka   || 0;
-    stav.osobniMaxVyjm = hrac.vyjmenovana || 0;
+    stav.jmeno         = username;
+    stav.trida         = hrac.trida        || '';   // ← načtení třídy
+    stav.osobniMaxNas  = hrac.nasobilka    || 0;
+    stav.osobniMaxVyjm = hrac.vyjmenovana  || 0;
 
     const zbNas  = await nactiZebricek('nasobilka');
     const zbVyjm = await nactiZebricek('vyjmenovana');
@@ -49,12 +50,12 @@ function volbaHry(hra) {
   if (hra === 'nasobilka') {
     document.getElementById('lbl-osobni-nas').textContent = stav.osobniMaxNas;
     document.getElementById('lbl-global-nas').textContent = stav.globalMaxNas;
-    initNasobilka();   // předá řízení modulu násobilky
+    initNasobilka();
     showScreen('screen-welcome-nasobilka');
   } else {
     document.getElementById('lbl-osobni-vyjm').textContent = stav.osobniMaxVyjm;
     document.getElementById('lbl-global-vyjm').textContent = stav.globalMaxVyjm;
-    initVyjmenovana(); // předá řízení modulu vyjmenovaných
+    initVyjmenovana();
     showScreen('screen-welcome-vyjmenovana');
   }
 }
