@@ -511,18 +511,23 @@
     aktualizujNadpisZaku();
     const wrap = document.getElementById('hrace-wrap');
     wrap.innerHTML = '<div class="loading"><span class="spinner"></span>Načítám žáky...</div>';
-    const snap = await get(ref(db, 'hrace'));
+    const snap = await get(ref(db, 'tridy'));
     if (!snap.exists()) { wrap.innerHTML = '<div class="empty-msg">Žádní žáci.</div>'; return; }
-    const data = snap.val();
+    const tridy = snap.val();
 
-    // Filtrování: aktivniTrida = konkrétní třída, '' = všechny dostupné třídy učitele
-    const zaci = Object.entries(data).filter(([, v]) => {
-      const t = v.trida || '';
-      if (aktivniTrida !== '') return t === aktivniTrida;
-      if (jeAdmin) return true;
-      return ucitelTridy.includes(t);
-    }).sort((a, b) => {
-      // Seřadit nejdřív podle třídy, pak podle jména
+    // Sloučíme žáky ze všech tříd do jednoho pole s informací o třídě
+    const zaci = [];
+    for (const [trida, zacivTride] of Object.entries(tridy)) {
+      if (!zacivTride) continue;
+      // Filtrování podle aktivní třídy a oprávnění učitele
+      if (aktivniTrida !== '' && trida !== aktivniTrida) continue;
+      if (!jeAdmin && !ucitelTridy.includes(trida)) continue;
+      for (const [jmeno, val] of Object.entries(zacivTride)) {
+        zaci.push([jmeno, { ...val, trida }]);
+      }
+    }
+
+    zaci.sort((a, b) => {
       const tA = a[1].trida || '', tB = b[1].trida || '';
       return tA !== tB ? tA.localeCompare(tB) : a[0].localeCompare(b[0]);
     });
@@ -539,8 +544,8 @@
           <div class="hrac-score">násobilka <span>${val.nasobilka || 0}</span></div>
           <div class="hrac-score">vyjmenovaná <span>${val.vyjmenovana || 0}</span></div>
         </div>
-        <button class="btn-reset-hrac" onclick="window._resetHrace('${jmeno}')">↺ resetovat skóre</button>
-        <button class="btn-del-hrac"   onclick="window._smazHrace('${jmeno}')">✕ smazat žáka</button>
+        <button class="btn-reset-hrac" onclick="window._resetHrace('${val.trida}','${jmeno}')">↺ resetovat skóre</button>
+        <button class="btn-del-hrac"   onclick="window._smazHrace('${val.trida}','${jmeno}')">✕ smazat žáka</button>
       </div>`).join('');
 
     wrap.innerHTML = `<div class="hrace-grid">${karty}</div>`;
@@ -558,27 +563,27 @@
       ? document.getElementById('f-hrac-trida').value
       : (ucitelTridy[0] || '');
 
-    const snap = await get(ref(db, `hrace/${jmeno}`));
+    const snap = await get(ref(db, `tridy/${novaTrida}/${jmeno}`));
     if (snap.exists()) { msg.textContent = 'Žák už existuje!'; msg.className = 'form-msg err'; return; }
     try {
-      await set(ref(db, `hrace/${jmeno}`), { nasobilka: 0, vyjmenovana: 0, trida: novaTrida });
+      await set(ref(db, `tridy/${novaTrida}/${jmeno}`), { nasobilka: 0, vyjmenovana: 0 });
       toast(`✓ Žák ${jmeno} přidán do třídy ${novaTrida}`);
       inp.value = ''; msg.className = 'form-msg';
       nactiHrace();
     } catch(e) { msg.textContent = 'Chyba: ' + e.message; msg.className = 'form-msg err'; }
   };
 
-  window._smazHrace = async (jmeno) => {
+  window._smazHrace = async (trida, jmeno) => {
     if (!confirm(`Smazat žáka ${jmeno}?`)) return;
-    await remove(ref(db, `hrace/${jmeno}`));
+    await remove(ref(db, `tridy/${trida}/${jmeno}`));
     toast(`Žák ${jmeno} smazán`, 'err');
     nactiHrace();
   };
 
-  window._resetHrace = async (jmeno) => {
+  window._resetHrace = async (trida, jmeno) => {
     if (!confirm(`Resetovat skóre žáka ${jmeno}?`)) return;
-    await set(ref(db, `hrace/${jmeno}/nasobilka`), 0);
-    await set(ref(db, `hrace/${jmeno}/vyjmenovana`), 0);
+    await set(ref(db, `tridy/${trida}/${jmeno}/nasobilka`), 0);
+    await set(ref(db, `tridy/${trida}/${jmeno}/vyjmenovana`), 0);
     toast(`↺ Skóre ${jmeno} resetováno`);
     nactiHrace();
   };
