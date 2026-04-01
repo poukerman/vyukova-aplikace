@@ -506,24 +506,37 @@
     nactiSlova(aktualniKat);
   };
 
-  // ── Hráči ─────────────────────────────────────────────
+  // ── Hráči — čte z hrace/ i tridy/ ────────────────────
   async function nactiHrace() {
     aktualizujNadpisZaku();
     const wrap = document.getElementById('hrace-wrap');
     wrap.innerHTML = '<div class="loading"><span class="spinner"></span>Načítám žáky...</div>';
-    const snap = await get(ref(db, 'tridy'));
-    if (!snap.exists()) { wrap.innerHTML = '<div class="empty-msg">Žádní žáci.</div>'; return; }
-    const tridy = snap.val();
 
-    // Sloučíme žáky ze všech tříd do jednoho pole s informací o třídě
-    const zaci = [];
-    for (const [trida, zacivTride] of Object.entries(tridy)) {
-      if (!zacivTride) continue;
-      // Filtrování podle aktivní třídy a oprávnění učitele
-      if (aktivniTrida !== '' && trida !== aktivniTrida) continue;
-      if (!jeAdmin && !ucitelTridy.includes(trida)) continue;
-      for (const [jmeno, val] of Object.entries(zacivTride)) {
-        zaci.push([jmeno, { ...val, trida }]);
+    const zaci = []; // [ [jmeno, {nasobilka, vyjmenovana, trida, _cesta}] ]
+
+    // Nová struktura tridy/
+    const snapTridy = await get(ref(db, 'tridy'));
+    if (snapTridy.exists()) {
+      for (const [trida, zacivTride] of Object.entries(snapTridy.val())) {
+        if (!zacivTride) continue;
+        if (aktivniTrida !== '' && trida !== aktivniTrida) continue;
+        if (!jeAdmin && !ucitelTridy.includes(trida)) continue;
+        for (const [jmeno, val] of Object.entries(zacivTride)) {
+          zaci.push([jmeno, { ...val, trida, _cesta: 'tridy' }]);
+        }
+      }
+    }
+
+    // Stará struktura hrace/ — jen žáci, kteří nejsou v tridy/
+    const jizPridani = new Set(zaci.map(([j]) => j));
+    const snapHrace = await get(ref(db, 'hrace'));
+    if (snapHrace.exists()) {
+      for (const [jmeno, val] of Object.entries(snapHrace.val())) {
+        if (jizPridani.has(jmeno)) continue;
+        const trida = String(val.trida || '');
+        if (aktivniTrida !== '' && trida !== aktivniTrida) continue;
+        if (!jeAdmin && !ucitelTridy.includes(trida)) continue;
+        zaci.push([jmeno, { nasobilka: val.nasobilka || 0, vyjmenovana: val.vyjmenovana || 0, trida, _cesta: 'hrace' }]);
       }
     }
 
@@ -544,46 +557,49 @@
           <div class="hrac-score">násobilka <span>${val.nasobilka || 0}</span></div>
           <div class="hrac-score">vyjmenovaná <span>${val.vyjmenovana || 0}</span></div>
         </div>
-        <button class="btn-reset-hrac" onclick="window._resetHrace('${val.trida}','${jmeno}')">↺ resetovat skóre</button>
-        <button class="btn-del-hrac"   onclick="window._smazHrace('${val.trida}','${jmeno}')">✕ smazat žáka</button>
+        <button class="btn-reset-hrac" onclick="window._resetHrace('${val._cesta}','${val.trida}','${jmeno}')">↺ resetovat skóre</button>
+        <button class="btn-del-hrac"   onclick="window._smazHrace('${val._cesta}','${val.trida}','${jmeno}')">✕ smazat žáka</button>
       </div>`).join('');
 
     wrap.innerHTML = `<div class="hrace-grid">${karty}</div>`;
   }
 
-  // ── Přidání žáka ──────────────────────────────────────
+  // ── Přidání žáka — nový žák vždy do hrace/ ───────────
   document.getElementById('btn-pridat-hrace').onclick = async () => {
     const inp   = document.getElementById('f-hrac');
     const msg   = document.getElementById('hrac-msg');
     const jmeno = inp.value.trim().toLowerCase();
     if (!jmeno) { msg.textContent = 'Zadej jméno!'; msg.className = 'form-msg err'; return; }
 
-    // Zjisti třídu: z selectu (více tříd) nebo z první učitelovy třídy
     const novaTrida = (jeAdmin || ucitelTridy.length > 1)
       ? document.getElementById('f-hrac-trida').value
       : (ucitelTridy[0] || '');
 
-    const snap = await get(ref(db, `tridy/${novaTrida}/${jmeno}`));
-    if (snap.exists()) { msg.textContent = 'Žák už existuje!'; msg.className = 'form-msg err'; return; }
+    // Zkontroluj duplicitu v obou strukturách
+    const snapT = await get(ref(db, `tridy/${novaTrida}/${jmeno}`));
+    const snapH = await get(ref(db, `hrace/${jmeno}`));
+    if (snapT.exists() || snapH.exists()) { msg.textContent = 'Žák už existuje!'; msg.className = 'form-msg err'; return; }
     try {
-      await set(ref(db, `tridy/${novaTrida}/${jmeno}`), { nasobilka: 0, vyjmenovana: 0 });
+      await set(ref(db, `hrace/${jmeno}`), { nasobilka: 0, vyjmenovana: 0, trida: isNaN(novaTrida) ? novaTrida : Number(novaTrida) });
       toast(`✓ Žák ${jmeno} přidán do třídy ${novaTrida}`);
       inp.value = ''; msg.className = 'form-msg';
       nactiHrace();
     } catch(e) { msg.textContent = 'Chyba: ' + e.message; msg.className = 'form-msg err'; }
   };
 
-  window._smazHrace = async (trida, jmeno) => {
+  window._smazHrace = async (cesta, trida, jmeno) => {
     if (!confirm(`Smazat žáka ${jmeno}?`)) return;
-    await remove(ref(db, `tridy/${trida}/${jmeno}`));
+    const dbRef = cesta === 'tridy' ? `tridy/${trida}/${jmeno}` : `hrace/${jmeno}`;
+    await remove(ref(db, dbRef));
     toast(`Žák ${jmeno} smazán`, 'err');
     nactiHrace();
   };
 
-  window._resetHrace = async (trida, jmeno) => {
+  window._resetHrace = async (cesta, trida, jmeno) => {
     if (!confirm(`Resetovat skóre žáka ${jmeno}?`)) return;
-    await set(ref(db, `tridy/${trida}/${jmeno}/nasobilka`), 0);
-    await set(ref(db, `tridy/${trida}/${jmeno}/vyjmenovana`), 0);
+    const base = cesta === 'tridy' ? `tridy/${trida}/${jmeno}` : `hrace/${jmeno}`;
+    await set(ref(db, `${base}/nasobilka`), 0);
+    await set(ref(db, `${base}/vyjmenovana`), 0);
     toast(`↺ Skóre ${jmeno} resetováno`);
     nactiHrace();
   };

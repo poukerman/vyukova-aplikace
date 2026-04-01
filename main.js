@@ -37,17 +37,29 @@ export function showScreen(id) {
   document.getElementById(id).classList.add('active');
 }
 
-// ── Firebase: najdi ve které třídě žák je ────────────
-// Prochází všechny třídy a hledá jméno žáka.
+// ── Firebase: najdi žáka — podporuje starou i novou strukturu ────
+// Nová: tridy/{trida}/{jmeno}
+// Stará: hrace/{jmeno} (trida uložena jako pole trida uvnitř objektu)
 // Vrátí { trida, data } nebo null.
 export async function najdiHrace(username) {
-  const snap = await get(ref(db, 'tridy'));
-  if (!snap.exists()) return null;
-  for (const [trida, zaci] of Object.entries(snap.val())) {
-    if (zaci && zaci[username]) {
-      return { trida, data: zaci[username] };
+  // 1) Zkus novou strukturu tridy/
+  const snapTridy = await get(ref(db, 'tridy'));
+  if (snapTridy.exists()) {
+    for (const [trida, zaci] of Object.entries(snapTridy.val())) {
+      if (zaci && zaci[username]) {
+        return { trida, data: zaci[username] };
+      }
     }
   }
+
+  // 2) Fallback na starou strukturu hrace/
+  const snapHrace = await get(ref(db, `hrace/${username}`));
+  if (snapHrace.exists()) {
+    const data = snapHrace.val();
+    const trida = String(data.trida || '');
+    return { trida, data: { nasobilka: data.nasobilka || 0, vyjmenovana: data.vyjmenovana || 0 } };
+  }
+
   return null;
 }
 
@@ -58,40 +70,81 @@ export async function nactiHrace(username) {
 }
 
 // ── Firebase: uložení skóre (jen pokud je lepší) ──────
+// Podporuje obě struktury — zapíše vždy do té, kde žák existuje.
 export async function ulozSkore(username, trida, hra, skore) {
-  const snap     = await get(ref(db, `tridy/${trida}/${username}/${hra}`));
+  // Zjisti, kde žák skutečně je
+  const snapNova = await get(ref(db, `tridy/${trida}/${username}`));
+  const cesta = snapNova.exists()
+    ? `tridy/${trida}/${username}/${hra}`
+    : `hrace/${username}/${hra}`;
+
+  const snap     = await get(ref(db, cesta));
   const staryMax = snap.exists() ? (snap.val() || 0) : 0;
   if (skore > staryMax) {
-    await set(ref(db, `tridy/${trida}/${username}/${hra}`), skore);
+    await set(ref(db, cesta), skore);
     return true;
   }
   return false;
 }
 
 // ── Firebase: globální žebříček (všechny třídy) ───────
+// Čte z nové i staré struktury a sloučí výsledky.
 export async function nactiZebricek(hra) {
-  const snap = await get(ref(db, 'tridy'));
-  if (!snap.exists()) return [];
   const vysledky = [];
-  for (const [trida, zaci] of Object.entries(snap.val())) {
-    if (!zaci) continue;
-    for (const [name, val] of Object.entries(zaci)) {
-      const max = (val && val[hra]) ? val[hra] : 0;
-      if (max > 0) vysledky.push({ name, trida, max });
+
+  // Nová struktura
+  const snapTridy = await get(ref(db, 'tridy'));
+  if (snapTridy.exists()) {
+    for (const [trida, zaci] of Object.entries(snapTridy.val())) {
+      if (!zaci) continue;
+      for (const [name, val] of Object.entries(zaci)) {
+        const max = (val && val[hra]) ? val[hra] : 0;
+        if (max > 0) vysledky.push({ name, trida, max });
+      }
     }
   }
+
+  // Stará struktura (pouze žáci, kteří nejsou v nové)
+  const jizPridani = new Set(vysledky.map(v => v.name));
+  const snapHrace = await get(ref(db, 'hrace'));
+  if (snapHrace.exists()) {
+    for (const [name, val] of Object.entries(snapHrace.val())) {
+      if (jizPridani.has(name)) continue;
+      const max = (val && val[hra]) ? val[hra] : 0;
+      if (max > 0) vysledky.push({ name, trida: String(val.trida || ''), max });
+    }
+  }
+
   return vysledky.sort((a, b) => b.max - a.max).slice(0, 20);
 }
 
 // ── Firebase: žebříček jen jedné třídy ───────────────
+// Čte z nové i staré struktury.
 export async function nactiZebricekTridy(hra, trida) {
-  const snap = await get(ref(db, `tridy/${trida}`));
-  if (!snap.exists()) return [];
-  return Object.entries(snap.val())
-    .map(([name, val]) => ({ name, trida, max: (val && val[hra]) ? val[hra] : 0 }))
-    .filter(h => h.max > 0)
-    .sort((a, b) => b.max - a.max)
-    .slice(0, 20);
+  const vysledky = [];
+
+  // Nová struktura
+  const snapTridy = await get(ref(db, `tridy/${trida}`));
+  if (snapTridy.exists()) {
+    for (const [name, val] of Object.entries(snapTridy.val())) {
+      const max = (val && val[hra]) ? val[hra] : 0;
+      if (max > 0) vysledky.push({ name, trida, max });
+    }
+  }
+
+  // Stará struktura — žáci dané třídy, kteří nejsou v nové
+  const jizPridani = new Set(vysledky.map(v => v.name));
+  const snapHrace = await get(ref(db, 'hrace'));
+  if (snapHrace.exists()) {
+    for (const [name, val] of Object.entries(snapHrace.val())) {
+      if (jizPridani.has(name)) continue;
+      if (String(val.trida || '') !== String(trida)) continue;
+      const max = (val && val[hra]) ? val[hra] : 0;
+      if (max > 0) vysledky.push({ name, trida, max });
+    }
+  }
+
+  return vysledky.sort((a, b) => b.max - a.max).slice(0, 20);
 }
 
 // ── Hint: blížíš se k rekordu ─────────────────────────
