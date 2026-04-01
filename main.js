@@ -20,10 +20,10 @@ const app = initializeApp(firebaseConfig);
 export const db = getDatabase(app);
 export { ref, get, set };
 
-// ── Sdílený stav ─────────────────────────────────────
+// ── Sdílený stav ──────────────────────────────────────
 export const stav = {
   jmeno: '',
-  trida: '',              // třída přihlášeného žáka, např. "3A"
+  trida: '',              // třída žáka, např. "3A"
   aktualniHra: '',        // 'nasobilka' | 'vyjmenovana'
   osobniMaxNas: 0,
   globalMaxNas: 0,
@@ -37,41 +37,58 @@ export function showScreen(id) {
   document.getElementById(id).classList.add('active');
 }
 
-// ── Firebase: načtení hráče ───────────────────────────
+// ── Firebase: najdi ve které třídě žák je ────────────
+// Prochází všechny třídy a hledá jméno žáka.
+// Vrátí { trida, data } nebo null.
+export async function najdiHrace(username) {
+  const snap = await get(ref(db, 'tridy'));
+  if (!snap.exists()) return null;
+  for (const [trida, zaci] of Object.entries(snap.val())) {
+    if (zaci && zaci[username]) {
+      return { trida, data: zaci[username] };
+    }
+  }
+  return null;
+}
+
+// ── Firebase: načtení dat žáka ────────────────────────
 export async function nactiHrace(username) {
-  const snap = await get(ref(db, `hrace/${username}`));
-  return snap.exists() ? snap.val() : null;
+  const vysledek = await najdiHrace(username);
+  return vysledek ? vysledek.data : null;
 }
 
 // ── Firebase: uložení skóre (jen pokud je lepší) ──────
-export async function ulozSkore(username, hra, skore) {
-  const hrac = await nactiHrace(username);
-  const staryMax = hrac ? (hrac[hra] || 0) : 0;
+export async function ulozSkore(username, trida, hra, skore) {
+  const snap     = await get(ref(db, `tridy/${trida}/${username}/${hra}`));
+  const staryMax = snap.exists() ? (snap.val() || 0) : 0;
   if (skore > staryMax) {
-    await set(ref(db, `hrace/${username}/${hra}`), skore);
+    await set(ref(db, `tridy/${trida}/${username}/${hra}`), skore);
     return true;
   }
   return false;
 }
 
-// ── Firebase: globální žebříček ───────────────────────
+// ── Firebase: globální žebříček (všechny třídy) ───────
 export async function nactiZebricek(hra) {
-  const snap = await get(ref(db, 'hrace'));
+  const snap = await get(ref(db, 'tridy'));
   if (!snap.exists()) return [];
-  return Object.entries(snap.val())
-    .map(([name, val]) => ({ name, trida: val.trida || '', max: (val && val[hra]) ? val[hra] : 0 }))
-    .filter(h => h.max > 0)
-    .sort((a, b) => b.max - a.max)
-    .slice(0, 20);
+  const vysledky = [];
+  for (const [trida, zaci] of Object.entries(snap.val())) {
+    if (!zaci) continue;
+    for (const [name, val] of Object.entries(zaci)) {
+      const max = (val && val[hra]) ? val[hra] : 0;
+      if (max > 0) vysledky.push({ name, trida, max });
+    }
+  }
+  return vysledky.sort((a, b) => b.max - a.max).slice(0, 20);
 }
 
-// ── Firebase: žebříček jen pro jednu třídu ────────────
+// ── Firebase: žebříček jen jedné třídy ───────────────
 export async function nactiZebricekTridy(hra, trida) {
-  const snap = await get(ref(db, 'hrace'));
+  const snap = await get(ref(db, `tridy/${trida}`));
   if (!snap.exists()) return [];
   return Object.entries(snap.val())
-    .filter(([, val]) => (val.trida || '') === trida)
-    .map(([name, val]) => ({ name, trida: val.trida || '', max: (val && val[hra]) ? val[hra] : 0 }))
+    .map(([name, val]) => ({ name, trida, max: (val && val[hra]) ? val[hra] : 0 }))
     .filter(h => h.max > 0)
     .sort((a, b) => b.max - a.max)
     .slice(0, 20);

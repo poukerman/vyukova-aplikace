@@ -38,7 +38,7 @@ async function renderZebricek(hra) {
     const medals  = ['🥇','🥈','🥉'];
     const classes = ['gold','silver','bronze'];
 
-    // ── Žebříček třídy (jen pokud žák má třídu) ────────
+    // ── Žebříček třídy ────────────────────────────────
     let trida_html = '';
     if (stav.trida) {
       const zbTrida = await nactiZebricekTridy(hra, stav.trida);
@@ -55,7 +55,7 @@ async function renderZebricek(hra) {
       }
     }
 
-    // ── Globální žebříček ───────────────────────────────
+    // ── Globální žebříček ─────────────────────────────
     const zbGlobal = await nactiZebricek(hra);
     let global_html = '';
     if (zbGlobal.length > 0) {

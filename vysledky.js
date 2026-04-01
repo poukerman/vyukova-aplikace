@@ -13,28 +13,24 @@ export function initVysledky() {
 }
 
 function znovu() {
-  if (stav.aktualniHra === 'nasobilka') {
-    // Přejdeme na uvítací obrazovku násobilky a necháme hráče kliknout Začít
-    // (initNasobilka se zavolalo už při volbě hry, handlery jsou nastaveny)
-    showScreen('screen-welcome-nasobilka');
-  } else {
-    showScreen('screen-welcome-vyjmenovana');
-  }
+  if (stav.aktualniHra === 'nasobilka') showScreen('screen-welcome-nasobilka');
+  else showScreen('screen-welcome-vyjmenovana');
 }
 
 // ── Výsledky násobilky ────────────────────────────────
 export async function zobrazVysledkyNasobilka(body) {
   showScreen('screen-result');
-  document.getElementById('result-sub').textContent        = 'bodů za 15 sekund';
-  document.getElementById('result-uspesnost').textContent  = '';
-  document.getElementById('result-prehled').innerHTML      = '';
+  document.getElementById('result-sub').textContent       = 'bodů za 15 sekund';
+  document.getElementById('result-uspesnost').textContent = '';
+  document.getElementById('result-prehled').innerHTML     = '';
 
   const emoji = body === 0 ? '😅' : body < 5 ? '🙂' : body < 10 ? '😊' : body < 15 ? '🔥' : '👑';
   document.getElementById('result-emoji').textContent = emoji;
   document.getElementById('result-score').textContent = body;
 
   try {
-    const jeNovy = await ulozSkore(stav.jmeno, 'nasobilka', body);
+    // ulozSkore nyní vyžaduje i třídu
+    const jeNovy = await ulozSkore(stav.jmeno, stav.trida, 'nasobilka', body);
     if (jeNovy) {
       stav.osobniMaxNas = body;
       document.getElementById('result-new-record').style.display = 'block';
@@ -55,12 +51,11 @@ export async function zobrazVysledkyVyjmenovana(body, pocet, historie) {
   const uspesnost = Math.round((body / pocet) * 100);
   const emoji     = uspesnost < 40 ? '😅' : uspesnost < 60 ? '🙂' : uspesnost < 80 ? '😊' : uspesnost < 100 ? '🔥' : '👑';
 
-  document.getElementById('result-emoji').textContent      = emoji;
-  document.getElementById('result-score').textContent      = `${body}/${pocet}`;
-  document.getElementById('result-sub').textContent        = 'správných odpovědí';
-  document.getElementById('result-uspesnost').textContent  = `Úspěšnost: ${uspesnost} %`;
+  document.getElementById('result-emoji').textContent     = emoji;
+  document.getElementById('result-score').textContent     = `${body}/${pocet}`;
+  document.getElementById('result-sub').textContent       = 'správných odpovědí';
+  document.getElementById('result-uspesnost').textContent = `Úspěšnost: ${uspesnost} %`;
 
-  // Přehled odpovědí
   document.getElementById('result-prehled').innerHTML = historie.map(h => `
     <div class="prehled-item ${h.spravne ? 'ok' : 'chyba'}">
       <span class="prehled-icon">${h.spravne ? '✓' : '✗'}</span>
@@ -71,7 +66,7 @@ export async function zobrazVysledkyVyjmenovana(body, pocet, historie) {
     </div>`).join('');
 
   try {
-    const jeNovy = await ulozSkore(stav.jmeno, 'vyjmenovana', body);
+    const jeNovy = await ulozSkore(stav.jmeno, stav.trida, 'vyjmenovana', body);
     if (jeNovy) {
       stav.osobniMaxVyjm = body;
       document.getElementById('result-new-record').style.display = 'block';

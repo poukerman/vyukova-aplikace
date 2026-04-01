@@ -32,12 +32,21 @@
     .btn-logout{padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:none;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.75rem;cursor:pointer;transition:all .15s;}
     .btn-logout:hover{border-color:var(--red);color:var(--red);}
 
+    /* VÝBĚR TŘÍDY */
+    .trida-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 32px;display:flex;align-items:center;gap:12px;}
+    .trida-bar-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);}
+    .trida-tab{padding:5px 14px;border-radius:6px;border:1px solid var(--border);background:none;color:var(--muted);font-family:'Syne',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .15s;}
+    .trida-tab:hover{border-color:var(--accent);color:var(--accent);}
+    .trida-tab.active{background:var(--accent);border-color:var(--accent);color:white;}
+    .trida-tab.all{border-color:var(--accent2);color:var(--accent2);}
+    .trida-tab.all.active{background:var(--accent2);border-color:var(--accent2);color:white;}
+
     /* LAYOUT */
     .container{max-width:900px;margin:0 auto;padding:32px 24px;}
     .section{margin-bottom:40px;}
     .section-title{font-family:'Syne',sans-serif;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);margin-bottom:16px;}
 
-    /* TABS */
+    /* TABS KATEGORIE */
     .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;}
     .tab{padding:6px 16px;border-radius:6px;border:1px solid var(--border);background:none;color:var(--muted);font-family:'Syne',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .15s;}
     .tab:hover{border-color:var(--accent);color:var(--accent);}
@@ -66,7 +75,6 @@
     .form-title .badge{font-size:.65rem;padding:3px 8px;border-radius:4px;background:var(--accent);color:white;font-family:'JetBrains Mono',monospace;}
     .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
     .form-grid.full{grid-template-columns:1fr;}
-    .form-grid.three{grid-template-columns:1fr 1fr 1fr;}
     .field{display:flex;flex-direction:column;gap:6px;}
     .field label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);}
     .field input,.field select{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 12px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.85rem;outline:none;transition:border-color .15s;width:100%;}
@@ -80,7 +88,7 @@
     .btn-secondary:hover{border-color:var(--muted);color:var(--text);}
     .form-msg{font-size:.8rem;padding:8px 12px;border-radius:6px;margin-top:12px;display:none;}
     .form-msg.ok {background:rgba(77,250,154,.1);border:1px solid var(--green);color:var(--green);display:block;}
-    .form-msg.err{background:rgba(250,77,109,.1);border:1px solid var(--red);  color:var(--red);  display:block;}
+    .form-msg.err{background:rgba(250,77,109,.1);border:1px solid var(--red);color:var(--red);display:block;}
 
     /* HRÁČI */
     .hrace-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:24px;}
@@ -105,7 +113,7 @@
     .toast{position:fixed;bottom:24px;right:24px;padding:12px 20px;border-radius:8px;font-size:.85rem;font-weight:600;z-index:999;display:none;}
     .toast.show{display:block;animation:toastIn .2s ease;}
     .toast.ok {background:var(--green);color:#000;}
-    .toast.err{background:var(--red);  color:#fff;}
+    .toast.err{background:var(--red);color:#fff;}
     @keyframes toastIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
     select option{background:var(--surface);}
@@ -114,7 +122,7 @@
 </head>
 <body>
 
-<!-- ═══ PŘIHLÁŠENÍ UČITELE ══════════════════════════════ -->
+<!-- ═══ PŘIHLÁŠENÍ ══════════════════════════════════════ -->
 <div class="login-wrap" id="login-wrap">
   <div class="login-card">
     <div class="login-title">⚙ Admin</div>
@@ -138,14 +146,26 @@
   <header>
     <div class="logo">Soutěž <span>/ admin</span></div>
     <div class="header-right">
-      <div class="ucitel-info">Přihlášen/a: <strong id="lbl-ucitel"></strong> · Třída: <strong id="lbl-trida-ucitel"></strong></div>
+      <div class="ucitel-info">Přihlášen/a: <strong id="lbl-ucitel"></strong></div>
       <button class="btn-logout" id="btn-logout">Odhlásit</button>
     </div>
   </header>
 
+  <!-- VÝBĚR TŘÍDY -->
+  <div class="trida-bar" id="trida-bar">
+    <span class="trida-bar-label">Třída:</span>
+    <!-- sem se doplní tlačítka tříd dynamicky -->
+  </div>
+
   <div class="container">
 
-    <div class="form-card" style="margin-top:20px">
+    <!-- VYJMENOVANÁ SLOVA -->
+    <div class="section">
+      <div class="section-title">Vyjmenovaná slova</div>
+      <div class="tabs" id="tabs"><div class="loading"><span class="spinner"></span>Načítám...</div></div>
+      <div id="words-wrap"><div class="loading"><span class="spinner"></span>Načítám slova...</div></div>
+
+      <div class="form-card" style="margin-top:20px">
         <div class="form-title">
           <span id="form-title-text">Přidat slovo</span>
           <span class="badge" id="form-badge">NOVÝ</span>
@@ -187,19 +207,11 @@
         </div>
         <div class="form-msg" id="form-msg"></div>
       </div>
-  </div>
-    
-    <!-- VYJMENOVANÁ SLOVA -->
-    <div class="section">
-      <div class="section-title">Vyjmenovaná slova</div>
-      <div class="tabs" id="tabs"><div class="loading"><span class="spinner"></span>Načítám...</div></div>
-      <div id="words-wrap"><div class="loading"><span class="spinner"></span>Načítám slova...</div></div>
-
-      
+    </div>
 
     <!-- HRÁČI -->
     <div class="section">
-      <div class="section-title">Žáci mé třídy (<span id="lbl-trida-sekce"></span>)</div>
+      <div class="section-title">Žáci — <span id="lbl-trida-sekce"></span></div>
       <div id="hrace-wrap"><div class="loading"><span class="spinner"></span>Načítám žáky...</div></div>
 
       <div class="form-card" style="margin-top:20px">
@@ -208,7 +220,11 @@
           <div class="field">
             <label>Uživatelské jméno</label>
             <input type="text" id="f-hrac" placeholder="např. jana123"/>
-            <div class="hint">Bude automaticky přiřazena třída <span id="hint-trida"></span></div>
+          </div>
+          <!-- Pole třídy: pro admina s více třídami = select, pro jednu třídu = skryté -->
+          <div class="field" id="field-trida-vyber">
+            <label>Třída</label>
+            <select id="f-hrac-trida"></select>
           </div>
         </div>
         <div class="form-actions">
@@ -217,7 +233,7 @@
         <div class="form-msg" id="hrac-msg"></div>
       </div>
     </div>
- </div>
+
   </div>
 </div>
 
@@ -241,10 +257,12 @@
   const db  = getDatabase(app);
 
   const KATEGORIE = ['b','l','m','p','s','v','z'];
-  let aktualniKat = 'b';
-  let editKlic    = null;
-  let ucitelJmeno = '';
-  let ucitelTrida = '';
+  let aktualniKat   = 'b';
+  let editKlic      = null;
+  let ucitelJmeno   = '';
+  let ucitelTridy   = [];   // pole tříd, např. ["3A", "3B"]
+  let jeAdmin       = false;
+  let aktivniTrida  = '';   // aktuálně vybraná třída v baru ('' = všechny)
 
   // ── Toast ──────────────────────────────────────────────
   function toast(msg, typ = 'ok') {
@@ -253,13 +271,12 @@
     setTimeout(() => el.className = 'toast', 2500);
   }
 
-  // ── Přihlášení učitele ────────────────────────────────
+  // ── Přihlášení ────────────────────────────────────────
   document.getElementById('btn-login').onclick = async () => {
     const jmeno = document.getElementById('l-jmeno').value.trim().toLowerCase();
     const heslo = document.getElementById('l-heslo').value;
     const err   = document.getElementById('l-err');
     if (!jmeno || !heslo) { err.textContent = 'Vyplň jméno i heslo.'; return; }
-
     err.textContent = 'Přihlašuji...';
     try {
       const snap = await get(ref(db, `ucitele/${jmeno}`));
@@ -268,33 +285,111 @@
       if (data.heslo !== heslo) { err.textContent = '❌ Špatné heslo.'; return; }
 
       ucitelJmeno = jmeno;
-      ucitelTridy = Array.isArray(data.tridy) ? data.tridy : (data.trida ? [data.trida] : []);
+      jeAdmin     = data.admin === true;
 
-      document.getElementById('lbl-ucitel').textContent       = jmeno;
-      document.getElementById('lbl-trida-ucitel').textContent = ucitelTrida;
-      document.getElementById('lbl-trida-sekce').textContent  = ucitelTrida;
-      document.getElementById('hint-trida').textContent       = ucitelTrida;
+      // Podpora pro pole tridy i starý formát s jednou třídou
+      if (Array.isArray(data.tridy)) {
+        ucitelTridy = data.tridy;
+      } else if (data.trida) {
+        ucitelTridy = [data.trida];
+      } else {
+        ucitelTridy = [];
+      }
 
+      // Admin vidí vždy vše
+      aktivniTrida = jeAdmin ? '' : (ucitelTridy[0] || '');
+
+      document.getElementById('lbl-ucitel').textContent = jmeno;
       document.getElementById('login-wrap').classList.add('hidden');
       document.getElementById('admin-wrap').classList.remove('hidden');
 
+      sestavTriduBar();
+      sestavSelectTridy();
       await nactiTabs();
       await nactiSlova(aktualniKat);
       await nactiHrace();
     } catch(e) { err.textContent = 'Chyba: ' + e.message; }
   };
 
-  document.getElementById('l-heslo').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('btn-login').click(); });
+  document.getElementById('l-heslo').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('btn-login').click();
+  });
 
   // ── Odhlášení ─────────────────────────────────────────
   document.getElementById('btn-logout').onclick = () => {
-    ucitelJmeno = ''; ucitelTrida = '';
+    ucitelJmeno = ''; ucitelTridy = []; jeAdmin = false; aktivniTrida = '';
     document.getElementById('l-jmeno').value = '';
     document.getElementById('l-heslo').value = '';
     document.getElementById('l-err').textContent = '';
     document.getElementById('admin-wrap').classList.add('hidden');
     document.getElementById('login-wrap').classList.remove('hidden');
   };
+
+  // ── Sestav lištu s výběrem třídy ─────────────────────
+  function sestavTriduBar() {
+    const bar = document.getElementById('trida-bar');
+    // Zachovej label, smaž ostatní
+    bar.innerHTML = '<span class="trida-bar-label">Třída:</span>';
+
+    const tridy = jeAdmin ? ucitelTridy : ucitelTridy;
+
+    // Tlačítko "Všechny" — jen pokud má učitel více tříd nebo je admin
+    if (jeAdmin || ucitelTridy.length > 1) {
+      const btn = document.createElement('button');
+      btn.className = 'trida-tab all' + (aktivniTrida === '' ? ' active' : '');
+      btn.textContent = 'Všechny';
+      btn.onclick = () => prepniTridu('');
+      bar.appendChild(btn);
+    }
+
+    // Tlačítko pro každou třídu
+    tridy.forEach(t => {
+      const btn = document.createElement('button');
+      btn.className = 'trida-tab' + (aktivniTrida === t ? ' active' : '');
+      btn.textContent = t;
+      btn.onclick = () => prepniTridu(t);
+      bar.appendChild(btn);
+    });
+  }
+
+  function prepniTridu(trida) {
+    aktivniTrida = trida;
+    sestavTriduBar();
+    sestavSelectTridy();
+    nactiHrace();
+  }
+
+  // ── Sestav select třídy ve formuláři přidání žáka ────
+  function sestavSelectTridy() {
+    const sel  = document.getElementById('f-hrac-trida');
+    const pole = document.getElementById('field-trida-vyber');
+
+    // Skryj select pokud má učitel jen jednu třídu a není admin
+    if (!jeAdmin && ucitelTridy.length <= 1) {
+      pole.style.display = 'none';
+      return;
+    }
+
+    pole.style.display = 'flex';
+    sel.innerHTML = '';
+
+    const tridy = jeAdmin ? ucitelTridy : ucitelTridy;
+    // Předvyber aktuálně aktivní třídu
+    tridy.forEach(t => {
+      const opt = document.createElement('option');
+      opt.value = t; opt.textContent = t;
+      if (t === aktivniTrida) opt.selected = true;
+      sel.appendChild(opt);
+    });
+  }
+
+  // ── Nadpis sekce žáků ─────────────────────────────────
+  function aktualizujNadpisZaku() {
+    const lbl = document.getElementById('lbl-trida-sekce');
+    lbl.textContent = aktivniTrida
+      ? `třída ${aktivniTrida}`
+      : (ucitelTridy.length > 0 ? ucitelTridy.join(', ') : 'všechny třídy');
+  }
 
   // ── Tabs vyjmenovaných ────────────────────────────────
   async function nactiTabs() {
@@ -306,7 +401,12 @@
       const btn   = document.createElement('button');
       btn.className = 'tab' + (kat === aktualniKat ? ' active' : '');
       btn.innerHTML = `${kat.toUpperCase()} <span class="count">${count}</span>`;
-      btn.onclick   = () => { aktualniKat = kat; nactiTabs(); nactiSlova(kat); document.getElementById('f-kat').value = kat; };
+      btn.onclick   = () => {
+        aktualniKat = kat;
+        nactiTabs();
+        nactiSlova(kat);
+        document.getElementById('f-kat').value = kat;
+      };
       tabsEl.appendChild(btn);
     }
   }
@@ -329,7 +429,11 @@
           <button class="btn-del"  onclick="window._smazSlovo('${kat}','${klic}')">smazat</button>
         </td>
       </tr>`).join('');
-    wrap.innerHTML = `<table class="words-table"><thead><tr><th>ID</th><th>Věta</th><th>Odpověď</th><th>Řešení</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
+    wrap.innerHTML = `
+      <table class="words-table">
+        <thead><tr><th>ID</th><th>Věta</th><th>Odpověď</th><th>Řešení</th><th></th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
   }
 
   // ── Uložení slova ─────────────────────────────────────
@@ -339,7 +443,7 @@
     const odp    = document.getElementById('f-odp').value;
     const reseni = document.getElementById('f-reseni').value.trim();
     const msg    = document.getElementById('form-msg');
-    if (!veta)   { msg.textContent = 'Zadej větu!';    msg.className = 'form-msg err'; return; }
+    if (!veta)   { msg.textContent = 'Zadej větu!';   msg.className = 'form-msg err'; return; }
     if (!reseni) { msg.textContent = 'Zadej řešení!'; msg.className = 'form-msg err'; return; }
     const data = { veta, odpoved: odp, reseni };
     try {
@@ -357,7 +461,8 @@
       msg.className = 'form-msg';
       resetForm();
       aktualniKat = kat;
-      await nactiTabs(); await nactiSlova(kat);
+      await nactiTabs();
+      await nactiSlova(kat);
     } catch(e) { msg.textContent = 'Chyba: ' + e.message; msg.className = 'form-msg err'; }
   };
 
@@ -381,7 +486,8 @@
     if (!confirm(`Smazat ${klic} z kategorie ${kat.toUpperCase()}?`)) return;
     await remove(ref(db, `vyjmenovana/${kat}/${klic}`));
     toast('Slovo smazáno', 'err');
-    await nactiTabs(); await nactiSlova(kat);
+    await nactiTabs();
+    await nactiSlova(kat);
   };
 
   function resetForm() {
@@ -394,21 +500,41 @@
     document.getElementById('btn-zrusit').style.display    = 'none';
   }
   document.getElementById('btn-zrusit').onclick = resetForm;
-  document.getElementById('f-kat').onchange = e => { aktualniKat = e.target.value; nactiTabs(); nactiSlova(aktualniKat); };
+  document.getElementById('f-kat').onchange = e => {
+    aktualniKat = e.target.value;
+    nactiTabs();
+    nactiSlova(aktualniKat);
+  };
 
-  // ── Hráči (jen vlastní třída) ─────────────────────────
+  // ── Hráči ─────────────────────────────────────────────
   async function nactiHrace() {
+    aktualizujNadpisZaku();
     const wrap = document.getElementById('hrace-wrap');
+    wrap.innerHTML = '<div class="loading"><span class="spinner"></span>Načítám žáky...</div>';
     const snap = await get(ref(db, 'hrace'));
     if (!snap.exists()) { wrap.innerHTML = '<div class="empty-msg">Žádní žáci.</div>'; return; }
-    const data  = snap.val();
-    // Filtruj jen žáky učitelovy třídy
-    const zaci  = Object.entries(data).filter(([, v]) => jeAdmin || ucitelTridy.Includes(v.trida || '') === ucitelTrida).sort((a,b) => a[0].localeCompare(b[0]));
-    if (zaci.length === 0) { wrap.innerHTML = '<div class="empty-msg">Ve vaší třídě zatím žádní žáci.</div>'; return; }
+    const data = snap.val();
+
+    // Filtrování: aktivniTrida = konkrétní třída, '' = všechny dostupné třídy učitele
+    const zaci = Object.entries(data).filter(([, v]) => {
+      const t = v.trida || '';
+      if (aktivniTrida !== '') return t === aktivniTrida;
+      if (jeAdmin) return true;
+      return ucitelTridy.includes(t);
+    }).sort((a, b) => {
+      // Seřadit nejdřív podle třídy, pak podle jména
+      const tA = a[1].trida || '', tB = b[1].trida || '';
+      return tA !== tB ? tA.localeCompare(tB) : a[0].localeCompare(b[0]);
+    });
+
+    if (zaci.length === 0) {
+      wrap.innerHTML = '<div class="empty-msg">Žádní žáci v této třídě.</div>'; return;
+    }
+
     const karty = zaci.map(([jmeno, val]) => `
       <div class="hrac-card">
         <div class="hrac-name">${jmeno}</div>
-        <div class="hrac-trida">${val.trida || ''}</div>
+        <div class="hrac-trida">${val.trida || '—'}</div>
         <div class="hrac-scores">
           <div class="hrac-score">násobilka <span>${val.nasobilka || 0}</span></div>
           <div class="hrac-score">vyjmenovaná <span>${val.vyjmenovana || 0}</span></div>
@@ -416,19 +542,27 @@
         <button class="btn-reset-hrac" onclick="window._resetHrace('${jmeno}')">↺ resetovat skóre</button>
         <button class="btn-del-hrac"   onclick="window._smazHrace('${jmeno}')">✕ smazat žáka</button>
       </div>`).join('');
+
     wrap.innerHTML = `<div class="hrace-grid">${karty}</div>`;
   }
 
+  // ── Přidání žáka ──────────────────────────────────────
   document.getElementById('btn-pridat-hrace').onclick = async () => {
     const inp   = document.getElementById('f-hrac');
     const msg   = document.getElementById('hrac-msg');
     const jmeno = inp.value.trim().toLowerCase();
     if (!jmeno) { msg.textContent = 'Zadej jméno!'; msg.className = 'form-msg err'; return; }
-    const snap  = await get(ref(db, `hrace/${jmeno}`));
+
+    // Zjisti třídu: z selectu (více tříd) nebo z první učitelovy třídy
+    const novaTrida = (jeAdmin || ucitelTridy.length > 1)
+      ? document.getElementById('f-hrac-trida').value
+      : (ucitelTridy[0] || '');
+
+    const snap = await get(ref(db, `hrace/${jmeno}`));
     if (snap.exists()) { msg.textContent = 'Žák už existuje!'; msg.className = 'form-msg err'; return; }
     try {
-      await set(ref(db, `hrace/${jmeno}`), { nasobilka: 0, vyjmenovana: 0, trida: ucitelTrida });
-      toast(`✓ Žák ${jmeno} přidán do třídy ${ucitelTrida}`);
+      await set(ref(db, `hrace/${jmeno}`), { nasobilka: 0, vyjmenovana: 0, trida: novaTrida });
+      toast(`✓ Žák ${jmeno} přidán do třídy ${novaTrida}`);
       inp.value = ''; msg.className = 'form-msg';
       nactiHrace();
     } catch(e) { msg.textContent = 'Chyba: ' + e.message; msg.className = 'form-msg err'; }

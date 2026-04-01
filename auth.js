@@ -2,7 +2,7 @@
 // auth.js  —  Přihlášení a výběr hry
 // ═══════════════════════════════════════════════════════
 
-import { stav, showScreen, nactiHrace, nactiZebricek } from './main.js';
+import { stav, showScreen, najdiHrace, nactiZebricek } from './main.js';
 import { initNasobilka } from './nasobilka.js';
 import { initVyjmenovana } from './vyjmenovana.js';
 import { initZebricek } from './zebricek.js';
@@ -17,8 +17,8 @@ export function initAuth() {
 }
 
 async function prihlasit() {
-  const inp = document.getElementById('inp-username');
-  const err = document.getElementById('login-error');
+  const inp      = document.getElementById('inp-username');
+  const err      = document.getElementById('login-error');
   const username = inp.value.trim().toLowerCase();
 
   if (!username)           { err.textContent = 'Zadej uživatelské jméno!'; return; }
@@ -26,13 +26,15 @@ async function prihlasit() {
 
   err.textContent = 'Přihlašuji...';
   try {
-    const hrac = await nactiHrace(username);
-    if (!hrac) { err.textContent = '❌ Uživatelské jméno nebylo nalezeno.'; return; }
+    // Hledáme žáka napříč všemi třídami
+    const vysledek = await najdiHrace(username);
+    if (!vysledek) { err.textContent = '❌ Uživatelské jméno nebylo nalezeno.'; return; }
 
+    const { trida, data } = vysledek;
     stav.jmeno         = username;
-    stav.trida         = hrac.trida        || '';   // ← načtení třídy
-    stav.osobniMaxNas  = hrac.nasobilka    || 0;
-    stav.osobniMaxVyjm = hrac.vyjmenovana  || 0;
+    stav.trida         = trida;
+    stav.osobniMaxNas  = data.nasobilka   || 0;
+    stav.osobniMaxVyjm = data.vyjmenovana || 0;
 
     const zbNas  = await nactiZebricek('nasobilka');
     const zbVyjm = await nactiZebricek('vyjmenovana');
