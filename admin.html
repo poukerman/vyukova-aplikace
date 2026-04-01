@@ -268,7 +268,7 @@
       if (data.heslo !== heslo) { err.textContent = '❌ Špatné heslo.'; return; }
 
       ucitelJmeno = jmeno;
-      ucitelTrida = data.trida || '';
+      ucitelTridy = Array.isArray(data.tridy) ? data.tridy : (data.trida ? [data.trida] : []);
 
       document.getElementById('lbl-ucitel').textContent       = jmeno;
       document.getElementById('lbl-trida-ucitel').textContent = ucitelTrida;
@@ -403,7 +403,7 @@
     if (!snap.exists()) { wrap.innerHTML = '<div class="empty-msg">Žádní žáci.</div>'; return; }
     const data  = snap.val();
     // Filtruj jen žáky učitelovy třídy
-    const zaci  = Object.entries(data).filter(([, v]) => (v.trida || '') === ucitelTrida).sort((a,b) => a[0].localeCompare(b[0]));
+    const zaci  = Object.entries(data).filter(([, v]) => jeAdmin || ucitelTridy.Includes(v.trida || '') === ucitelTrida).sort((a,b) => a[0].localeCompare(b[0]));
     if (zaci.length === 0) { wrap.innerHTML = '<div class="empty-msg">Ve vaší třídě zatím žádní žáci.</div>'; return; }
     const karty = zaci.map(([jmeno, val]) => `
       <div class="hrac-card">
