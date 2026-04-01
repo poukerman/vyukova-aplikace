@@ -29,18 +29,23 @@ export async function zobrazVysledkyNasobilka(body) {
   document.getElementById('result-score').textContent = body;
 
   try {
-    // ulozSkore nyní vyžaduje i třídu
-    const jeNovy = await ulozSkore(stav.jmeno, stav.trida, 'nasobilka', body);
-    if (jeNovy) {
-      stav.osobniMaxNas = body;
-      document.getElementById('result-new-record').style.display = 'block';
-      document.getElementById('result-title').textContent        = 'Nový rekord! 🎉';
-    } else {
+    if (stav.jeHost) {
+      // Host — neukládáme, jen zobrazíme výsledek
       document.getElementById('result-new-record').style.display = 'none';
-      document.getElementById('result-title').textContent        = body >= 10 ? 'Skvělý výkon!' : 'Konec hry!';
+      document.getElementById('result-title').textContent = body >= 10 ? 'Skvělý výkon!' : 'Konec hry!';
+    } else {
+      const jeNovy = await ulozSkore(stav.jmeno, stav.trida, 'nasobilka', body);
+      if (jeNovy) {
+        stav.osobniMaxNas = body;
+        document.getElementById('result-new-record').style.display = 'block';
+        document.getElementById('result-title').textContent        = 'Nový rekord! 🎉';
+      } else {
+        document.getElementById('result-new-record').style.display = 'none';
+        document.getElementById('result-title').textContent        = body >= 10 ? 'Skvělý výkon!' : 'Konec hry!';
+      }
+      const zb = await nactiZebricek('nasobilka');
+      stav.globalMaxNas = zb.length > 0 ? zb[0].max : 0;
     }
-    const zb = await nactiZebricek('nasobilka');
-    stav.globalMaxNas = zb.length > 0 ? zb[0].max : 0;
   } catch(e) { document.getElementById('result-title').textContent = 'Konec hry!'; }
 }
 
@@ -66,17 +71,24 @@ export async function zobrazVysledkyVyjmenovana(body, pocet, historie) {
     </div>`).join('');
 
   try {
-    const jeNovy = await ulozSkore(stav.jmeno, stav.trida, 'vyjmenovana', body);
-    if (jeNovy) {
-      stav.osobniMaxVyjm = body;
-      document.getElementById('result-new-record').style.display = 'block';
-      document.getElementById('result-title').textContent        = 'Nový rekord! 🎉';
-    } else {
+    if (stav.jeHost) {
+      // Host — neukládáme, jen zobrazíme výsledek
       document.getElementById('result-new-record').style.display = 'none';
-      document.getElementById('result-title').textContent        =
+      document.getElementById('result-title').textContent =
         uspesnost === 100 ? 'Perfektní! 👑' : uspesnost >= 80 ? 'Skvělý výkon! 🔥' : uspesnost >= 50 ? 'Dobrá práce! 😊' : 'Příště lépe! 💪';
+    } else {
+      const jeNovy = await ulozSkore(stav.jmeno, stav.trida, 'vyjmenovana', body);
+      if (jeNovy) {
+        stav.osobniMaxVyjm = body;
+        document.getElementById('result-new-record').style.display = 'block';
+        document.getElementById('result-title').textContent        = 'Nový rekord! 🎉';
+      } else {
+        document.getElementById('result-new-record').style.display = 'none';
+        document.getElementById('result-title').textContent        =
+          uspesnost === 100 ? 'Perfektní! 👑' : uspesnost >= 80 ? 'Skvělý výkon! 🔥' : uspesnost >= 50 ? 'Dobrá práce! 😊' : 'Příště lépe! 💪';
+      }
+      const zb = await nactiZebricek('vyjmenovana');
+      stav.globalMaxVyjm = zb.length > 0 ? zb[0].max : 0;
     }
-    const zb = await nactiZebricek('vyjmenovana');
-    stav.globalMaxVyjm = zb.length > 0 ? zb[0].max : 0;
   } catch(e) { document.getElementById('result-title').textContent = 'Konec hry!'; }
 }

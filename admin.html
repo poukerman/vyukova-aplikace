@@ -33,7 +33,7 @@
     .btn-logout:hover{border-color:var(--red);color:var(--red);}
 
     /* VÝBĚR TŘÍDY */
-    .trida-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 32px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+    .trida-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 32px;display:flex;align-items:center;gap:12px;}
     .trida-bar-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);}
     .trida-tab{padding:5px 14px;border-radius:6px;border:1px solid var(--border);background:none;color:var(--muted);font-family:'Syne',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .15s;}
     .trida-tab:hover{border-color:var(--accent);color:var(--accent);}
@@ -42,70 +42,18 @@
     .trida-tab.all.active{background:var(--accent2);border-color:var(--accent2);color:white;}
 
     /* LAYOUT */
-    .container{max-width:960px;margin:0 auto;padding:32px 24px;}
+    .container{max-width:900px;margin:0 auto;padding:32px 24px;}
     .section{margin-bottom:40px;}
     .section-title{font-family:'Syne',sans-serif;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);margin-bottom:16px;}
 
-    /* HRÁČI */
-    .hrace-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:20px;}
-    .hrac-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;}
-    .hrac-name{font-family:'Syne',sans-serif;font-weight:800;font-size:.9rem;color:var(--text);margin-bottom:4px;}
-    .hrac-trida{font-size:.7rem;color:var(--accent);margin-bottom:8px;}
-    .hrac-scores{display:flex;flex-direction:column;gap:4px;}
-    .hrac-score{font-size:.75rem;color:var(--muted);display:flex;justify-content:space-between;}
-    .hrac-score span{color:var(--accent);font-weight:600;}
-    .btn-del-hrac{margin-top:10px;width:100%;padding:5px;border-radius:5px;border:1px solid var(--border);background:none;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.7rem;cursor:pointer;transition:all .15s;}
-    .btn-del-hrac:hover{border-color:var(--red);color:var(--red);}
-    .btn-reset-hrac{margin-top:4px;width:100%;padding:5px;border-radius:5px;border:1px solid var(--border);background:none;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.7rem;cursor:pointer;transition:all .15s;}
-    .btn-reset-hrac:hover{border-color:var(--yellow);color:var(--yellow);}
-
-    /* FORMULÁŘ */
-    .form-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;}
-    .form-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:var(--text);margin-bottom:20px;display:flex;align-items:center;gap:8px;}
-    .form-title .badge{font-size:.65rem;padding:3px 8px;border-radius:4px;background:var(--accent);color:white;font-family:'JetBrains Mono',monospace;}
-    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
-    .form-grid.full{grid-template-columns:1fr;}
-    .form-grid.three{grid-template-columns:1fr 1fr 1fr;}
-    .field{display:flex;flex-direction:column;gap:6px;}
-    .field label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);}
-    .field input,.field select{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 12px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.85rem;outline:none;transition:border-color .15s;width:100%;}
-    .field input:focus,.field select:focus{border-color:var(--accent);}
-    .field input::placeholder{color:var(--muted);}
-    .field .hint{font-size:.7rem;color:var(--muted);}
-    .form-actions{display:flex;gap:10px;margin-top:4px;}
-    .btn-primary{padding:10px 24px;background:var(--accent);border:none;border-radius:6px;color:white;font-family:'Syne',sans-serif;font-weight:600;font-size:.85rem;cursor:pointer;transition:opacity .15s;}
-    .btn-primary:hover{opacity:.85;}
-    .btn-secondary{padding:10px 20px;background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-family:'Syne',sans-serif;font-weight:600;font-size:.85rem;cursor:pointer;transition:all .15s;}
-    .btn-secondary:hover{border-color:var(--muted);color:var(--text);}
-    .form-msg{font-size:.8rem;padding:8px 12px;border-radius:6px;margin-top:12px;display:none;}
-    .form-msg.ok {background:rgba(77,250,154,.1);border:1px solid var(--green);color:var(--green);display:block;}
-    .form-msg.err{background:rgba(250,77,109,.1);border:1px solid var(--red);color:var(--red);display:block;}
-
-    /* PŘIDÁNÍ ŽÁKA - kompaktní inline */
-    .pridat-hrace-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-top:16px;}
-    .pridat-hrace-row .field{flex:1;min-width:140px;}
-    .pridat-hrace-row .btn-primary{padding:10px 20px;white-space:nowrap;flex-shrink:0;}
-
-    /* COLLAPSIBLE SEKCE SLOV */
-    .collapse-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;padding:16px 20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);transition:border-color .15s;}
-    .collapse-header:hover{border-color:var(--accent);}
-    .collapse-header-left{display:flex;align-items:center;gap:12px;}
-    .collapse-header-title{font-family:'Syne',sans-serif;font-weight:800;font-size:.9rem;color:var(--text);}
-    .collapse-header-sub{font-size:.75rem;color:var(--muted);}
-    .collapse-arrow{color:var(--muted);font-size:.8rem;transition:transform .25s;}
-    .collapse-arrow.open{transform:rotate(180deg);}
-    .collapse-body{overflow:hidden;max-height:0;transition:max-height .35s ease;}
-    .collapse-body.open{max-height:9999px;}
-    .collapse-inner{padding-top:16px;}
-
     /* TABS KATEGORIE */
-    .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;}
+    .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;}
     .tab{padding:6px 16px;border-radius:6px;border:1px solid var(--border);background:none;color:var(--muted);font-family:'Syne',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .15s;}
     .tab:hover{border-color:var(--accent);color:var(--accent);}
     .tab.active{background:var(--accent);border-color:var(--accent);color:white;}
     .tab .count{font-family:'JetBrains Mono',monospace;font-size:.7rem;opacity:.7;margin-left:4px;}
 
-    /* TABULKA SLOV */
+    /* TABULKA */
     .words-table{width:100%;border-collapse:collapse;}
     .words-table th{text-align:left;font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:8px 12px;border-bottom:1px solid var(--border);}
     .words-table td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:.85rem;vertical-align:middle;}
@@ -121,7 +69,41 @@
     .btn-del{padding:4px 10px;border-radius:5px;border:1px solid var(--border);background:none;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.75rem;cursor:pointer;transition:all .15s;margin-left:4px;}
     .btn-del:hover{border-color:var(--red);color:var(--red);}
 
-    /* LOADING / EMPTY */
+    /* FORMULÁŘ */
+    .form-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;}
+    .form-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:var(--text);margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+    .form-title .badge{font-size:.65rem;padding:3px 8px;border-radius:4px;background:var(--accent);color:white;font-family:'JetBrains Mono',monospace;}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+    .form-grid.full{grid-template-columns:1fr;}
+    .field{display:flex;flex-direction:column;gap:6px;}
+    .field label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);}
+    .field input,.field select{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 12px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.85rem;outline:none;transition:border-color .15s;width:100%;}
+    .field input:focus,.field select:focus{border-color:var(--accent);}
+    .field input::placeholder{color:var(--muted);}
+    .field .hint{font-size:.7rem;color:var(--muted);}
+    .form-actions{display:flex;gap:10px;margin-top:4px;}
+    .btn-primary{padding:10px 24px;background:var(--accent);border:none;border-radius:6px;color:white;font-family:'Syne',sans-serif;font-weight:600;font-size:.85rem;cursor:pointer;transition:opacity .15s;}
+    .btn-primary:hover{opacity:.85;}
+    .btn-secondary{padding:10px 20px;background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-family:'Syne',sans-serif;font-weight:600;font-size:.85rem;cursor:pointer;transition:all .15s;}
+    .btn-secondary:hover{border-color:var(--muted);color:var(--text);}
+    .form-msg{font-size:.8rem;padding:8px 12px;border-radius:6px;margin-top:12px;display:none;}
+    .form-msg.ok {background:rgba(77,250,154,.1);border:1px solid var(--green);color:var(--green);display:block;}
+    .form-msg.err{background:rgba(250,77,109,.1);border:1px solid var(--red);color:var(--red);display:block;}
+
+    /* HRÁČI */
+    .hrace-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:24px;}
+    .hrac-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;}
+    .hrac-name{font-family:'Syne',sans-serif;font-weight:800;font-size:.9rem;color:var(--text);margin-bottom:4px;}
+    .hrac-trida{font-size:.7rem;color:var(--accent);margin-bottom:8px;}
+    .hrac-scores{display:flex;flex-direction:column;gap:4px;}
+    .hrac-score{font-size:.75rem;color:var(--muted);display:flex;justify-content:space-between;}
+    .hrac-score span{color:var(--accent);font-weight:600;}
+    .btn-del-hrac{margin-top:10px;width:100%;padding:5px;border-radius:5px;border:1px solid var(--border);background:none;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.7rem;cursor:pointer;transition:all .15s;}
+    .btn-del-hrac:hover{border-color:var(--red);color:var(--red);}
+    .btn-reset-hrac{margin-top:4px;width:100%;padding:5px;border-radius:5px;border:1px solid var(--border);background:none;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.7rem;cursor:pointer;transition:all .15s;}
+    .btn-reset-hrac:hover{border-color:var(--yellow);color:var(--yellow);}
+
+    /* LOADING */
     .loading{text-align:center;padding:40px;color:var(--muted);font-size:.85rem;}
     .spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;margin-right:8px;vertical-align:middle;}
     @keyframes spin{to{transform:rotate(360deg)}}
@@ -136,12 +118,6 @@
 
     select option{background:var(--surface);}
     .hidden{display:none!important;}
-
-    /* EDIT BANNER */
-    .edit-banner{background:rgba(250,109,142,.08);border:1px solid var(--accent2);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px;display:none;align-items:center;justify-content:space-between;gap:12px;}
-    .edit-banner.visible{display:flex;}
-    .edit-banner-text{font-size:.82rem;color:var(--accent2);}
-    .edit-banner-text strong{font-family:'Syne',sans-serif;}
   </style>
 </head>
 <body>
@@ -178,46 +154,23 @@
   <!-- VÝBĚR TŘÍDY -->
   <div class="trida-bar" id="trida-bar">
     <span class="trida-bar-label">Třída:</span>
+    <!-- sem se doplní tlačítka tříd dynamicky -->
   </div>
 
   <div class="container">
 
-    <!-- ═══ 1. ŽÁCI ══════════════════════════════════════ -->
+    <!-- VYJMENOVANÁ SLOVA -->
     <div class="section">
-      <div class="section-title">Žáci — <span id="lbl-trida-sekce"></span></div>
+      <div class="section-title">Vyjmenovaná slova</div>
+      <div class="tabs" id="tabs"><div class="loading"><span class="spinner"></span>Načítám...</div></div>
+      <div id="words-wrap"><div class="loading"><span class="spinner"></span>Načítám slova...</div></div>
 
-      <div id="hrace-wrap"><div class="loading"><span class="spinner"></span>Načítám žáky...</div></div>
-
-      <!-- Přidání žáka — kompaktní řádek -->
-      <div class="form-card" style="margin-top:4px;">
-        <div class="form-title" style="margin-bottom:12px;">Přidat žáka</div>
-        <div class="pridat-hrace-row">
-          <div class="field">
-            <label>Uživatelské jméno</label>
-            <input type="text" id="f-hrac" placeholder="např. jana123"/>
-          </div>
-          <div class="field" id="field-trida-vyber">
-            <label>Třída</label>
-            <select id="f-hrac-trida"></select>
-          </div>
-          <button class="btn-primary" id="btn-pridat-hrace">+ Přidat</button>
+      <div class="form-card" style="margin-top:20px">
+        <div class="form-title">
+          <span id="form-title-text">Přidat slovo</span>
+          <span class="badge" id="form-badge">NOVÝ</span>
         </div>
-        <div class="form-msg" id="hrac-msg"></div>
-      </div>
-    </div>
-
-    <!-- ═══ 2. PŘIDAT PŘÍKLAD ══════════════════════════════ -->
-    <div class="section">
-      <div class="section-title">Vyjmenovaná slova — přidat příklad</div>
-
-      <div class="form-card">
-        <!-- Banner při editaci existujícího záznamu -->
-        <div class="edit-banner" id="edit-banner">
-          <div class="edit-banner-text">Upravuješ záznam <strong id="edit-banner-id"></strong></div>
-          <button class="btn-secondary" style="padding:6px 14px;font-size:.78rem;" id="btn-zrusit">✕ Zrušit editaci</button>
-        </div>
-
-        <div class="form-grid three">
+        <div class="form-grid">
           <div class="field">
             <label>Kategorie</label>
             <select id="f-kat">
@@ -228,18 +181,14 @@
             </select>
           </div>
           <div class="field">
-            <label>Správná odpověď</label>
+            <label>Odpověď</label>
             <select id="f-odp">
               <option value="y">y</option><option value="i">i</option>
               <option value="ý">ý</option><option value="í">í</option>
             </select>
           </div>
-          <div class="field">
-            <label>&nbsp;</label>
-            <!-- záměrně prázdné pro zarovnání -->
-          </div>
         </div>
-        <div class="form-grid full" style="margin-bottom:14px;">
+        <div class="form-grid full">
           <div class="field">
             <label>Věta (místo písmene napiš _)</label>
             <input type="text" id="f-veta" placeholder="např. v_soká hora"/>
@@ -252,32 +201,41 @@
             <input type="text" id="f-reseni" placeholder="např. vysoká hora"/>
           </div>
         </div>
-        <div class="form-actions" style="margin-top:16px;">
-          <button class="btn-primary" id="btn-ulozit">Uložit příklad</button>
+        <div class="form-actions">
+          <button class="btn-primary" id="btn-ulozit">Uložit</button>
+          <button class="btn-secondary" id="btn-zrusit" style="display:none">Zrušit editaci</button>
         </div>
         <div class="form-msg" id="form-msg"></div>
       </div>
     </div>
 
-    <!-- ═══ 3. PŘEHLED SLOV (collapsible) ════════════════ -->
+    <!-- HRÁČI -->
     <div class="section">
-      <div class="collapse-header" id="collapse-header-slova" onclick="toggleSlova()">
-        <div class="collapse-header-left">
-          <div class="collapse-header-title">📋 Přehled vyjmenovaných slov</div>
-          <div class="collapse-header-sub" id="slova-sub-text">Klikni pro zobrazení</div>
+      <div class="section-title">Žáci — <span id="lbl-trida-sekce"></span></div>
+      <div id="hrace-wrap"><div class="loading"><span class="spinner"></span>Načítám žáky...</div></div>
+
+      <div class="form-card" style="margin-top:20px">
+        <div class="form-title">Přidat žáka</div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Uživatelské jméno</label>
+            <input type="text" id="f-hrac" placeholder="např. jana123"/>
+          </div>
+          <!-- Pole třídy: pro admina s více třídami = select, pro jednu třídu = skryté -->
+          <div class="field" id="field-trida-vyber">
+            <label>Třída</label>
+            <select id="f-hrac-trida"></select>
+          </div>
         </div>
-        <div class="collapse-arrow" id="collapse-arrow-slova">▼</div>
-      </div>
-      <div class="collapse-body" id="collapse-body-slova">
-        <div class="collapse-inner">
-          <div class="tabs" id="tabs"></div>
-          <div id="words-wrap"><div class="empty-msg">Vyberte kategorii výše.</div></div>
+        <div class="form-actions">
+          <button class="btn-primary" id="btn-pridat-hrace">Přidat žáka</button>
         </div>
+        <div class="form-msg" id="hrac-msg"></div>
       </div>
     </div>
 
-  </div><!-- /container -->
-</div><!-- /admin-wrap -->
+  </div>
+</div>
 
 <div class="toast" id="toast"></div>
 
@@ -302,10 +260,9 @@
   let aktualniKat   = 'b';
   let editKlic      = null;
   let ucitelJmeno   = '';
-  let ucitelTridy   = [];
+  let ucitelTridy   = [];   // pole tříd, např. ["3A", "3B"]
   let jeAdmin       = false;
-  let aktivniTrida  = '';
-  let slovaNactena  = false;  // lazy load — načíst jen když uživatel otevře sekci
+  let aktivniTrida  = '';   // aktuálně vybraná třída v baru ('' = všechny)
 
   // ── Toast ──────────────────────────────────────────────
   function toast(msg, typ = 'ok') {
@@ -313,27 +270,6 @@
     el.textContent = msg; el.className = `toast show ${typ}`;
     setTimeout(() => el.className = 'toast', 2500);
   }
-
-  // ── Collapsible sekce slov ────────────────────────────
-  window.toggleSlova = function() {
-    const body  = document.getElementById('collapse-body-slova');
-    const arrow = document.getElementById('collapse-arrow-slova');
-    const sub   = document.getElementById('slova-sub-text');
-    const isOpen = body.classList.toggle('open');
-    arrow.classList.toggle('open', isOpen);
-
-    if (isOpen && !slovaNactena) {
-      // Lazy load — první otevření
-      slovaNactena = true;
-      sub.textContent = 'Načítám...';
-      nactiTabs().then(() => {
-        nactiSlova(aktualniKat);
-        sub.textContent = '';
-      });
-    } else {
-      sub.textContent = isOpen ? '' : 'Klikni pro zobrazení';
-    }
-  };
 
   // ── Přihlášení ────────────────────────────────────────
   document.getElementById('btn-login').onclick = async () => {
@@ -351,6 +287,7 @@
       ucitelJmeno = jmeno;
       jeAdmin     = data.admin === true;
 
+      // Podpora pro pole tridy i starý formát s jednou třídou
       if (Array.isArray(data.tridy)) {
         ucitelTridy = data.tridy;
       } else if (data.trida) {
@@ -359,6 +296,7 @@
         ucitelTridy = [];
       }
 
+      // Admin vidí vždy vše
       aktivniTrida = jeAdmin ? '' : (ucitelTridy[0] || '');
 
       document.getElementById('lbl-ucitel').textContent = jmeno;
@@ -367,6 +305,8 @@
 
       sestavTriduBar();
       sestavSelectTridy();
+      await nactiTabs();
+      await nactiSlova(aktualniKat);
       await nactiHrace();
     } catch(e) { err.textContent = 'Chyba: ' + e.message; }
   };
@@ -378,22 +318,22 @@
   // ── Odhlášení ─────────────────────────────────────────
   document.getElementById('btn-logout').onclick = () => {
     ucitelJmeno = ''; ucitelTridy = []; jeAdmin = false; aktivniTrida = '';
-    slovaNactena = false;
     document.getElementById('l-jmeno').value = '';
     document.getElementById('l-heslo').value = '';
     document.getElementById('l-err').textContent = '';
-    // Zavřít collapsible
-    document.getElementById('collapse-body-slova').classList.remove('open');
-    document.getElementById('collapse-arrow-slova').classList.remove('open');
-    document.getElementById('slova-sub-text').textContent = 'Klikni pro zobrazení';
     document.getElementById('admin-wrap').classList.add('hidden');
     document.getElementById('login-wrap').classList.remove('hidden');
   };
 
-  // ── Lišta tříd ───────────────────────────────────────
+  // ── Sestav lištu s výběrem třídy ─────────────────────
   function sestavTriduBar() {
     const bar = document.getElementById('trida-bar');
+    // Zachovej label, smaž ostatní
     bar.innerHTML = '<span class="trida-bar-label">Třída:</span>';
+
+    const tridy = jeAdmin ? ucitelTridy : ucitelTridy;
+
+    // Tlačítko "Všechny" — jen pokud má učitel více tříd nebo je admin
     if (jeAdmin || ucitelTridy.length > 1) {
       const btn = document.createElement('button');
       btn.className = 'trida-tab all' + (aktivniTrida === '' ? ' active' : '');
@@ -401,7 +341,9 @@
       btn.onclick = () => prepniTridu('');
       bar.appendChild(btn);
     }
-    ucitelTridy.forEach(t => {
+
+    // Tlačítko pro každou třídu
+    tridy.forEach(t => {
       const btn = document.createElement('button');
       btn.className = 'trida-tab' + (aktivniTrida === t ? ' active' : '');
       btn.textContent = t;
@@ -417,13 +359,23 @@
     nactiHrace();
   }
 
+  // ── Sestav select třídy ve formuláři přidání žáka ────
   function sestavSelectTridy() {
     const sel  = document.getElementById('f-hrac-trida');
     const pole = document.getElementById('field-trida-vyber');
-    if (!jeAdmin && ucitelTridy.length <= 1) { pole.style.display = 'none'; return; }
+
+    // Skryj select pokud má učitel jen jednu třídu a není admin
+    if (!jeAdmin && ucitelTridy.length <= 1) {
+      pole.style.display = 'none';
+      return;
+    }
+
     pole.style.display = 'flex';
     sel.innerHTML = '';
-    ucitelTridy.forEach(t => {
+
+    const tridy = jeAdmin ? ucitelTridy : ucitelTridy;
+    // Předvyber aktuálně aktivní třídu
+    tridy.forEach(t => {
       const opt = document.createElement('option');
       opt.value = t; opt.textContent = t;
       if (t === aktivniTrida) opt.selected = true;
@@ -431,6 +383,7 @@
     });
   }
 
+  // ── Nadpis sekce žáků ─────────────────────────────────
   function aktualizujNadpisZaku() {
     const lbl = document.getElementById('lbl-trida-sekce');
     lbl.textContent = aktivniTrida
@@ -438,120 +391,19 @@
       : (ucitelTridy.length > 0 ? ucitelTridy.join(', ') : 'všechny třídy');
   }
 
-  // ── Hráči ─────────────────────────────────────────────
-  async function nactiHrace() {
-    aktualizujNadpisZaku();
-    const wrap = document.getElementById('hrace-wrap');
-    wrap.innerHTML = '<div class="loading"><span class="spinner"></span>Načítám žáky...</div>';
-
-    const zaci = [];
-
-    // Nová struktura tridy/
-    const snapTridy = await get(ref(db, 'tridy'));
-    if (snapTridy.exists()) {
-      for (const [trida, zacivTride] of Object.entries(snapTridy.val())) {
-        if (!zacivTride) continue;
-        if (aktivniTrida !== '' && trida !== aktivniTrida) continue;
-        if (!jeAdmin && !ucitelTridy.includes(trida)) continue;
-        for (const [jmeno, val] of Object.entries(zacivTride)) {
-          zaci.push([jmeno, { ...val, trida, _cesta: 'tridy' }]);
-        }
-      }
-    }
-
-    // Stará struktura hrace/
-    const jizPridani = new Set(zaci.map(([j]) => j));
-    const snapHrace = await get(ref(db, 'hrace'));
-    if (snapHrace.exists()) {
-      for (const [jmeno, val] of Object.entries(snapHrace.val())) {
-        if (jizPridani.has(jmeno)) continue;
-        const trida = String(val.trida || '');
-        if (aktivniTrida !== '' && trida !== aktivniTrida) continue;
-        if (!jeAdmin && !ucitelTridy.includes(trida)) continue;
-        zaci.push([jmeno, { nasobilka: val.nasobilka || 0, vyjmenovana: val.vyjmenovana || 0, trida, _cesta: 'hrace' }]);
-      }
-    }
-
-    zaci.sort((a, b) => {
-      const tA = a[1].trida || '', tB = b[1].trida || '';
-      return tA !== tB ? tA.localeCompare(tB) : a[0].localeCompare(b[0]);
-    });
-
-    if (zaci.length === 0) {
-      wrap.innerHTML = '<div class="empty-msg">Žádní žáci v této třídě.</div>'; return;
-    }
-
-    const karty = zaci.map(([jmeno, val]) => `
-      <div class="hrac-card">
-        <div class="hrac-name">${jmeno}</div>
-        <div class="hrac-trida">${val.trida || '—'}</div>
-        <div class="hrac-scores">
-          <div class="hrac-score">násobilka <span>${val.nasobilka || 0}</span></div>
-          <div class="hrac-score">vyjmenovaná <span>${val.vyjmenovana || 0}</span></div>
-        </div>
-        <button class="btn-reset-hrac" onclick="window._resetHrace('${val._cesta}','${val.trida}','${jmeno}')">↺ reset skóre</button>
-        <button class="btn-del-hrac"   onclick="window._smazHrace('${val._cesta}','${val.trida}','${jmeno}')">✕ smazat</button>
-      </div>`).join('');
-
-    wrap.innerHTML = `<div class="hrace-grid">${karty}</div>`;
-  }
-
-  document.getElementById('btn-pridat-hrace').onclick = async () => {
-    const inp   = document.getElementById('f-hrac');
-    const msg   = document.getElementById('hrac-msg');
-    const jmeno = inp.value.trim().toLowerCase();
-    if (!jmeno) { msg.textContent = 'Zadej jméno!'; msg.className = 'form-msg err'; return; }
-
-    const novaTrida = (jeAdmin || ucitelTridy.length > 1)
-      ? document.getElementById('f-hrac-trida').value
-      : (ucitelTridy[0] || '');
-
-    const snapT = await get(ref(db, `tridy/${novaTrida}/${jmeno}`));
-    const snapH = await get(ref(db, `hrace/${jmeno}`));
-    if (snapT.exists() || snapH.exists()) { msg.textContent = 'Žák už existuje!'; msg.className = 'form-msg err'; return; }
-    try {
-      await set(ref(db, `hrace/${jmeno}`), { nasobilka: 0, vyjmenovana: 0, trida: isNaN(novaTrida) ? novaTrida : Number(novaTrida) });
-      toast(`✓ Žák ${jmeno} přidán do třídy ${novaTrida}`);
-      inp.value = ''; msg.className = 'form-msg';
-      nactiHrace();
-    } catch(e) { msg.textContent = 'Chyba: ' + e.message; msg.className = 'form-msg err'; }
-  };
-
-  window._smazHrace = async (cesta, trida, jmeno) => {
-    if (!confirm(`Smazat žáka ${jmeno}?`)) return;
-    const dbRef = cesta === 'tridy' ? `tridy/${trida}/${jmeno}` : `hrace/${jmeno}`;
-    await remove(ref(db, dbRef));
-    toast(`Žák ${jmeno} smazán`, 'err');
-    nactiHrace();
-  };
-
-  window._resetHrace = async (cesta, trida, jmeno) => {
-    if (!confirm(`Resetovat skóre žáka ${jmeno}?`)) return;
-    const base = cesta === 'tridy' ? `tridy/${trida}/${jmeno}` : `hrace/${jmeno}`;
-    await set(ref(db, `${base}/nasobilka`), 0);
-    await set(ref(db, `${base}/vyjmenovana`), 0);
-    toast(`↺ Skóre ${jmeno} resetováno`);
-    nactiHrace();
-  };
-
   // ── Tabs vyjmenovaných ────────────────────────────────
   async function nactiTabs() {
     const tabsEl = document.getElementById('tabs');
-    tabsEl.innerHTML = '<div class="loading"><span class="spinner"></span></div>';
-    const counts = {};
-    for (const kat of KATEGORIE) {
-      const snap = await get(ref(db, `vyjmenovana/${kat}`));
-      counts[kat] = snap.exists() ? Object.keys(snap.val()).length : 0;
-    }
     tabsEl.innerHTML = '';
     for (const kat of KATEGORIE) {
-      const btn = document.createElement('button');
+      const snap  = await get(ref(db, `vyjmenovana/${kat}`));
+      const count = snap.exists() ? Object.keys(snap.val()).length : 0;
+      const btn   = document.createElement('button');
       btn.className = 'tab' + (kat === aktualniKat ? ' active' : '');
-      btn.innerHTML = `${kat.toUpperCase()} <span class="count">${counts[kat]}</span>`;
-      btn.onclick = () => {
+      btn.innerHTML = `${kat.toUpperCase()} <span class="count">${count}</span>`;
+      btn.onclick   = () => {
         aktualniKat = kat;
-        document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+        nactiTabs();
         nactiSlova(kat);
         document.getElementById('f-kat').value = kat;
       };
@@ -597,23 +449,20 @@
     try {
       if (editKlic) {
         await set(ref(db, `vyjmenovana/${kat}/${editKlic}`), data);
-        toast('✓ Příklad upraven');
+        toast('✓ Slovo upraveno');
       } else {
         const snap    = await get(ref(db, `vyjmenovana/${kat}`));
         const existuj = snap.exists() ? Object.keys(snap.val()) : [];
         const cisla   = existuj.map(k => parseInt(k)).filter(n => !isNaN(n));
         const novyCis = cisla.length > 0 ? Math.max(...cisla) + 1 : 1;
         await set(ref(db, `vyjmenovana/${kat}/${String(novyCis).padStart(3,'0')}`), data);
-        toast('✓ Příklad přidán');
+        toast('✓ Slovo přidáno');
       }
       msg.className = 'form-msg';
       resetForm();
       aktualniKat = kat;
-      // Pokud je sekce slov otevřená, obnov ji
-      if (slovaNactena) {
-        nactiTabs();
-        nactiSlova(kat);
-      }
+      await nactiTabs();
+      await nactiSlova(kat);
     } catch(e) { msg.textContent = 'Chyba: ' + e.message; msg.className = 'form-msg err'; }
   };
 
@@ -625,34 +474,134 @@
     document.getElementById('f-veta').value   = s.veta    || '';
     document.getElementById('f-odp').value    = s.odpoved || 'y';
     document.getElementById('f-reseni').value = s.reseni  || '';
-    // Zobraz edit banner
-    document.getElementById('edit-banner-id').textContent = `${kat.toUpperCase()} / ${klic}`;
-    document.getElementById('edit-banner').classList.add('visible');
+    document.getElementById('form-title-text').textContent = 'Upravit slovo';
+    document.getElementById('form-badge').textContent      = klic.toUpperCase();
+    document.getElementById('form-badge').style.background = '#fa6d8e';
+    document.getElementById('btn-zrusit').style.display    = 'inline-block';
     document.getElementById('form-msg').className = 'form-msg';
-    // Scrolluj na formulář
-    document.querySelector('.section:nth-child(2)').scrollIntoView({ behavior: 'smooth' });
+    document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth' });
   };
 
   window._smazSlovo = async (kat, klic) => {
     if (!confirm(`Smazat ${klic} z kategorie ${kat.toUpperCase()}?`)) return;
     await remove(ref(db, `vyjmenovana/${kat}/${klic}`));
-    toast('Příklad smazán', 'err');
-    if (slovaNactena) { nactiTabs(); nactiSlova(kat); }
+    toast('Slovo smazáno', 'err');
+    await nactiTabs();
+    await nactiSlova(kat);
   };
 
   function resetForm() {
     editKlic = null;
     document.getElementById('f-veta').value   = '';
     document.getElementById('f-reseni').value = '';
-    document.getElementById('edit-banner').classList.remove('visible');
-    document.getElementById('form-msg').className = 'form-msg';
+    document.getElementById('form-title-text').textContent = 'Přidat slovo';
+    document.getElementById('form-badge').textContent      = 'NOVÝ';
+    document.getElementById('form-badge').style.background = '';
+    document.getElementById('btn-zrusit').style.display    = 'none';
   }
-
   document.getElementById('btn-zrusit').onclick = resetForm;
-
   document.getElementById('f-kat').onchange = e => {
     aktualniKat = e.target.value;
-    if (slovaNactena) { nactiTabs(); nactiSlova(aktualniKat); }
+    nactiTabs();
+    nactiSlova(aktualniKat);
+  };
+
+  // ── Hráči — čte z hrace/ i tridy/ ────────────────────
+  async function nactiHrace() {
+    aktualizujNadpisZaku();
+    const wrap = document.getElementById('hrace-wrap');
+    wrap.innerHTML = '<div class="loading"><span class="spinner"></span>Načítám žáky...</div>';
+
+    const zaci = []; // [ [jmeno, {nasobilka, vyjmenovana, trida, _cesta}] ]
+
+    // Nová struktura tridy/
+    const snapTridy = await get(ref(db, 'tridy'));
+    if (snapTridy.exists()) {
+      for (const [trida, zacivTride] of Object.entries(snapTridy.val())) {
+        if (!zacivTride) continue;
+        if (aktivniTrida !== '' && trida !== aktivniTrida) continue;
+        if (!jeAdmin && !ucitelTridy.includes(trida)) continue;
+        for (const [jmeno, val] of Object.entries(zacivTride)) {
+          zaci.push([jmeno, { ...val, trida, _cesta: 'tridy' }]);
+        }
+      }
+    }
+
+    // Stará struktura hrace/ — jen žáci, kteří nejsou v tridy/
+    const jizPridani = new Set(zaci.map(([j]) => j));
+    const snapHrace = await get(ref(db, 'hrace'));
+    if (snapHrace.exists()) {
+      for (const [jmeno, val] of Object.entries(snapHrace.val())) {
+        if (jizPridani.has(jmeno)) continue;
+        const trida = String(val.trida || '');
+        if (aktivniTrida !== '' && trida !== aktivniTrida) continue;
+        if (!jeAdmin && !ucitelTridy.includes(trida)) continue;
+        zaci.push([jmeno, { nasobilka: val.nasobilka || 0, vyjmenovana: val.vyjmenovana || 0, trida, _cesta: 'hrace' }]);
+      }
+    }
+
+    zaci.sort((a, b) => {
+      const tA = a[1].trida || '', tB = b[1].trida || '';
+      return tA !== tB ? tA.localeCompare(tB) : a[0].localeCompare(b[0]);
+    });
+
+    if (zaci.length === 0) {
+      wrap.innerHTML = '<div class="empty-msg">Žádní žáci v této třídě.</div>'; return;
+    }
+
+    const karty = zaci.map(([jmeno, val]) => `
+      <div class="hrac-card">
+        <div class="hrac-name">${jmeno}</div>
+        <div class="hrac-trida">${val.trida || '—'}</div>
+        <div class="hrac-scores">
+          <div class="hrac-score">násobilka <span>${val.nasobilka || 0}</span></div>
+          <div class="hrac-score">vyjmenovaná <span>${val.vyjmenovana || 0}</span></div>
+        </div>
+        <button class="btn-reset-hrac" onclick="window._resetHrace('${val._cesta}','${val.trida}','${jmeno}')">↺ resetovat skóre</button>
+        <button class="btn-del-hrac"   onclick="window._smazHrace('${val._cesta}','${val.trida}','${jmeno}')">✕ smazat žáka</button>
+      </div>`).join('');
+
+    wrap.innerHTML = `<div class="hrace-grid">${karty}</div>`;
+  }
+
+  // ── Přidání žáka — nový žák vždy do hrace/ ───────────
+  document.getElementById('btn-pridat-hrace').onclick = async () => {
+    const inp   = document.getElementById('f-hrac');
+    const msg   = document.getElementById('hrac-msg');
+    const jmeno = inp.value.trim().toLowerCase();
+    if (!jmeno) { msg.textContent = 'Zadej jméno!'; msg.className = 'form-msg err'; return; }
+
+    const novaTrida = (jeAdmin || ucitelTridy.length > 1)
+      ? document.getElementById('f-hrac-trida').value
+      : (ucitelTridy[0] || '');
+
+    // Zkontroluj duplicitu v obou strukturách
+    const snapT = await get(ref(db, `tridy/${novaTrida}/${jmeno}`));
+    const snapH = await get(ref(db, `hrace/${jmeno}`));
+    if (snapT.exists() || snapH.exists()) { msg.textContent = 'Žák už existuje!'; msg.className = 'form-msg err'; return; }
+    try {
+      await set(ref(db, `hrace/${jmeno}`), { nasobilka: 0, vyjmenovana: 0, trida: isNaN(novaTrida) ? novaTrida : Number(novaTrida) });
+      toast(`✓ Žák ${jmeno} přidán do třídy ${novaTrida}`);
+      inp.value = ''; msg.className = 'form-msg';
+      nactiHrace();
+    } catch(e) { msg.textContent = 'Chyba: ' + e.message; msg.className = 'form-msg err'; }
+  };
+
+  window._smazHrace = async (cesta, trida, jmeno) => {
+    if (!confirm(`Smazat žáka ${jmeno}?`)) return;
+    const dbRef = cesta === 'tridy' ? `tridy/${trida}/${jmeno}` : `hrace/${jmeno}`;
+    await remove(ref(db, dbRef));
+    toast(`Žák ${jmeno} smazán`, 'err');
+    nactiHrace();
+  };
+
+  window._resetHrace = async (cesta, trida, jmeno) => {
+    if (!confirm(`Resetovat skóre žáka ${jmeno}?`)) return;
+    const base = cesta === 'tridy' ? `tridy/${trida}/${jmeno}` : `hrace/${jmeno}`;
+    await set(ref(db, `${base}/nasobilka`), 0);
+    await set(ref(db, `${base}/vyjmenovana`), 0);
+    toast(`↺ Skóre ${jmeno} resetováno`);
+    nactiHrace();
   };
 </script>
 </body>

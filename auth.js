@@ -10,6 +10,7 @@ import { initZebricek } from './zebricek.js';
 export function initAuth() {
   document.getElementById('btn-prihlasit').addEventListener('click', prihlasit);
   document.getElementById('inp-username').addEventListener('keydown', e => { if (e.key === 'Enter') prihlasit(); });
+  document.getElementById('btn-host').addEventListener('click', hostovat);
   document.getElementById('btn-volba-nasobilka').addEventListener('click', () => volbaHry('nasobilka'));
   document.getElementById('btn-volba-vyjmenovana').addEventListener('click', () => volbaHry('vyjmenovana'));
   document.getElementById('btn-zebricek-login').addEventListener('click', () => initZebricek('screen-login', 'nasobilka'));
@@ -26,13 +27,13 @@ async function prihlasit() {
 
   err.textContent = 'Přihlašuji...';
   try {
-    // Hledáme žáka napříč všemi třídami
     const vysledek = await najdiHrace(username);
     if (!vysledek) { err.textContent = '❌ Uživatelské jméno nebylo nalezeno.'; return; }
 
     const { trida, data } = vysledek;
     stav.jmeno         = username;
     stav.trida         = trida;
+    stav.jeHost        = false;
     stav.osobniMaxNas  = data.nasobilka   || 0;
     stav.osobniMaxVyjm = data.vyjmenovana || 0;
 
@@ -42,21 +43,37 @@ async function prihlasit() {
     stav.globalMaxVyjm = zbVyjm.length > 0 ? zbVyjm[0].max : 0;
 
     document.getElementById('lbl-username').textContent = username;
+    document.getElementById('guest-badge').classList.remove('visible');
     err.textContent = '';
     showScreen('screen-vyber');
   } catch(e) { err.textContent = 'Chyba: ' + e.message; }
 }
 
+function hostovat() {
+  stav.jmeno         = 'Host';
+  stav.trida         = '';
+  stav.jeHost        = true;
+  stav.osobniMaxNas  = 0;
+  stav.osobniMaxVyjm = 0;
+  stav.globalMaxNas  = 0;
+  stav.globalMaxVyjm = 0;
+
+  document.getElementById('lbl-username').textContent = 'Host';
+  document.getElementById('guest-badge').classList.add('visible');
+  document.getElementById('login-error').textContent = '';
+  showScreen('screen-vyber');
+}
+
 function volbaHry(hra) {
   stav.aktualniHra = hra;
   if (hra === 'nasobilka') {
-    document.getElementById('lbl-osobni-nas').textContent = stav.osobniMaxNas;
-    document.getElementById('lbl-global-nas').textContent = stav.globalMaxNas;
+    document.getElementById('lbl-osobni-nas').textContent = stav.jeHost ? '—' : stav.osobniMaxNas;
+    document.getElementById('lbl-global-nas').textContent = stav.jeHost ? '—' : stav.globalMaxNas;
     initNasobilka();
     showScreen('screen-welcome-nasobilka');
   } else {
-    document.getElementById('lbl-osobni-vyjm').textContent = stav.osobniMaxVyjm;
-    document.getElementById('lbl-global-vyjm').textContent = stav.globalMaxVyjm;
+    document.getElementById('lbl-osobni-vyjm').textContent = stav.jeHost ? '—' : stav.osobniMaxVyjm;
+    document.getElementById('lbl-global-vyjm').textContent = stav.jeHost ? '—' : stav.globalMaxVyjm;
     initVyjmenovana();
     showScreen('screen-welcome-vyjmenovana');
   }

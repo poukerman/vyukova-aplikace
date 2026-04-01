@@ -24,6 +24,7 @@ export { ref, get, set };
 export const stav = {
   jmeno: '',
   trida: '',              // třída žáka, např. "3A"
+  jeHost: false,          // true = hraje bez přihlášení, rekordy se neukládají
   aktualniHra: '',        // 'nasobilka' | 'vyjmenovana'
   osobniMaxNas: 0,
   globalMaxNas: 0,
