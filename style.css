@@ -26,7 +26,7 @@ body{font-family:'Nunito',sans-serif;background:var(--dark);min-height:100vh;dis
 .input-group input:focus{border-color:var(--blue);}
 
 /* TLAČÍTKA */
-.btn{width:100%;padding:16px;border:none;border-radius:14px;font-family:'Nunito',cursive;font-size:1.3rem;cursor:pointer;transition:transform .15s,box-shadow .15s;letter-spacing:.03em;}
+.btn{width:100%;padding:16px;border:none;border-radius:14px;font-family:'Potta One',cursive;font-size:1.3rem;cursor:pointer;transition:transform .15s,box-shadow .15s;letter-spacing:.03em;}
 .btn:active{transform:scale(.97);}
 .btn-primary{background:var(--orange);color:white;box-shadow:0 6px 0 #c44a1a;}
 .btn-primary:hover{box-shadow:0 4px 0 #c44a1a;transform:translateY(2px);}
