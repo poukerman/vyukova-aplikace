@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════
-// nasobilka.js  —  Hra: Malá násobilka
+// nasobilka.js  —  Hra: Malá násobilka (násobení + dělení)
 // ═══════════════════════════════════════════════════════
 
 import { stav, showScreen, updateHint } from './main.js';
@@ -14,14 +14,15 @@ let body = 0;
 let casZbyva = CAS;
 let timerInterval = null;
 let nasA, nasB, soucin;
+let typPrikladu; // 'nasobeni' | 'deleni'
 
-// ── Inicializace (volá se při přechodu na uvítací obrazovku) ──
+// ── Inicializace ──────────────────────────────────────
 export function initNasobilka() {
-  document.getElementById('btn-start-nasobilka').onclick    = startHra;
-  document.getElementById('btn-zpet-nasobilka').onclick     = () => showScreen('screen-vyber');
-  document.getElementById('btn-potvrdit-nas').onclick       = zkontrolovat;
+  document.getElementById('btn-start-nasobilka').onclick      = startHra;
+  document.getElementById('btn-zpet-nasobilka').onclick       = () => showScreen('screen-vyber');
+  document.getElementById('btn-potvrdit-nas').onclick         = zkontrolovat;
   document.getElementById('btn-zebricek-welcome-nas').onclick = () => initZebricek('screen-welcome-nasobilka', 'nasobilka');
-  document.getElementById('inp-odpoved-nas').onkeydown      = e => { if (e.key === 'Enter') zkontrolovat(); };
+  document.getElementById('inp-odpoved-nas').onkeydown        = e => { if (e.key === 'Enter') zkontrolovat(); };
 }
 
 // ── Spuštění hry ──────────────────────────────────────
@@ -40,13 +41,24 @@ function startHra() {
 
 // ── Nový příklad ──────────────────────────────────────
 function novyPriklad() {
+  typPrikladu = Math.random() < 0.5 ? 'nasobeni' : 'deleni';
+
   nasA   = Math.floor(Math.random() * 9) + 1;
   nasB   = Math.floor(Math.random() * 9) + 1;
   soucin = nasA * nasB;
+
   const lbl = document.getElementById('lbl-priklad');
   lbl.style.animation = 'none';
-  lbl.textContent = `${nasA} • ${nasB}`;
-  requestAnimationFrame(() => { lbl.style.animation = 'popIn .3s cubic-bezier(.34,1.56,.64,1)'; });
+
+  if (typPrikladu === 'nasobeni') {
+    lbl.textContent = `${nasA} • ${nasB}`;
+  } else {
+    lbl.textContent = `${soucin} ÷ ${nasA}`;
+  }
+
+  requestAnimationFrame(() => {
+    lbl.style.animation = 'popIn .3s cubic-bezier(.34,1.56,.64,1)';
+  });
   document.getElementById('inp-odpoved-nas').value = '';
 }
 
@@ -57,7 +69,9 @@ function zkontrolovat() {
   const kom = document.getElementById('lbl-komentar-nas');
   if (isNaN(val)) { kom.textContent = 'Napiš číslo!'; kom.className = 'komentar wrong'; return; }
 
-  if (val === soucin) {
+  const spravna = (typPrikladu === 'nasobeni') ? soucin : nasB;
+
+  if (val === spravna) {
     body++;
     document.getElementById('lbl-body-nas').textContent = body;
     kom.textContent = '✓ Správně!'; kom.className = 'komentar correct';
@@ -66,7 +80,7 @@ function zkontrolovat() {
     document.getElementById('inp-odpoved-nas').focus();
   } else {
     inp.classList.remove('shake'); void inp.offsetWidth; inp.classList.add('shake');
-    kom.textContent = `✗ Správně bylo ${soucin}`; kom.className = 'komentar wrong';
+    kom.textContent = `✗ Správně bylo ${spravna}`; kom.className = 'komentar wrong';
     inp.value = '';
   }
 }
