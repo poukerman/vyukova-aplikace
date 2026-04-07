@@ -20,7 +20,7 @@ function znovu() {
 // ── Výsledky násobilky ────────────────────────────────
 export async function zobrazVysledkyNasobilka(body) {
   showScreen('screen-result');
-  document.getElementById('result-sub').textContent       = 'bodů za 15 sekund';
+  document.getElementById('result-sub').textContent       = 'bodů za 120 sekund';
   document.getElementById('result-uspesnost').textContent = '';
   document.getElementById('result-prehled').innerHTML     = '';
 
