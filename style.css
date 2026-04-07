@@ -16,7 +16,7 @@ body{font-family:'Nunito',sans-serif;background:var(--dark);min-height:100vh;dis
 .logo{text-align:center;margin-bottom:28px;}
 .logo-icon{font-size:52px;display:block;animation:bounce 2s ease-in-out infinite;}
 @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.logo h1{font-family:'Nunito',cursive;font-size:2.6rem;color:var(--dark);line-height:1.1;}
+.logo h1{font-family:'Potta One',cursive;font-size:2.6rem;color:var(--dark);line-height:1.1;}
 .logo p{color:#888;font-size:.95rem;margin-top:4px;}
 
 /* FORMULÁŘ */
@@ -52,14 +52,14 @@ body{font-family:'Nunito',sans-serif;background:var(--dark);min-height:100vh;dis
 .game-choice-card.vyjmenovana{background:#f0e8ff;border-color:#d4b0ff;}
 .game-choice-card.vyjmenovana:hover{border-color:var(--purple);}
 .game-choice-icon{font-size:42px;display:block;margin-bottom:8px;}
-.game-choice-title{font-family:'Nunito',cursive;font-size:1.2rem;color:var(--dark);}
+.game-choice-title{font-family:'Potta One',cursive;font-size:1.2rem;color:var(--dark);}
 .game-choice-sub{font-size:.8rem;color:#888;margin-top:4px;}
 
 /* UVÍTÁNÍ */
 .welcome-text{text-align:center;margin-bottom:24px;}
-.welcome-text h2{font-family:'Nunito',cursive;font-size:1.9rem;color:var(--dark);}
+.welcome-text h2{font-family:'Potta One',cursive;font-size:1.9rem;color:var(--dark);}
 .welcome-text .username{color:var(--orange);}
-.welcome-title{font-family:'Nunito',cursive;font-size:1.3rem;color:var(--dark);text-align:center;margin-bottom:16px;}
+.welcome-title{font-family:'Potta One',cursive;font-size:1.3rem;color:var(--dark);text-align:center;margin-bottom:16px;}
 .score-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;}
 .score-box{border-radius:14px;padding:16px;text-align:center;}
 .score-box.personal{background:#fff3e0;border:2px solid var(--yellow);}
@@ -82,7 +82,7 @@ body{font-family:'Nunito',sans-serif;background:var(--dark);min-height:100vh;dis
 .game-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
 .game-stat{text-align:center;}
 .game-stat .stat-label{font-size:.75rem;font-weight:700;text-transform:uppercase;color:#aaa;letter-spacing:.05em;}
-.game-stat .stat-value{font-family:'Nunito',cursive;font-size:1.6rem;color:var(--dark);}
+.game-stat .stat-value{font-family:'Potta One',cursive;font-size:1.6rem;color:var(--dark);}
 .stat-value.timer{color:var(--orange);}
 .stat-value.score-live{color:var(--green);}
 .stat-value.priklad-count{color:var(--purple);}
@@ -124,10 +124,10 @@ body{font-family:'Nunito',sans-serif;background:var(--dark);min-height:100vh;dis
 /* VÝSLEDKY */
 .result-center{text-align:center;}
 .result-emoji{font-size:56px;display:block;margin-bottom:6px;animation:bounce 1s ease-in-out infinite;}
-.result-title{font-family:'Nunito',cursive;font-size:1.8rem;color:var(--dark);margin-bottom:4px;}
+.result-title{font-family:'Potta One',cursive;font-size:1.8rem;color:var(--dark);margin-bottom:4px;}
 .result-score{font-family:'Nunito',cursive;font-size:3.5rem;color:var(--orange);line-height:1;}
 .result-sub{color:#888;font-size:1rem;margin-bottom:16px;}
-.result-uspesnost{font-family:'Nunito',cursive;font-size:1.2rem;color:var(--purple);margin-bottom:16px;}
+.result-uspesnost{font-family:'Potta One',cursive;font-size:1.2rem;color:var(--purple);margin-bottom:16px;}
 .result-new-record{background:linear-gradient(135deg,var(--yellow),var(--orange));color:white;border-radius:12px;padding:10px 20px;font-weight:800;font-size:1rem;margin-bottom:16px;display:none;}
 .prehled-wrap{margin-bottom:20px;max-height:200px;overflow-y:auto;border-radius:12px;}
 .prehled-wrap::-webkit-scrollbar{width:4px;}
@@ -146,7 +146,7 @@ body{font-family:'Nunito',sans-serif;background:var(--dark);min-height:100vh;dis
 .lb-tab{flex:1;padding:10px;border:2.5px solid #e0e0e0;border-radius:10px;font-family:'Nunito',cursive;font-size:1rem;cursor:pointer;text-align:center;background:white;color:#aaa;transition:all .2s;}
 .lb-tab.active{border-color:var(--orange);color:var(--orange);background:#fff3e0;}
 .lb-tab.vyjm.active{border-color:var(--purple);color:var(--purple);background:#f0e8ff;}
-.lb-title{font-family:'Nunito',cursive;font-size:1.6rem;color:var(--dark);margin-bottom:18px;text-align:center;}
+.lb-title{font-family:'Potta One',cursive;font-size:1.6rem;color:var(--dark);margin-bottom:18px;text-align:center;}
 .lb-list{list-style:none;max-height:280px;overflow-y:auto;margin-bottom:20px;}
 .lb-list::-webkit-scrollbar{width:4px;}
 .lb-list::-webkit-scrollbar-thumb{background:#ddd;border-radius:999px;}
@@ -167,12 +167,12 @@ body{font-family:'Nunito',sans-serif;background:var(--dark);min-height:100vh;dis
 
 /* UKONČIT HRU */
 .ukoncit-wrap{text-align:center;margin-top:16px;}
-.btn-ukoncit{background:none;border:2px solid #e0e0e0;border-radius:10px;padding:8px 20px;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:700;color:#bbb;cursor:pointer;transition:border-color .2s,color .2s;}
+.btn-ukoncit{background:none;border:2px solid #e0e0e0;border-radius:10px;padding:8px 20px;font-family:'Potta One',sans-serif;font-size:.85rem;font-weight:700;color:#bbb;cursor:pointer;transition:border-color .2s,color .2s;}
 .btn-ukoncit:hover{border-color:var(--red);color:var(--red);}
 .ukoncit-upozorneni{font-size:.78rem;color:#ccc;margin-top:6px;}
 
 /* ŽEBŘÍČEK — sekce třída / globál */
-.lb-sekce-title{font-family:'Nunito',cursive;font-size:.85rem;color:#aaa;text-transform:uppercase;letter-spacing:.08em;padding:6px 14px;margin-bottom:4px;}
+.lb-sekce-title{font-family:'Potta One',cursive;font-size:.85rem;color:#aaa;text-transform:uppercase;letter-spacing:.08em;padding:6px 14px;margin-bottom:4px;}
 .lb-list-inner{list-style:none;}
 .lb-trida{font-size:.7rem;font-weight:700;background:#e8f4fd;color:var(--blue);border-radius:4px;padding:1px 6px;margin-left:4px;}
 
