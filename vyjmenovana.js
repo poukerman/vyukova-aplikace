@@ -15,7 +15,7 @@ import { zobrazVysledkyVyjmenovana } from './vysledky.js';
 import { initZebricek } from './zebricek.js';
 
 // ── Konfigurace ───────────────────────────────────────
-const POCET_PRIKLADU = 10;
+const POCET_PRIKLADU = 25;
 const VSECHNY_KAT    = ['b', 'l', 'm', 'p', 's', 'v', 'z'];
 
 // ── Lokální stav ──────────────────────────────────────
