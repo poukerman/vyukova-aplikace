@@ -53,7 +53,7 @@ function novyPriklad() {
   if (typPrikladu === 'nasobeni') {
     lbl.textContent = `${nasA} • ${nasB}`;
   } else {
-    lbl.textContent = `${soucin} ÷ ${nasA}`;
+    lbl.textContent = `${soucin} : ${nasA}`;
   }
 
   requestAnimationFrame(() => {
