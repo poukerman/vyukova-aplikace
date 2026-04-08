@@ -120,7 +120,7 @@ function novéSlovo() {
   const idx = Math.floor(Math.random() * vyjmSlova.length);
   aktualniSlovo = vyjmSlova[idx];
 
-  document.getElementById('lbl-veta').innerHTML            = aktualniSlovo.veta.replace('___', '<span class="blank">___</span>');
+  document.getElementById('lbl-veta').innerHTML            = aktualniSlovo.veta.replace('_', '<span class="blank">_</span>');
   document.getElementById('lbl-komentar-vyjm').textContent = '';
   document.getElementById('lbl-komentar-vyjm').className   = 'komentar';
 }
@@ -133,7 +133,7 @@ function odpovez(val) {
   const kom        = document.getElementById('lbl-komentar-vyjm');
   const tlacitka   = document.querySelectorAll('.vyjm-btn');
   const spravne    = val === aktualniSlovo.odpoved;
-  const vetaHotova = aktualniSlovo.veta.replace('___', aktualniSlovo.odpoved);
+  const vetaHotova = aktualniSlovo.veta.replace('_', aktualniSlovo.odpoved);
 
   historiePrikladu.push({
     veta:               aktualniSlovo.veta,
