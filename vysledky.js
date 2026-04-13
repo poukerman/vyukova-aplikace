@@ -77,9 +77,10 @@ export async function zobrazVysledkyVyjmenovana(body, pocet, historie) {
       document.getElementById('result-title').textContent =
         uspesnost === 100 ? 'Perfektní! 👑' : uspesnost >= 80 ? 'Skvělý výkon! 🔥' : uspesnost >= 50 ? 'Dobrá práce! 😊' : 'Příště lépe! 💪';
     } else {
-      const jeNovy = await ulozSkore(stav.jmeno, stav.trida, 'vyjmenovana', body);
+      // Ukládáme procentuální úspěšnost do Firebase
+      const jeNovy = await ulozSkore(stav.jmeno, stav.trida, 'vyjmenovana', uspesnost);
       if (jeNovy) {
-        stav.osobniMaxVyjm = body;
+        stav.osobniMaxVyjm = uspesnost;
         document.getElementById('result-new-record').style.display = 'block';
         document.getElementById('result-title').textContent        = 'Nový rekord! 🎉';
       } else {

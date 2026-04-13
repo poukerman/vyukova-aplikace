@@ -72,8 +72,6 @@ function volbaHry(hra) {
     initNasobilka();
     showScreen('screen-welcome-nasobilka');
   } else {
-    document.getElementById('lbl-osobni-vyjm').textContent = stav.jeHost ? '—' : stav.osobniMaxVyjm;
-    document.getElementById('lbl-global-vyjm').textContent = stav.jeHost ? '—' : stav.globalMaxVyjm;
     initVyjmenovana();
     showScreen('screen-welcome-vyjmenovana');
   }

@@ -72,24 +72,19 @@
     <!-- ═══ UVÍTÁNÍ: VYJMENOVANÁ + VÝBĚR KATEGORIÍ ══════ -->
     <div id="screen-welcome-vyjmenovana" class="screen">
       <div class="welcome-text"><h2>📝 Vyjmenovaná slova</h2></div>
-      <div class="score-grid">
-        <div class="score-box personal"><div class="score-label">Tvůj rekord</div><div class="score-value" id="lbl-osobni-vyjm">0</div></div>
-        <div class="score-box global"><div class="score-label">Rekord školy</div><div class="score-value" id="lbl-global-vyjm">0</div></div>
+      <div class="welcome-title">Vyber stupeň:</div>
+      <div class="stupen-grid">
+        <div class="stupen-card stupen-1" id="btn-stupen-1">
+          <span class="stupen-icon">🌱</span>
+          <div class="stupen-title">1. stupeň</div>
+          <div class="stupen-sub">Základní slova</div>
+        </div>
+        <div class="stupen-card stupen-2" id="btn-stupen-2">
+          <span class="stupen-icon">🌳</span>
+          <div class="stupen-title">2. stupeň</div>
+          <div class="stupen-sub">Těžší slova</div>
+        </div>
       </div>
-      <div class="welcome-title">Vyber kategorie:</div>
-      <div class="vyber-vse" id="btn-vyber-vse">Vybrat vše / Zrušit výběr</div>
-      <div class="kategorie-grid">
-        <!-- Přidání nové kategorie: zkopíruj řádek níže, změň data-kat a popis -->
-        <button class="kat-btn" data-kat="b">B<span class="kat-label">být, bydlit...</span></button>
-        <button class="kat-btn" data-kat="l">L<span class="kat-label">lyže, lýtko...</span></button>
-        <button class="kat-btn" data-kat="m">M<span class="kat-label">mýt, myslit...</span></button>
-        <button class="kat-btn" data-kat="p">P<span class="kat-label">pytel, pýcha...</span></button>
-        <button class="kat-btn" data-kat="s">S<span class="kat-label">syn, sýr...</span></button>
-        <button class="kat-btn" data-kat="v">V<span class="kat-label">vít, výr...</span></button>
-        <button class="kat-btn" data-kat="z">Z<span class="kat-label">zýkat, zítra...</span></button>
-      </div>
-      <div class="kategorie-error" id="kat-error"></div>
-      <button class="btn btn-purple" id="btn-start-vyjmenovana">▶ Začít hru</button>
       <button class="btn btn-outline mt12" id="btn-zpet-vyjmenovana">← Zpět na výběr</button>
       <div class="nav-link" id="btn-zebricek-welcome-vyjm">🏆 <span>Žebříček vyjmenovaných</span></div>
     </div>
