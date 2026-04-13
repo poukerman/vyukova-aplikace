@@ -184,7 +184,8 @@ body{font-family:'Nunito',sans-serif;background:var(--dark);min-height:100vh;dis
 
 /* VÝBĚR STUPNĚ — vyjmenovaná slova */
 .stupen-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
-.stupen-card{border-radius:16px;padding:30px 16px;text-align:center;cursor:pointer;border:3px solid transparent;transition:transform .2s,border-color .2s,box-shadow .2s;}
+.stupen-card{border-radius:16px;padding:30px 16px;text-align:center;cursor:pointer;border:3px solid transparent;transition:transform .2s,border-color .2s,box-shadow .2s;user-select:none;-webkit-user-select:none;}
+.stupen-card *{pointer-events:none;}
 .stupen-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.12);}
 .stupen-card.stupen-1{background:#e8f8ee;border-color:#6BCB77;}
 .stupen-card.stupen-1:hover{border-color:#3d9e4a;box-shadow:0 8px 24px rgba(107,203,119,.3);}

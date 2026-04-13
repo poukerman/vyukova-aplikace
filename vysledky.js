@@ -4,6 +4,7 @@
 
 import { stav, showScreen, ulozSkore, nactiZebricek } from './main.js';
 import { initZebricek } from './zebricek.js';
+import { initVyjmenovana } from './vyjmenovana.js';
 
 // ── Inicializace tlačítek na obrazovce výsledků ───────
 export function initVysledky() {
@@ -13,8 +14,12 @@ export function initVysledky() {
 }
 
 function znovu() {
-  if (stav.aktualniHra === 'nasobilka') showScreen('screen-welcome-nasobilka');
-  else showScreen('screen-welcome-vyjmenovana');
+  if (stav.aktualniHra === 'nasobilka') {
+    showScreen('screen-welcome-nasobilka');
+  } else {
+    initVyjmenovana();
+    showScreen('screen-welcome-vyjmenovana');
+  }
 }
 
 // ── Výsledky násobilky ────────────────────────────────
