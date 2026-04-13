@@ -3,8 +3,8 @@
   --blue:#4D96FF;--purple:#C77DFF;--red:#FF6B6B;
   --dark:#1a1a2e;--card:#ffffff;--radius:20px;
 }
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Nunito',sans-serif;background:var(--dark);min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Times New Roman',Times,serif !important;}
+body{font-family:'Times New Roman',Times,serif;background:var(--dark);min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;}
 .stars{position:fixed;inset:0;pointer-events:none;z-index:0;}
 .star{position:absolute;width:6px;height:6px;border-radius:50%;background:white;opacity:0;animation:twinkle var(--d) var(--delay) infinite;}
 @keyframes twinkle{0%,100%{opacity:0;transform:scale(.5)}50%{opacity:.7;transform:scale(1.2)}}
