@@ -3,12 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Soutěž ve vyjmenovaných slovech</title>
+  <title>Eduhry</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Potta+One&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css"/>
-  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+
 </head>
 <body>
 
@@ -20,7 +22,7 @@
     <div id="screen-login" class="screen active">
       <div class="logo">
         <span class="logo-icon">🏆</span>
-        <h1>Soutěž ve vyjmenovaných slovech</h1>
+        <h1>Eduhry</h1>
         <p>Přihlaš se a hraj!</p>
       </div>
       <div class="input-group">
@@ -34,6 +36,28 @@
       <div class="nav-link" id="btn-zebricek-login">🏆 <span>Zobrazit žebříček</span></div>
     </div>
 
+    <!-- ═══ VÝBĚR PŘEDMĚTU ═════════════════════════════════ -->
+    <div id="screen-predmety" class="screen">
+      <div class="welcome-text">
+        <h2>Vítej, <span class="username" id="lbl-username-predmety"></span>! 👋</h2>
+        <div class="guest-badge" id="guest-badge-predmety">👤 Režim hosta — rekordy se neukládají</div>
+      </div>
+      <div class="welcome-title">Vyber si předmět:</div>
+      <div class="game-choice-grid">
+        <div class="game-choice-card matematika" id="btn-predmet-matematika">
+          <span class="game-choice-icon">🔢</span>
+          <div class="game-choice-title">Matematika</div>
+          <div class="game-choice-sub">Počítání a logika</div>
+        </div>
+        <div class="game-choice-card cestina" id="btn-predmet-cestina">
+          <span class="game-choice-icon">📖</span>
+          <div class="game-choice-title">Český jazyk</div>
+          <div class="game-choice-sub">Pravopis a gramatika</div>
+        </div>
+      </div>
+      <div class="nav-link" id="btn-zebricek-predmety">🏆 <span>Žebříček</span></div>
+    </div>
+
     <!-- ═══ VÝBĚR HRY ════════════════════════════════════ -->
     <div id="screen-vyber" class="screen">
       <div class="welcome-text">
@@ -42,19 +66,25 @@
       </div>
       <div class="welcome-title">Vyber si hru:</div>
       <div class="game-choice-grid">
-        <div class="game-choice-card nasobilka" id="btn-volba-nasobilka">
+        <div class="game-choice-card nasobilka" id="btn-volba-nasobilka" data-predmet="matematika">
           <span class="game-choice-icon">✖️</span>
           <div class="game-choice-title">Malá násobilka</div>
           <div class="game-choice-sub">Počítej příklady</div>
         </div>
        
-      <div class="game-choice-card vyjmenovana" id="btn-volba-vyjmenovana">
+      <div class="game-choice-card vyjmenovana" id="btn-volba-vyjmenovana" data-predmet="cestina">
           <span class="game-choice-icon">📝</span>
           <div class="game-choice-title">Vyjmenovaná slova</div>
           <div class="game-choice-sub">Doplňuj y/i</div>
         </div>
+        <div class="game-choice-card mocniny" id="btn-volba-mocniny" data-predmet="matematika">
+          <span class="game-choice-icon">🔢</span>
+          <div class="game-choice-title">Mocniny</div>
+          <div class="game-choice-sub">Mocniny a odmocniny</div>
+        </div>
       </div>
       <div class="nav-link" id="btn-zebricek-vyber">🏆 <span>Žebříček</span></div>
+      <button class="btn btn-outline mt12" id="btn-zpet-vyber">← Zpět na výběr předmětů</button>
     </div>
 
     <!-- ═══ UVÍTÁNÍ: NÁSOBILKA ═══════════════════════════ -->
@@ -67,6 +97,99 @@
       <button class="btn btn-green" id="btn-start-nasobilka">▶ Začít hru</button>
       <button class="btn btn-outline mt12" id="btn-zpet-nasobilka">← Zpět na výběr</button>
       <div class="nav-link" id="btn-zebricek-welcome-nas">🏆 <span>Žebříček násobilky</span></div>
+    </div>
+
+    <!-- ═══ UVÍTÁNÍ: MOCNINY + VÝBĚR KATEGORIE ════════════ -->
+    <div id="screen-welcome-mocniny" class="screen">
+      <div class="welcome-text"><h2>🔢 Mocniny a odmocniny</h2></div>
+      <div class="mocniny-sekce-label">Typ příkladu</div>
+      <div class="mocniny-grid">
+        <div class="mocniny-card pow2" id="btn-mocniny-2pow">
+          <span class="mocniny-icon">x²</span>
+          <div class="mocniny-title">Druhá mocnina</div>
+          <div class="mocniny-sub">5² = ?</div>
+        </div>
+        <div class="mocniny-card root2" id="btn-mocniny-2root">
+          <span class="mocniny-icon">√x</span>
+          <div class="mocniny-title">Druhá odmocnina</div>
+          <div class="mocniny-sub">√25 = ?</div>
+        </div>
+        <div class="mocniny-card pow3" id="btn-mocniny-3pow">
+          <span class="mocniny-icon">x³</span>
+          <div class="mocniny-title">Třetí mocnina</div>
+          <div class="mocniny-sub">3³ = ?</div>
+        </div>
+        <div class="mocniny-card root3" id="btn-mocniny-3root">
+          <span class="mocniny-icon">∛x</span>
+          <div class="mocniny-title">Třetí odmocnina</div>
+          <div class="mocniny-sub">∛27 = ?</div>
+        </div>
+      </div>
+      <div class="mocniny-sekce-label">Rozšíření</div>
+      <div class="cisla-grid">
+        <div class="mocniny-card neg" id="btn-mocniny-neg">
+          <span class="mocniny-icon">−x</span>
+          <div class="mocniny-title">Záporná čísla</div>
+          <div class="mocniny-sub">(-3)² = ?</div>
+        </div>
+        <div class="mocniny-card dec" id="btn-mocniny-dec">
+          <span class="mocniny-icon">0,5</span>
+          <div class="mocniny-title">Desetinná čísla</div>
+          <div class="mocniny-sub">(0,5)² = ?</div>
+        </div>
+        <div class="mocniny-card frac" id="btn-mocniny-frac">
+          <span class="mocniny-icon">½</span>
+          <div class="mocniny-title">Zlomky</div>
+          <div class="mocniny-sub">(1/2)² = ?</div>
+        </div>
+      </div>
+      <div class="mocniny-error" id="mocniny-error"></div>
+      <button class="btn btn-blue mt12" id="btn-start-mocniny">▶ Spustit hru</button>
+      <button class="btn btn-outline mt12" id="btn-zpet-mocniny">← Zpět na výběr</button>
+    </div>
+
+    <!-- ═══ HRA: MOCNINY ═════════════════════════════════ -->
+    <div id="screen-game-mocniny" class="screen">
+      <div class="game-header">
+        <div class="game-stat"><div class="stat-label">Příklad</div><div class="stat-value priklad-count" id="lbl-priklad-mocniny">0/10</div></div>
+        <div class="game-stat"><div class="stat-label">Správně</div><div class="stat-value score-live" id="lbl-body-mocniny">0</div></div>
+        <div class="game-stat"><div class="stat-label">Rekord</div><div class="stat-value" id="lbl-rekord-mocniny">0</div></div>
+      </div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill mocniny" id="progress-mocniny" style="width:0%"></div></div>
+      <div class="mocniny-zadani">
+        <div id="lbl-priklad-latex" class="mocniny-priklad"></div>
+        <div class="komentar" id="lbl-komentar-mocniny"></div>
+      </div>
+      <div class="answer-row">
+        <input type="text" id="inp-odpoved-mocniny" placeholder="např. 4 nebo 1/4" autocomplete="off" inputmode="decimal"/>
+        <button id="btn-potvrdit-mocniny">✓</button>
+      </div>
+      <button class="btn-neexistuje" id="btn-neexistuje-mocniny">✗ Neexistuje</button>
+      <div class="touch-keypad" id="keypad-mocniny">
+        <div class="keypad-grid keypad-4col">
+          <button class="kkey" data-k="7">7</button>
+          <button class="kkey" data-k="8">8</button>
+          <button class="kkey" data-k="9">9</button>
+          <button class="kkey kkey-back" data-k="back">⌫</button>
+          <button class="kkey" data-k="4">4</button>
+          <button class="kkey" data-k="5">5</button>
+          <button class="kkey" data-k="6">6</button>
+          <button class="kkey kkey-spec" data-k="/">/</button>
+          <button class="kkey" data-k="1">1</button>
+          <button class="kkey" data-k="2">2</button>
+          <button class="kkey" data-k="3">3</button>
+          <button class="kkey kkey-spec" data-k="-">−</button>
+          <button class="kkey kkey-spec" data-k=",">,</button>
+          <button class="kkey" data-k="0">0</button>
+          <button class="kkey kkey-empty" disabled></button>
+          <button class="kkey kkey-confirm" data-k="ok">✓</button>
+        </div>
+      </div>
+      <div class="record-hint" id="record-hint-mocniny"></div>
+      <div class="ukoncit-wrap">
+        <button class="btn-ukoncit" id="btn-ukoncit-mocniny">✕ Ukončit hru</button>
+        <div class="ukoncit-upozorneni">⚠️ Předčasné ukončení se nezapočítá do žebříčku</div>
+      </div>
     </div>
 
     <!-- ═══ UVÍTÁNÍ: VYJMENOVANÁ + VÝBĚR KATEGORIÍ ══════ -->
@@ -104,6 +227,22 @@
       <div class="answer-row">
         <input type="number" id="inp-odpoved-nas" placeholder="?" min="1" max="100" autocomplete="off"/>
         <button id="btn-potvrdit-nas">✓</button>
+      </div>
+      <div class="touch-keypad" id="keypad-nas">
+        <div class="keypad-grid keypad-3col">
+          <button class="kkey" data-k="7">7</button>
+          <button class="kkey" data-k="8">8</button>
+          <button class="kkey" data-k="9">9</button>
+          <button class="kkey" data-k="4">4</button>
+          <button class="kkey" data-k="5">5</button>
+          <button class="kkey" data-k="6">6</button>
+          <button class="kkey" data-k="1">1</button>
+          <button class="kkey" data-k="2">2</button>
+          <button class="kkey" data-k="3">3</button>
+          <button class="kkey kkey-back" data-k="back">⌫</button>
+          <button class="kkey" data-k="0">0</button>
+          <button class="kkey kkey-confirm" data-k="ok">✓</button>
+        </div>
       </div>
       <div class="record-hint" id="record-hint-nas"></div>
     </div>
@@ -167,13 +306,21 @@
 
 <!-- Vstupní bod — spouští všechny moduly -->
 <script type="module">
+  console.log('Script start');
   import { initHvezdicky } from './main.js';
   import { initAuth }      from './auth.js';
   import { initVysledky }  from './vysledky.js';
+  import { initMocniny }   from './mocniny.js';
 
+  console.log('Imports done');
   initHvezdicky();
+  console.log('initHvezdicky done');
   initAuth();
+  console.log('initAuth done');
   initVysledky();
+  console.log('initVysledky done');
+  initMocniny();
+  console.log('initMocniny done');
 </script>
 
 </body>

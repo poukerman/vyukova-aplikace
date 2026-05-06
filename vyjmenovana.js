@@ -10,7 +10,7 @@
 // Počet příkladů v jedné hře: konstanta POCET_PRIKLADU
 // ═══════════════════════════════════════════════════════
 
-import { stav, showScreen, ulozSkore, nactiZebricek, updateHint } from './main.js';
+import { stav, showScreen, updateHint } from './main.js';
 import { zobrazVysledkyVyjmenovana } from './vysledky.js';
 import { initZebricek } from './zebricek.js';
 

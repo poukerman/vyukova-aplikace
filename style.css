@@ -4,11 +4,11 @@
   --dark:#1a1a2e;--card:#ffffff;--radius:20px;
 }
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Times New Roman',Times,serif !important;}
-body{font-family:'Times New Roman',Times,serif;background:var(--dark);min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+body{font-family:'Times New Roman',Times,serif;background:var(--dark);min-height:100vh;display:flex;align-items:center;justify-content:center;overflow-y:auto;}
 .stars{position:fixed;inset:0;pointer-events:none;z-index:0;}
 .star{position:absolute;width:6px;height:6px;border-radius:50%;background:white;opacity:0;animation:twinkle var(--d) var(--delay) infinite;}
 @keyframes twinkle{0%,100%{opacity:0;transform:scale(.5)}50%{opacity:.7;transform:scale(1.2)}}
-.wrapper{position:relative;z-index:1;width:100%;max-width:500px;padding:20px;}
+.wrapper{position:relative;z-index:1;width:fit-content;min-width:min(360px,calc(100vw - 40px));max-width:calc(100vw - 40px);padding:20px;}
 .card{background:var(--card);border-radius:var(--radius);padding:40px 36px;box-shadow:0 20px 60px rgba(0,0,0,0.4);animation:slideUp .5s cubic-bezier(.34,1.56,.64,1);}
 @keyframes slideUp{from{opacity:0;transform:translateY(40px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
 
@@ -51,6 +51,12 @@ body{font-family:'Times New Roman',Times,serif;background:var(--dark);min-height
 .game-choice-card.nasobilka:hover{border-color:var(--orange);}
 .game-choice-card.vyjmenovana{background:#f0e8ff;border-color:#d4b0ff;}
 .game-choice-card.vyjmenovana:hover{border-color:var(--purple);}
+.game-choice-card.matematika{background:#fff3e0;border-color:var(--yellow);}
+.game-choice-card.matematika:hover{border-color:var(--orange);}
+.game-choice-card.cestina{background:#f0e8ff;border-color:#d4b0ff;}
+.game-choice-card.cestina:hover{border-color:var(--purple);}
+.game-choice-card.mocniny{background:#e8f4fd;border-color:var(--blue);}
+.game-choice-card.mocniny:hover{border-color:#1a5fcc;}
 .game-choice-icon{font-size:42px;display:block;margin-bottom:8px;}
 .game-choice-title{font-family:'Potta One',cursive;font-size:1.2rem;color:var(--dark);}
 .game-choice-sub{font-size:.8rem;color:#888;margin-top:4px;}
@@ -89,6 +95,7 @@ body{font-family:'Times New Roman',Times,serif;background:var(--dark);min-height
 .progress-bar-wrap{background:#f0f0f0;border-radius:999px;height:10px;margin-bottom:28px;overflow:hidden;}
 .progress-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--orange),var(--yellow));transition:width 1s linear;width:100%;}
 .progress-bar-fill.vyjm{background:linear-gradient(90deg,var(--purple),#f0b0ff);transition:width .4s ease;}
+.progress-bar-fill.mocniny{background:linear-gradient(90deg,var(--blue),#a0d4ff);transition:width .4s ease;}
 
 /* NÁSOBILKA */
 .priklad-wrap{text-align:center;margin-bottom:24px;}
@@ -130,6 +137,7 @@ body{font-family:'Times New Roman',Times,serif;background:var(--dark);min-height
 .result-uspesnost{font-family:'Potta One',cursive;font-size:1.2rem;color:var(--purple);margin-bottom:16px;}
 .result-new-record{background:linear-gradient(135deg,var(--yellow),var(--orange));color:white;border-radius:12px;padding:10px 20px;font-weight:800;font-size:1rem;margin-bottom:16px;display:none;}
 .prehled-wrap{margin-bottom:20px;max-height:200px;overflow-y:auto;border-radius:12px;}
+.prehled-nadpis{font-weight:700;font-size:.85rem;color:#888;padding:4px 12px 6px;text-transform:uppercase;letter-spacing:.04em;}
 .prehled-wrap::-webkit-scrollbar{width:4px;}
 .prehled-wrap::-webkit-scrollbar-thumb{background:#ddd;border-radius:999px;}
 .prehled-item{display:flex;align-items:flex-start;gap:10px;padding:8px 12px;border-radius:10px;margin-bottom:6px;font-size:.88rem;}
@@ -181,6 +189,65 @@ body{font-family:'Times New Roman',Times,serif;background:var(--dark);min-height
 .login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:#e8e8e8;}
 .guest-badge{font-size:.82rem;font-weight:700;color:#888;background:#f5f5f5;border-radius:8px;padding:6px 12px;margin-top:8px;display:none;}
 .guest-badge.visible{display:inline-block;}
+
+/* VÝBĚR KATEGORIE — mocniny */
+.mocniny-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;}
+.mocniny-card{border-radius:16px;padding:22px 12px;text-align:center;cursor:pointer;border:3px solid transparent;transition:transform .2s,border-color .2s,box-shadow .2s;user-select:none;-webkit-user-select:none;}
+.mocniny-card *{pointer-events:none;}
+.mocniny-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.12);}
+.mocniny-card.pow2{background:#fff3e0;border-color:var(--yellow);}
+.mocniny-card.pow2:hover{border-color:var(--orange);box-shadow:0 8px 24px rgba(255,107,53,.2);}
+.mocniny-card.root2{background:#e8f4fd;border-color:var(--blue);}
+.mocniny-card.root2:hover{border-color:#1a5fcc;box-shadow:0 8px 24px rgba(77,150,255,.2);}
+.mocniny-card.pow3{background:#ffeef0;border-color:var(--red);}
+.mocniny-card.pow3:hover{border-color:#cc3030;box-shadow:0 8px 24px rgba(255,107,107,.2);}
+.mocniny-card.root3{background:#f0e8ff;border-color:var(--purple);}
+.mocniny-card.root3:hover{border-color:#8a3dcc;box-shadow:0 8px 24px rgba(199,125,255,.2);}
+.mocniny-icon{font-size:2rem;font-weight:700;display:block;margin-bottom:8px;color:var(--dark);}
+.mocniny-title{font-family:'Potta One',cursive;font-size:1rem;color:var(--dark);}
+.mocniny-sub{font-size:.78rem;color:#888;margin-top:4px;}
+.mocniny-card.selected{position:relative;}
+.mocniny-card.selected::after{content:'✓';position:absolute;top:6px;right:10px;font-size:.9rem;font-weight:900;}
+.mocniny-card.pow2.selected{background:#ffd090;border-color:var(--orange);box-shadow:0 4px 0 #c44a1a;}
+.mocniny-card.root2.selected{background:#b8dcf4;border-color:#1a5fcc;box-shadow:0 4px 0 #1a5fcc;}
+.mocniny-card.pow3.selected{background:#ffc0c0;border-color:#cc3030;box-shadow:0 4px 0 #cc3030;}
+.mocniny-card.root3.selected{background:#d8c8ff;border-color:#8a3dcc;box-shadow:0 4px 0 #8a3dcc;}
+.mocniny-error{color:var(--red);font-size:.88rem;font-weight:700;text-align:center;min-height:18px;margin-top:4px;}
+.mocniny-sekce-label{font-family:'Potta One',cursive;font-size:.78rem;color:#aaa;text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px;}
+.cisla-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
+.mocniny-card.neg{background:#fce4ec;border-color:#f48fb1;}
+.mocniny-card.neg:hover{border-color:#e91e63;box-shadow:0 8px 24px rgba(233,30,99,.2);}
+.mocniny-card.neg.selected{background:#f8bbd0;border-color:#e91e63;box-shadow:0 4px 0 #c2185b;}
+.mocniny-card.dec{background:#e8f5e9;border-color:#a5d6a7;}
+.mocniny-card.dec:hover{border-color:#4caf50;box-shadow:0 8px 24px rgba(76,175,80,.2);}
+.mocniny-card.dec.selected{background:#c8e6c9;border-color:#4caf50;box-shadow:0 4px 0 #388e3c;}
+.mocniny-card.frac{background:#fff8e1;border-color:#ffe082;}
+.mocniny-card.frac:hover{border-color:#ffc107;box-shadow:0 8px 24px rgba(255,193,7,.2);}
+.mocniny-card.frac.selected{background:#ffecb3;border-color:#ffc107;box-shadow:0 4px 0 #f57f17;}
+
+/* HERNÍ OBRAZOVKA — mocniny */
+.mocniny-zadani{text-align:center;margin-bottom:20px;min-height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.mocniny-priklad{font-size:1.4rem;min-height:70px;display:flex;align-items:center;justify-content:center;}
+.mocniny-priklad .katex-display{margin:0;}
+.btn-neexistuje{display:block;width:100%;margin-top:10px;padding:14px;border:2.5px solid #ddd;border-radius:14px;background:#f8f8f8;color:#999;font-family:'Potta One',cursive;font-size:1rem;cursor:pointer;transition:border-color .2s,color .2s,background .2s;}
+.btn-neexistuje:hover{border-color:var(--red);color:var(--red);background:#fff0f0;}
+.btn-neexistuje:disabled{opacity:.35;cursor:default;pointer-events:none;}
+
+/* DOTYKOVÁ NUMERICKÁ KLÁVESNICE */
+.touch-keypad{display:none;margin-top:14px;}
+@media (pointer:coarse){.touch-keypad{display:block;}}
+.keypad-grid{display:grid;gap:8px;}
+.keypad-3col{grid-template-columns:repeat(3,1fr);}
+.keypad-4col{grid-template-columns:repeat(4,1fr);}
+.kkey{padding:16px 8px;border:none;border-radius:12px;font-family:'Potta One',cursive;font-size:1.4rem;cursor:pointer;background:#f5f5f5;color:var(--dark);box-shadow:0 3px 0 #d5d5d5;transition:transform .1s,box-shadow .1s;user-select:none;-webkit-user-select:none;}
+.kkey:active{transform:translateY(2px);box-shadow:0 1px 0 #d5d5d5;}
+.kkey-back{background:#fff0f0;color:var(--red);box-shadow:0 3px 0 #f0b0b0;}
+.kkey-back:active{box-shadow:0 1px 0 #f0b0b0;}
+.kkey-spec{background:#e8f4fd;color:var(--blue);box-shadow:0 3px 0 #90c0e8;}
+.kkey-spec:active{box-shadow:0 1px 0 #90c0e8;}
+.kkey-confirm{background:var(--green);color:white;box-shadow:0 3px 0 #3d9e4a;}
+.kkey-confirm:active{box-shadow:0 1px 0 #3d9e4a;}
+.kkey-empty{background:transparent;box-shadow:none;pointer-events:none;}
 
 /* VÝBĚR STUPNĚ — vyjmenovaná slova */
 .stupen-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}

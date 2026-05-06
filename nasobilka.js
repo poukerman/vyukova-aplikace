@@ -23,6 +23,21 @@ export function initNasobilka() {
   document.getElementById('btn-potvrdit-nas').onclick         = zkontrolovat;
   document.getElementById('btn-zebricek-welcome-nas').onclick = () => initZebricek('screen-welcome-nasobilka', 'nasobilka');
   document.getElementById('inp-odpoved-nas').onkeydown        = e => { if (e.key === 'Enter') zkontrolovat(); };
+
+  if (window.matchMedia('(pointer: coarse)').matches) {
+    const inp = document.getElementById('inp-odpoved-nas');
+    inp.readOnly = true;
+    inp.setAttribute('inputmode', 'none');
+    document.getElementById('keypad-nas').querySelectorAll('.kkey').forEach(btn => {
+      btn.onclick = e => {
+        e.preventDefault();
+        const k = btn.dataset.k;
+        if (k === 'back')     inp.value = inp.value.slice(0, -1);
+        else if (k === 'ok')  zkontrolovat();
+        else                  inp.value += k;
+      };
+    });
+  }
 }
 
 // ── Spuštění hry ──────────────────────────────────────

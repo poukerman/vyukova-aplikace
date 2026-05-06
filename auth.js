@@ -5,16 +5,23 @@
 import { stav, showScreen, najdiHrace, nactiZebricek } from './main.js';
 import { initNasobilka } from './nasobilka.js';
 import { initVyjmenovana } from './vyjmenovana.js';
+import { initMocniny } from './mocniny.js';
 import { initZebricek } from './zebricek.js';
 
 export function initAuth() {
+  console.log('initAuth called');
   document.getElementById('btn-prihlasit').addEventListener('click', prihlasit);
   document.getElementById('inp-username').addEventListener('keydown', e => { if (e.key === 'Enter') prihlasit(); });
   document.getElementById('btn-host').addEventListener('click', hostovat);
+  document.getElementById('btn-predmet-matematika').addEventListener('click', () => volbaPredmetu('matematika'));
+  document.getElementById('btn-predmet-cestina').addEventListener('click', () => volbaPredmetu('cestina'));
   document.getElementById('btn-volba-nasobilka').addEventListener('click', () => volbaHry('nasobilka'));
   document.getElementById('btn-volba-vyjmenovana').addEventListener('click', () => volbaHry('vyjmenovana'));
+  document.getElementById('btn-volba-mocniny').addEventListener('click', () => volbaHry('mocniny'));
   document.getElementById('btn-zebricek-login').addEventListener('click', () => initZebricek('screen-login', 'nasobilka'));
-  document.getElementById('btn-zebricek-vyber').addEventListener('click', () => initZebricek('screen-vyber', 'nasobilka'));
+  document.getElementById('btn-zebricek-vyber').addEventListener('click', () => initZebricek('screen-vyber', stav.aktualniHra || 'nasobilka'));
+  document.getElementById('btn-zebricek-predmety').addEventListener('click', () => initZebricek('screen-predmety', 'nasobilka'));
+  document.getElementById('btn-zpet-vyber').addEventListener('click', () => showScreen('screen-predmety'));
 }
 
 async function prihlasit() {
@@ -45,11 +52,14 @@ async function prihlasit() {
     document.getElementById('lbl-username').textContent = username;
     document.getElementById('guest-badge').classList.remove('visible');
     err.textContent = '';
-    showScreen('screen-vyber');
+    document.getElementById('lbl-username-predmety').textContent = username;
+    document.getElementById('guest-badge-predmety').classList.remove('visible');
+    showScreen('screen-predmety');
   } catch(e) { err.textContent = 'Chyba: ' + e.message; }
 }
 
 function hostovat() {
+  console.log('hostovat called');
   stav.jmeno         = 'Host';
   stav.trida         = '';
   stav.jeHost        = true;
@@ -60,7 +70,29 @@ function hostovat() {
 
   document.getElementById('lbl-username').textContent = 'Host';
   document.getElementById('guest-badge').classList.add('visible');
+  document.getElementById('lbl-username-predmety').textContent = 'Host';
+  document.getElementById('guest-badge-predmety').classList.add('visible');
   document.getElementById('login-error').textContent = '';
+  showScreen('screen-predmety');
+}
+
+function volbaPredmetu(predmet) {
+  stav.aktualniPredmet = predmet;
+  // Filtruj karty v screen-vyber
+  document.querySelectorAll('#screen-vyber .game-choice-card').forEach(card => {
+    if (card.dataset.predmet === predmet) {
+      card.style.display = 'block';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+  // Aktualizuj username a guest badge v screen-vyber
+  document.getElementById('lbl-username').textContent = stav.jmeno;
+  if (stav.jeHost) {
+    document.getElementById('guest-badge').classList.add('visible');
+  } else {
+    document.getElementById('guest-badge').classList.remove('visible');
+  }
   showScreen('screen-vyber');
 }
 
@@ -71,8 +103,11 @@ function volbaHry(hra) {
     document.getElementById('lbl-global-nas').textContent = stav.jeHost ? '—' : stav.globalMaxNas;
     initNasobilka();
     showScreen('screen-welcome-nasobilka');
-  } else {
+  } else if (hra === 'vyjmenovana') {
     initVyjmenovana();
     showScreen('screen-welcome-vyjmenovana');
+  } else {
+    initMocniny();
+    showScreen('screen-welcome-mocniny');
   }
 }
