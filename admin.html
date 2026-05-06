@@ -151,10 +151,8 @@
     </div>
   </header>
 
-  <!-- VÝBĚR TŘÍDY -->
   <div class="trida-bar" id="trida-bar">
     <span class="trida-bar-label">Třída:</span>
-    <!-- sem se doplní tlačítka tříd dynamicky -->
   </div>
 
   <div class="container">
@@ -221,7 +219,6 @@
             <label>Uživatelské jméno</label>
             <input type="text" id="f-hrac" placeholder="např. jana123"/>
           </div>
-          <!-- Pole třídy: pro admina s více třídami = select, pro jednu třídu = skryté -->
           <div class="field" id="field-trida-vyber">
             <label>Třída</label>
             <select id="f-hrac-trida"></select>
@@ -257,22 +254,33 @@
   const db  = getDatabase(app);
 
   const KATEGORIE = ['b','l','m','p','s','v','z'];
-  let aktualniKat   = 'b';
-  let editKlic      = null;
-  let ucitelJmeno   = '';
-  let ucitelTridy   = [];   // pole tříd, např. ["3A", "3B"]
-  let jeAdmin       = false;
-  let aktivniTrida  = '';   // aktuálně vybraná třída v baru ('' = všechny)
+  let aktualniKat  = 'b';
+  let editKlic     = null;
+  let ucitelJmeno  = '';
+  let ucitelTridy  = [];
+  let jeAdmin      = false;
+  let aktivniTrida = '';
+
+  // ── Bezpečné escapování HTML ──────────────────────────
+  function escapeHtml(str) {
+    return String(str ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
 
   // ── Toast ──────────────────────────────────────────────
   function toast(msg, typ = 'ok') {
     const el = document.getElementById('toast');
-    el.textContent = msg; el.className = `toast show ${typ}`;
-    setTimeout(() => el.className = 'toast', 2500);
+    el.textContent = msg;
+    el.className = `toast show ${typ}`;
+    setTimeout(() => { el.className = 'toast'; }, 2500);
   }
 
   // ── Přihlášení ────────────────────────────────────────
-  document.getElementById('btn-login').onclick = async () => {
+  document.getElementById('btn-login').addEventListener('click', async () => {
     const jmeno = document.getElementById('l-jmeno').value.trim().toLowerCase();
     const heslo = document.getElementById('l-heslo').value;
     const err   = document.getElementById('l-err');
@@ -284,19 +292,9 @@
       const data = snap.val();
       if (data.heslo !== heslo) { err.textContent = '❌ Špatné heslo.'; return; }
 
-      ucitelJmeno = jmeno;
-      jeAdmin     = data.admin === true;
-
-      // Podpora pro pole tridy i starý formát s jednou třídou
-      if (Array.isArray(data.tridy)) {
-        ucitelTridy = data.tridy;
-      } else if (data.trida) {
-        ucitelTridy = [data.trida];
-      } else {
-        ucitelTridy = [];
-      }
-
-      // Admin vidí vždy vše
+      ucitelJmeno  = jmeno;
+      jeAdmin      = data.admin === true;
+      ucitelTridy  = Array.isArray(data.tridy) ? data.tridy : (data.trida ? [data.trida] : []);
       aktivniTrida = jeAdmin ? '' : (ucitelTridy[0] || '');
 
       document.getElementById('lbl-ucitel').textContent = jmeno;
@@ -308,46 +306,43 @@
       await nactiTabs();
       await nactiSlova(aktualniKat);
       await nactiHrace();
-    } catch(e) { err.textContent = 'Chyba: ' + e.message; }
-  };
+    } catch (e) {
+      err.textContent = 'Chyba: ' + e.message;
+    }
+  });
 
   document.getElementById('l-heslo').addEventListener('keydown', e => {
     if (e.key === 'Enter') document.getElementById('btn-login').click();
   });
 
   // ── Odhlášení ─────────────────────────────────────────
-  document.getElementById('btn-logout').onclick = () => {
+  document.getElementById('btn-logout').addEventListener('click', () => {
     ucitelJmeno = ''; ucitelTridy = []; jeAdmin = false; aktivniTrida = '';
-    document.getElementById('l-jmeno').value = '';
-    document.getElementById('l-heslo').value = '';
+    document.getElementById('l-jmeno').value  = '';
+    document.getElementById('l-heslo').value  = '';
     document.getElementById('l-err').textContent = '';
     document.getElementById('admin-wrap').classList.add('hidden');
     document.getElementById('login-wrap').classList.remove('hidden');
-  };
+  });
 
-  // ── Sestav lištu s výběrem třídy ─────────────────────
+  // ── Lišta s výběrem třídy ─────────────────────────────
   function sestavTriduBar() {
     const bar = document.getElementById('trida-bar');
-    // Zachovej label, smaž ostatní
     bar.innerHTML = '<span class="trida-bar-label">Třída:</span>';
 
-    const tridy = jeAdmin ? ucitelTridy : ucitelTridy;
-
-    // Tlačítko "Všechny" — jen pokud má učitel více tříd nebo je admin
     if (jeAdmin || ucitelTridy.length > 1) {
       const btn = document.createElement('button');
       btn.className = 'trida-tab all' + (aktivniTrida === '' ? ' active' : '');
       btn.textContent = 'Všechny';
-      btn.onclick = () => prepniTridu('');
+      btn.addEventListener('click', () => prepniTridu(''));
       bar.appendChild(btn);
     }
 
-    // Tlačítko pro každou třídu
-    tridy.forEach(t => {
+    ucitelTridy.forEach(t => {
       const btn = document.createElement('button');
       btn.className = 'trida-tab' + (aktivniTrida === t ? ' active' : '');
       btn.textContent = t;
-      btn.onclick = () => prepniTridu(t);
+      btn.addEventListener('click', () => prepniTridu(t));
       bar.appendChild(btn);
     });
   }
@@ -359,12 +354,11 @@
     nactiHrace();
   }
 
-  // ── Sestav select třídy ve formuláři přidání žáka ────
+  // ── Select třídy ve formuláři přidání žáka ───────────
   function sestavSelectTridy() {
     const sel  = document.getElementById('f-hrac-trida');
     const pole = document.getElementById('field-trida-vyber');
 
-    // Skryj select pokud má učitel jen jednu třídu a není admin
     if (!jeAdmin && ucitelTridy.length <= 1) {
       pole.style.display = 'none';
       return;
@@ -372,18 +366,15 @@
 
     pole.style.display = 'flex';
     sel.innerHTML = '';
-
-    const tridy = jeAdmin ? ucitelTridy : ucitelTridy;
-    // Předvyber aktuálně aktivní třídu
-    tridy.forEach(t => {
+    ucitelTridy.forEach(t => {
       const opt = document.createElement('option');
-      opt.value = t; opt.textContent = t;
+      opt.value = t;
+      opt.textContent = t;
       if (t === aktivniTrida) opt.selected = true;
       sel.appendChild(opt);
     });
   }
 
-  // ── Nadpis sekce žáků ─────────────────────────────────
   function aktualizujNadpisZaku() {
     const lbl = document.getElementById('lbl-trida-sekce');
     lbl.textContent = aktivniTrida
@@ -401,12 +392,12 @@
       const btn   = document.createElement('button');
       btn.className = 'tab' + (kat === aktualniKat ? ' active' : '');
       btn.innerHTML = `${kat.toUpperCase()} <span class="count">${count}</span>`;
-      btn.onclick   = () => {
+      btn.addEventListener('click', () => {
         aktualniKat = kat;
         nactiTabs();
         nactiSlova(kat);
         document.getElementById('f-kat').value = kat;
-      };
+      });
       tabsEl.appendChild(btn);
     }
   }
@@ -418,17 +409,19 @@
     const snap = await get(ref(db, `vyjmenovana/${kat}`));
     if (!snap.exists()) { wrap.innerHTML = '<div class="empty-msg">Žádná slova.</div>'; return; }
     const data = snap.val();
-    const rows = Object.entries(data).sort((a,b) => a[0].localeCompare(b[0])).map(([klic, s]) => `
-      <tr>
-        <td class="col-id">${klic}</td>
-        <td>${s.veta || ''}</td>
-        <td class="col-odp"><span class="odp-badge">${s.odpoved || ''}</span></td>
-        <td class="col-reseni">${s.reseni || '<span style="color:#3a3a50">—</span>'}</td>
-        <td class="col-akce">
-          <button class="btn-edit" onclick="window._editSlovo('${kat}','${klic}')">upravit</button>
-          <button class="btn-del"  onclick="window._smazSlovo('${kat}','${klic}')">smazat</button>
-        </td>
-      </tr>`).join('');
+    const rows = Object.entries(data)
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .map(([klic, s]) => `
+        <tr>
+          <td class="col-id">${escapeHtml(klic)}</td>
+          <td>${escapeHtml(s.veta || '')}</td>
+          <td class="col-odp"><span class="odp-badge">${escapeHtml(s.odpoved || '')}</span></td>
+          <td class="col-reseni">${s.reseni ? escapeHtml(s.reseni) : '<span style="color:#3a3a50">—</span>'}</td>
+          <td class="col-akce">
+            <button class="btn-edit" data-action="edit" data-kat="${escapeHtml(kat)}" data-klic="${escapeHtml(klic)}">upravit</button>
+            <button class="btn-del"  data-action="del"  data-kat="${escapeHtml(kat)}" data-klic="${escapeHtml(klic)}">smazat</button>
+          </td>
+        </tr>`).join('');
     wrap.innerHTML = `
       <table class="words-table">
         <thead><tr><th>ID</th><th>Věta</th><th>Odpověď</th><th>Řešení</th><th></th></tr></thead>
@@ -436,8 +429,44 @@
       </table>`;
   }
 
+  // Event delegation pro tabulku slov
+  document.getElementById('words-wrap').addEventListener('click', async e => {
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+    const { action, kat, klic } = btn.dataset;
+    if (action === 'edit') await editSlovo(kat, klic);
+    else if (action === 'del') await smazSlovo(kat, klic);
+  });
+
+  // ── Editace slova ─────────────────────────────────────
+  async function editSlovo(kat, klic) {
+    const snap = await get(ref(db, `vyjmenovana/${kat}/${klic}`));
+    if (!snap.exists()) return;
+    const s = snap.val();
+    editKlic = klic;
+    document.getElementById('f-kat').value    = kat;
+    document.getElementById('f-veta').value   = s.veta    || '';
+    document.getElementById('f-odp').value    = s.odpoved || 'y';
+    document.getElementById('f-reseni').value = s.reseni  || '';
+    document.getElementById('form-title-text').textContent = 'Upravit slovo';
+    document.getElementById('form-badge').textContent      = klic.toUpperCase();
+    document.getElementById('form-badge').style.background = '#fa6d8e';
+    document.getElementById('btn-zrusit').style.display    = 'inline-block';
+    document.getElementById('form-msg').className = 'form-msg';
+    document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // ── Smazání slova ─────────────────────────────────────
+  async function smazSlovo(kat, klic) {
+    if (!confirm(`Smazat ${klic} z kategorie ${kat.toUpperCase()}?`)) return;
+    await remove(ref(db, `vyjmenovana/${kat}/${klic}`));
+    toast('Slovo smazáno', 'err');
+    await nactiTabs();
+    await nactiSlova(kat);
+  }
+
   // ── Uložení slova ─────────────────────────────────────
-  document.getElementById('btn-ulozit').onclick = async () => {
+  document.getElementById('btn-ulozit').addEventListener('click', async () => {
     const kat    = document.getElementById('f-kat').value;
     const veta   = document.getElementById('f-veta').value.trim();
     const odp    = document.getElementById('f-odp').value;
@@ -453,9 +482,9 @@
       } else {
         const snap    = await get(ref(db, `vyjmenovana/${kat}`));
         const existuj = snap.exists() ? Object.keys(snap.val()) : [];
-        const cisla   = existuj.map(k => parseInt(k)).filter(n => !isNaN(n));
+        const cisla   = existuj.map(k => parseInt(k, 10)).filter(n => !isNaN(n));
         const novyCis = cisla.length > 0 ? Math.max(...cisla) + 1 : 1;
-        await set(ref(db, `vyjmenovana/${kat}/${String(novyCis).padStart(3,'0')}`), data);
+        await set(ref(db, `vyjmenovana/${kat}/${String(novyCis).padStart(3, '0')}`), data);
         toast('✓ Slovo přidáno');
       }
       msg.className = 'form-msg';
@@ -463,32 +492,11 @@
       aktualniKat = kat;
       await nactiTabs();
       await nactiSlova(kat);
-    } catch(e) { msg.textContent = 'Chyba: ' + e.message; msg.className = 'form-msg err'; }
-  };
-
-  window._editSlovo = async (kat, klic) => {
-    const snap = await get(ref(db, `vyjmenovana/${kat}/${klic}`));
-    if (!snap.exists()) return;
-    const s = snap.val(); editKlic = klic;
-    document.getElementById('f-kat').value    = kat;
-    document.getElementById('f-veta').value   = s.veta    || '';
-    document.getElementById('f-odp').value    = s.odpoved || 'y';
-    document.getElementById('f-reseni').value = s.reseni  || '';
-    document.getElementById('form-title-text').textContent = 'Upravit slovo';
-    document.getElementById('form-badge').textContent      = klic.toUpperCase();
-    document.getElementById('form-badge').style.background = '#fa6d8e';
-    document.getElementById('btn-zrusit').style.display    = 'inline-block';
-    document.getElementById('form-msg').className = 'form-msg';
-    document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth' });
-  };
-
-  window._smazSlovo = async (kat, klic) => {
-    if (!confirm(`Smazat ${klic} z kategorie ${kat.toUpperCase()}?`)) return;
-    await remove(ref(db, `vyjmenovana/${kat}/${klic}`));
-    toast('Slovo smazáno', 'err');
-    await nactiTabs();
-    await nactiSlova(kat);
-  };
+    } catch (e) {
+      msg.textContent = 'Chyba: ' + e.message;
+      msg.className = 'form-msg err';
+    }
+  });
 
   function resetForm() {
     editKlic = null;
@@ -499,22 +507,22 @@
     document.getElementById('form-badge').style.background = '';
     document.getElementById('btn-zrusit').style.display    = 'none';
   }
-  document.getElementById('btn-zrusit').onclick = resetForm;
-  document.getElementById('f-kat').onchange = e => {
+
+  document.getElementById('btn-zrusit').addEventListener('click', resetForm);
+  document.getElementById('f-kat').addEventListener('change', e => {
     aktualniKat = e.target.value;
     nactiTabs();
     nactiSlova(aktualniKat);
-  };
+  });
 
-  // ── Hráči — čte z hrace/ i tridy/ ────────────────────
+  // ── Hráči ─────────────────────────────────────────────
   async function nactiHrace() {
     aktualizujNadpisZaku();
     const wrap = document.getElementById('hrace-wrap');
     wrap.innerHTML = '<div class="loading"><span class="spinner"></span>Načítám žáky...</div>';
 
-    const zaci = []; // [ [jmeno, {nasobilka, vyjmenovana, trida, _cesta}] ]
+    const zaci = [];
 
-    // Nová struktura tridy/
     const snapTridy = await get(ref(db, 'tridy'));
     if (snapTridy.exists()) {
       for (const [trida, zacivTride] of Object.entries(snapTridy.val())) {
@@ -527,9 +535,8 @@
       }
     }
 
-    // Stará struktura hrace/ — jen žáci, kteří nejsou v tridy/
     const jizPridani = new Set(zaci.map(([j]) => j));
-    const snapHrace = await get(ref(db, 'hrace'));
+    const snapHrace  = await get(ref(db, 'hrace'));
     if (snapHrace.exists()) {
       for (const [jmeno, val] of Object.entries(snapHrace.val())) {
         if (jizPridani.has(jmeno)) continue;
@@ -546,26 +553,44 @@
     });
 
     if (zaci.length === 0) {
-      wrap.innerHTML = '<div class="empty-msg">Žádní žáci v této třídě.</div>'; return;
+      wrap.innerHTML = '<div class="empty-msg">Žádní žáci v této třídě.</div>';
+      return;
     }
 
     const karty = zaci.map(([jmeno, val]) => `
       <div class="hrac-card">
-        <div class="hrac-name">${jmeno}</div>
-        <div class="hrac-trida">${val.trida || '—'}</div>
+        <div class="hrac-name">${escapeHtml(jmeno)}</div>
+        <div class="hrac-trida">${escapeHtml(val.trida || '—')}</div>
         <div class="hrac-scores">
           <div class="hrac-score">násobilka <span>${val.nasobilka || 0}</span></div>
           <div class="hrac-score">vyjmenovaná <span>${val.vyjmenovana || 0}</span></div>
         </div>
-        <button class="btn-reset-hrac" onclick="window._resetHrace('${val._cesta}','${val.trida}','${jmeno}')">↺ resetovat skóre</button>
-        <button class="btn-del-hrac"   onclick="window._smazHrace('${val._cesta}','${val.trida}','${jmeno}')">✕ smazat žáka</button>
+        <button class="btn-reset-hrac"
+          data-action="reset"
+          data-cesta="${escapeHtml(val._cesta)}"
+          data-trida="${escapeHtml(val.trida)}"
+          data-jmeno="${escapeHtml(jmeno)}">↺ resetovat skóre</button>
+        <button class="btn-del-hrac"
+          data-action="smazat"
+          data-cesta="${escapeHtml(val._cesta)}"
+          data-trida="${escapeHtml(val.trida)}"
+          data-jmeno="${escapeHtml(jmeno)}">✕ smazat žáka</button>
       </div>`).join('');
 
     wrap.innerHTML = `<div class="hrace-grid">${karty}</div>`;
   }
 
-  // ── Přidání žáka — nový žák vždy do hrace/ ───────────
-  document.getElementById('btn-pridat-hrace').onclick = async () => {
+  // Event delegation pro karty hráčů
+  document.getElementById('hrace-wrap').addEventListener('click', async e => {
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+    const { action, cesta, trida, jmeno } = btn.dataset;
+    if (action === 'smazat') await smazHrace(cesta, trida, jmeno);
+    else if (action === 'reset') await resetHrace(cesta, trida, jmeno);
+  });
+
+  // ── Přidání žáka ─────────────────────────────────────
+  document.getElementById('btn-pridat-hrace').addEventListener('click', async () => {
     const inp   = document.getElementById('f-hrac');
     const msg   = document.getElementById('hrac-msg');
     const jmeno = inp.value.trim().toLowerCase();
@@ -575,34 +600,49 @@
       ? document.getElementById('f-hrac-trida').value
       : (ucitelTridy[0] || '');
 
-    // Zkontroluj duplicitu v obou strukturách
-    const snapT = await get(ref(db, `tridy/${novaTrida}/${jmeno}`));
-    const snapH = await get(ref(db, `hrace/${jmeno}`));
-    if (snapT.exists() || snapH.exists()) { msg.textContent = 'Žák už existuje!'; msg.className = 'form-msg err'; return; }
+    const [snapT, snapH] = await Promise.all([
+      get(ref(db, `tridy/${novaTrida}/${jmeno}`)),
+      get(ref(db, `hrace/${jmeno}`)),
+    ]);
+    if (snapT.exists() || snapH.exists()) {
+      msg.textContent = 'Žák už existuje!';
+      msg.className   = 'form-msg err';
+      return;
+    }
     try {
-      await set(ref(db, `hrace/${jmeno}`), { nasobilka: 0, vyjmenovana: 0, trida: isNaN(novaTrida) ? novaTrida : Number(novaTrida) });
+      await set(ref(db, `hrace/${jmeno}`), {
+        nasobilka: 0,
+        vyjmenovana: 0,
+        trida: isNaN(novaTrida) ? novaTrida : Number(novaTrida),
+      });
       toast(`✓ Žák ${jmeno} přidán do třídy ${novaTrida}`);
-      inp.value = ''; msg.className = 'form-msg';
+      inp.value = '';
+      msg.className = 'form-msg';
       nactiHrace();
-    } catch(e) { msg.textContent = 'Chyba: ' + e.message; msg.className = 'form-msg err'; }
-  };
+    } catch (e) {
+      msg.textContent = 'Chyba: ' + e.message;
+      msg.className   = 'form-msg err';
+    }
+  });
 
-  window._smazHrace = async (cesta, trida, jmeno) => {
+  async function smazHrace(cesta, trida, jmeno) {
     if (!confirm(`Smazat žáka ${jmeno}?`)) return;
     const dbRef = cesta === 'tridy' ? `tridy/${trida}/${jmeno}` : `hrace/${jmeno}`;
     await remove(ref(db, dbRef));
     toast(`Žák ${jmeno} smazán`, 'err');
     nactiHrace();
-  };
+  }
 
-  window._resetHrace = async (cesta, trida, jmeno) => {
+  async function resetHrace(cesta, trida, jmeno) {
     if (!confirm(`Resetovat skóre žáka ${jmeno}?`)) return;
     const base = cesta === 'tridy' ? `tridy/${trida}/${jmeno}` : `hrace/${jmeno}`;
-    await set(ref(db, `${base}/nasobilka`), 0);
-    await set(ref(db, `${base}/vyjmenovana`), 0);
+    await Promise.all([
+      set(ref(db, `${base}/nasobilka`), 0),
+      set(ref(db, `${base}/vyjmenovana`), 0),
+    ]);
     toast(`↺ Skóre ${jmeno} resetováno`);
     nactiHrace();
-  };
+  }
 </script>
 </body>
 </html>

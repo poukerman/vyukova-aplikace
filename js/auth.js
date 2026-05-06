@@ -1,6 +1,4 @@
-// ═══════════════════════════════════════════════════════
-// auth.js  —  Přihlášení a výběr hry
-// ═══════════════════════════════════════════════════════
+// auth.js — Přihlášení a výběr hry
 
 import { stav, showScreen, najdiHrace, nactiZebricek } from './main.js';
 import { initNasobilka } from './nasobilka.js';
@@ -9,9 +7,10 @@ import { initMocniny } from './mocniny.js';
 import { initZebricek } from './zebricek.js';
 
 export function initAuth() {
-  console.log('initAuth called');
   document.getElementById('btn-prihlasit').addEventListener('click', prihlasit);
-  document.getElementById('inp-username').addEventListener('keydown', e => { if (e.key === 'Enter') prihlasit(); });
+  document.getElementById('inp-username').addEventListener('keydown', e => {
+    if (e.key === 'Enter') prihlasit();
+  });
   document.getElementById('btn-host').addEventListener('click', hostovat);
   document.getElementById('btn-predmet-matematika').addEventListener('click', () => volbaPredmetu('matematika'));
   document.getElementById('btn-predmet-cestina').addEventListener('click', () => volbaPredmetu('cestina'));
@@ -44,22 +43,19 @@ async function prihlasit() {
     stav.osobniMaxNas  = data.nasobilka   || 0;
     stav.osobniMaxVyjm = data.vyjmenovana || 0;
 
-    const zbNas  = await nactiZebricek('nasobilka');
-    const zbVyjm = await nactiZebricek('vyjmenovana');
+    const [zbNas, zbVyjm] = await Promise.all([nactiZebricek('nasobilka'), nactiZebricek('vyjmenovana')]);
     stav.globalMaxNas  = zbNas.length  > 0 ? zbNas[0].max  : 0;
     stav.globalMaxVyjm = zbVyjm.length > 0 ? zbVyjm[0].max : 0;
 
-    document.getElementById('lbl-username').textContent = username;
-    document.getElementById('guest-badge').classList.remove('visible');
+    nastavUzivateleUI(username, false);
     err.textContent = '';
-    document.getElementById('lbl-username-predmety').textContent = username;
-    document.getElementById('guest-badge-predmety').classList.remove('visible');
     showScreen('screen-predmety');
-  } catch(e) { err.textContent = 'Chyba: ' + e.message; }
+  } catch (e) {
+    err.textContent = 'Chyba: ' + e.message;
+  }
 }
 
 function hostovat() {
-  console.log('hostovat called');
   stav.jmeno         = 'Host';
   stav.trida         = '';
   stav.jeHost        = true;
@@ -68,31 +64,25 @@ function hostovat() {
   stav.globalMaxNas  = 0;
   stav.globalMaxVyjm = 0;
 
-  document.getElementById('lbl-username').textContent = 'Host';
-  document.getElementById('guest-badge').classList.add('visible');
-  document.getElementById('lbl-username-predmety').textContent = 'Host';
-  document.getElementById('guest-badge-predmety').classList.add('visible');
+  nastavUzivateleUI('Host', true);
   document.getElementById('login-error').textContent = '';
   showScreen('screen-predmety');
 }
 
+function nastavUzivateleUI(jmeno, jeHost) {
+  document.getElementById('lbl-username').textContent          = jmeno;
+  document.getElementById('lbl-username-predmety').textContent = jmeno;
+  document.getElementById('guest-badge').classList.toggle('visible', jeHost);
+  document.getElementById('guest-badge-predmety').classList.toggle('visible', jeHost);
+}
+
 function volbaPredmetu(predmet) {
   stav.aktualniPredmet = predmet;
-  // Filtruj karty v screen-vyber
-  document.querySelectorAll('#screen-vyber .game-choice-card').forEach(card => {
-    if (card.dataset.predmet === predmet) {
-      card.style.display = 'block';
-    } else {
-      card.style.display = 'none';
-    }
+  document.querySelectorAll('#screen-vyber .game-card').forEach(card => {
+    card.closest('.col-6').style.display = card.dataset.predmet === predmet ? '' : 'none';
   });
-  // Aktualizuj username a guest badge v screen-vyber
   document.getElementById('lbl-username').textContent = stav.jmeno;
-  if (stav.jeHost) {
-    document.getElementById('guest-badge').classList.add('visible');
-  } else {
-    document.getElementById('guest-badge').classList.remove('visible');
-  }
+  document.getElementById('guest-badge').classList.toggle('visible', stav.jeHost);
   showScreen('screen-vyber');
 }
 

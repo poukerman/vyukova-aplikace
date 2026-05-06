@@ -1,39 +1,25 @@
-// ═══════════════════════════════════════════════════════
-// mocniny.js  —  Hra: Mocniny a odmocniny
-//
-// Základní typy:  '2pow' '2root' '3pow' '3root'
-// Rozšíření:      'neg'  záporná celá čísla ((-3)², (-2)³)
-//                 'dec'  desetinná čísla, kladná i záporná
-//                 'frac' zlomky, kladné i záporné
-//
-// Odpovědi: celé číslo, desetinné číslo, zlomek {n,d},
-//   nebo řetězec 'neexistuje'.
-// Vstup přijímá: "4", "-8", "0,5", "0.5", "1/4", "-1/8"
-// ═══════════════════════════════════════════════════════
+// mocniny.js — Hra: Mocniny a odmocniny
 
 import { stav, showScreen, updateHint } from './main.js';
 import { zobrazVysledkyMocniny } from './vysledky.js';
 
-// ── Konfigurace ───────────────────────────────────────
-const DOBA_HRY = 120; // sekund
+const DOBA_HRY = 120;
 
-// ── Data: základní typy ───────────────────────────────
 const CTVERECE     = [1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144];
 const CTVERECE_NEG = [-1, -4, -9, -16, -25, -36, -49, -64, -81, -100];
 const KOSTKY       = [1, 8, 27, 64, 125, 216];
+const FRAC_PAIRS   = [[1,2],[1,3],[1,4],[1,5],[1,6],[2,3],[2,5],[3,4],[3,5],[4,5]];
 
-// ── Data: nesoudělné dvojice n < d pro zlomky ─────────
-const FRAC_PAIRS = [[1,2],[1,3],[1,4],[1,5],[1,6],[2,3],[2,5],[3,4],[3,5],[4,5]];
-
-// ── Pomocné funkce ────────────────────────────────────
-
-function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { [a, b] = [b, a % b]; } return a; }
+function gcd(a, b) {
+  a = Math.abs(a); b = Math.abs(b);
+  while (b) { [a, b] = [b, a % b]; }
+  return a;
+}
 
 function formatCas(sek) {
   return `${Math.floor(sek / 60)}:${String(sek % 60).padStart(2, '0')}`;
 }
 
-// Parsuje vstup — vrátí {k:'n',v} (číslo) nebo {k:'f',n,d} (zlomek) nebo null
 function parseVstup(s) {
   s = s.trim().replace(',', '.');
   if (/^-?\d+$/.test(s))      return { k: 'n', v: parseInt(s, 10) };
@@ -47,7 +33,6 @@ function parseVstup(s) {
   return null;
 }
 
-// Porovná parsovaný vstup se správnou odpovědí (číslo nebo {n,d})
 function srovnej(vstup, spravna) {
   if (typeof spravna === 'number') {
     if (vstup.k === 'n') return Math.abs(vstup.v - spravna) < 1e-9;
@@ -60,7 +45,6 @@ function srovnej(vstup, spravna) {
   return false;
 }
 
-// ── Lokální stav ──────────────────────────────────────
 let vybraneTypy      = [];
 let aktualniTypy     = [];
 let body             = 0;
@@ -70,9 +54,8 @@ let aktualniPriklad  = null;
 let zbyvajiciCas     = 0;
 let casovacId        = null;
 let hraProbiha       = false;
-let prvePokysy       = true; // true = na aktuální příklad ještě nedošlo k chybě
+let prvniPokus       = true;
 
-// ── Inicializace ──────────────────────────────────────
 export function initMocniny() {
   vybraneTypy = [];
 
@@ -82,10 +65,10 @@ export function initMocniny() {
     el.onclick = () => prepniTyp(typ);
   });
 
-  document.getElementById('mocniny-error').textContent   = '';
-  document.getElementById('btn-start-mocniny').onclick   = spravnoSpustit;
-  document.getElementById('btn-zpet-mocniny').onclick    = () => showScreen('screen-vyber');
-  document.getElementById('btn-ukoncit-mocniny').onclick = ukoncitHru;
+  document.getElementById('mocniny-error').textContent    = '';
+  document.getElementById('btn-start-mocniny').onclick    = spravnoSpustit;
+  document.getElementById('btn-zpet-mocniny').onclick     = () => showScreen('screen-vyber');
+  document.getElementById('btn-ukoncit-mocniny').onclick  = ukoncitHru;
   document.getElementById('btn-potvrdit-mocniny').onclick = potvrdit;
   document.getElementById('btn-neexistuje-mocniny').onclick = potvrditNeexistuje;
 
@@ -102,23 +85,21 @@ export function initMocniny() {
         e.preventDefault();
         if (inp.disabled) return;
         const k = btn.dataset.k;
-        if (k === 'back')     inp.value = inp.value.slice(0, -1);
-        else if (k === 'ok')  potvrdit();
-        else                  inp.value += k;
+        if (k === 'back')    inp.value = inp.value.slice(0, -1);
+        else if (k === 'ok') potvrdit();
+        else                 inp.value += k;
       };
     });
   }
 }
 
-// ── Přepnutí výběru kategorie ─────────────────────────
 function prepniTyp(typ) {
   const el = document.getElementById(`btn-mocniny-${typ}`);
+  el.classList.toggle('selected');
   if (el.classList.contains('selected')) {
-    el.classList.remove('selected');
-    vybraneTypy = vybraneTypy.filter(t => t !== typ);
-  } else {
-    el.classList.add('selected');
     vybraneTypy.push(typ);
+  } else {
+    vybraneTypy = vybraneTypy.filter(t => t !== typ);
   }
   document.getElementById('mocniny-error').textContent = '';
 }
@@ -139,27 +120,27 @@ function ukoncitHru() {
   showScreen('screen-welcome-mocniny');
 }
 
-// ── Spuštění hry ──────────────────────────────────────
 function startHra(typy) {
   aktualniTypy     = typy;
   body             = 0;
   celkemOtazek     = 0;
   historiePrikladu = [];
-  prvePokysy       = true;
+  prvniPokus       = true;
   zbyvajiciCas     = DOBA_HRY;
   hraProbiha       = true;
 
   if (casovacId) clearInterval(casovacId);
 
-  // Přepni label "Příklad" → "Čas"
-  document.getElementById('lbl-priklad-mocniny').previousElementSibling.textContent = 'Čas';
-  document.getElementById('lbl-priklad-mocniny').textContent    = formatCas(DOBA_HRY);
-  document.getElementById('lbl-body-mocniny').textContent       = 0;
-  document.getElementById('lbl-rekord-mocniny').textContent     = stav.jeHost ? '—' : stav.osobniMaxMocniny;
-  document.getElementById('progress-mocniny').style.width       = '0%';
-  document.getElementById('lbl-komentar-mocniny').textContent   = '';
-  document.getElementById('lbl-komentar-mocniny').className     = 'komentar';
-  document.getElementById('record-hint-mocniny').textContent    = '';
+  const lblCas = document.getElementById('lbl-priklad-mocniny');
+  lblCas.previousElementSibling.textContent = 'Čas';
+  lblCas.textContent                         = formatCas(DOBA_HRY);
+
+  document.getElementById('lbl-body-mocniny').textContent     = 0;
+  document.getElementById('lbl-rekord-mocniny').textContent   = stav.jeHost ? '—' : stav.osobniMaxMocniny;
+  document.getElementById('progress-mocniny').style.width     = '0%';
+  document.getElementById('lbl-komentar-mocniny').textContent = '';
+  document.getElementById('lbl-komentar-mocniny').className   = 'komentar';
+  document.getElementById('record-hint-mocniny').textContent  = '';
 
   const inp = document.getElementById('inp-odpoved-mocniny');
   inp.value    = '';
@@ -172,7 +153,6 @@ function startHra(typy) {
   casovacId = setInterval(tikTimer, 1000);
 }
 
-// ── Odpočet ───────────────────────────────────────────
 function tikTimer() {
   zbyvajiciCas--;
   document.getElementById('lbl-priklad-mocniny').textContent = formatCas(zbyvajiciCas);
@@ -194,7 +174,6 @@ function konecHry() {
   setTimeout(() => zobrazVysledkyMocniny(body, historiePrikladu), 600);
 }
 
-// ── Generování příkladu ───────────────────────────────
 function generuj(typy) {
   const typ = typy[Math.floor(Math.random() * typy.length)];
 
@@ -248,7 +227,6 @@ function generuj(typy) {
       const ans  = round(base * base, 4);
       return { latex: `(${sign}${dl(base)})^{2}`, odpoved: ans, popis: `(${sign}${ds(base)})² = ${ds(ans)}` };
     }
-
     if (sub === '2root') {
       const ctv   = CTVERECE.filter(x => x !== 100);
       const sq    = ctv[Math.floor(Math.random() * ctv.length)];
@@ -256,7 +234,6 @@ function generuj(typy) {
       const ans   = round(Math.sqrt(sq) / 10, 2);
       return { latex: `\\sqrt{${dl(inner)}}`, odpoved: ans, popis: `√${ds(inner)} = ${ds(ans)}` };
     }
-
     if (sub === '3pow') {
       const b    = Math.floor(Math.random() * 6) + 1;
       const base = round(b / 10, 1);
@@ -264,7 +241,6 @@ function generuj(typy) {
       const res  = neg ? round(-ans, 4) : ans;
       return { latex: `(${sign}${dl(base)})^{3}`, odpoved: res, popis: `(${sign}${ds(base)})³ = ${ds(res)}` };
     }
-
     const cb    = KOSTKY[Math.floor(Math.random() * KOSTKY.length)];
     const inner = round(cb / 1000, 4);
     const ans   = round(Math.cbrt(cb) / 10, 2);
@@ -284,7 +260,6 @@ function generuj(typy) {
         : `\\left(\\frac{${fn}}{${fd}}\\right)^{2}`;
       return { latex, odpoved: { n: fn * fn, d: fd * fd }, popis: `(${ps}${fn}/${fd})² = ${fn * fn}/${fd * fd}` };
     }
-
     if (sub === '2root') {
       return {
         latex:   `\\sqrt{\\frac{${fn * fn}}{${fd * fd}}}`,
@@ -292,7 +267,6 @@ function generuj(typy) {
         popis:   `√(${fn * fn}/${fd * fd}) = ${fn}/${fd}`,
       };
     }
-
     if (sub === '3pow') {
       const latex = neg
         ? `\\left(-\\frac{${fn}}{${fd}}\\right)^{3}`
@@ -300,7 +274,6 @@ function generuj(typy) {
       const ansN = neg ? -(fn * fn * fn) : fn * fn * fn;
       return { latex, odpoved: { n: ansN, d: fd * fd * fd }, popis: `(${ps}${fn}/${fd})³ = ${ansN}/${fd * fd * fd}` };
     }
-
     return {
       latex:   `\\sqrt[3]{\\frac{${fn * fn * fn}}{${fd * fd * fd}}}`,
       odpoved: { n: fn, d: fd },
@@ -309,7 +282,6 @@ function generuj(typy) {
   }
 }
 
-// ── Zobrazení nového příkladu ─────────────────────────
 function novyPriklad() {
   document.getElementById('lbl-komentar-mocniny').textContent = '';
   document.getElementById('lbl-komentar-mocniny').className   = 'komentar';
@@ -330,13 +302,11 @@ function novyPriklad() {
   inp.focus();
 }
 
-// ── Společná logika po odpovědi ───────────────────────
-function zpracujOdpoved(uzivatelOdpoved, spravne) {
+function zpracujOdpoved(_uzivatelOdpoved, spravne) {
   const kom = document.getElementById('lbl-komentar-mocniny');
 
   if (!spravne) {
-    // Ukáž správnou odpověď, ale nechej hráče opravit
-    prvePokysy = false;
+    prvniPokus = false;
     kom.textContent = `✗ Správně: ${aktualniPriklad.popis}`;
     kom.className   = 'komentar wrong';
     setTimeout(() => {
@@ -351,11 +321,9 @@ function zpracujOdpoved(uzivatelOdpoved, spravne) {
     return;
   }
 
-  // Správná odpověď — zapiš výsledek a přejdi na další příklad
-  const byloPrve = prvePokysy;
-  prvePokysy = true;
+  const byloPrve = prvniPokus;
+  prvniPokus = true;
   celkemOtazek++;
-
   historiePrikladu.push({ popis: aktualniPriklad.popis, spravne: byloPrve });
 
   if (byloPrve) {
@@ -371,7 +339,6 @@ function zpracujOdpoved(uzivatelOdpoved, spravne) {
   setTimeout(novyPriklad, 600);
 }
 
-// ── Potvrzení číselné / zlomkové odpovědi ────────────
 function potvrdit() {
   if (!aktualniPriklad) return;
 
@@ -392,7 +359,6 @@ function potvrdit() {
   zpracujOdpoved(inp.value.trim(), spravne);
 }
 
-// ── Potvrzení „Neexistuje" ────────────────────────────
 function potvrditNeexistuje() {
   if (!aktualniPriklad) return;
 

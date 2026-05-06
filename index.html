@@ -6,321 +6,415 @@
   <title>Eduhry</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Potta+One&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Potta+One&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-
+  <link rel="stylesheet" href="css/app.css"/>
 </head>
 <body>
 
 <div class="stars" id="stars"></div>
-<div class="wrapper">
-  <div class="card">
 
-    <!-- ═══ PŘIHLÁŠENÍ ═══════════════════════════════════ -->
-    <div id="screen-login" class="screen active">
-      <div class="logo">
-        <span class="logo-icon">🏆</span>
-        <h1>Eduhry</h1>
-        <p>Přihlaš se a hraj!</p>
-      </div>
-      <div class="input-group">
-        <label>Uživatelské jméno</label>
-        <input type="text" id="inp-username" placeholder="např. jana123" autocomplete="off"/>
-      </div>
-      <button class="btn btn-primary" id="btn-prihlasit">Přihlásit se 🚀</button>
-      <div class="error-msg" id="login-error"></div>
-     <div class="login-divider"><span>nebo</span></div>
-      <button class="btn btn-outline" id="btn-host">Hrát bez přihlášení 👤</button>
-      <div class="nav-link" id="btn-zebricek-login">🏆 <span>Zobrazit žebříček</span></div>
+<main class="app-main d-flex align-items-center justify-content-center min-vh-100 py-4 px-3">
+<div class="app-card">
+
+  <!-- ═══ PŘIHLÁŠENÍ ══════════════════════════════════════ -->
+  <div id="screen-login" class="screen active">
+    <div class="text-center mb-4">
+      <span class="logo-icon">🏆</span>
+      <h1 class="app-title mt-1 mb-0">Eduhry</h1>
+      <p class="text-muted small mb-0">Přihlaš se a hraj!</p>
     </div>
-
-    <!-- ═══ VÝBĚR PŘEDMĚTU ═════════════════════════════════ -->
-    <div id="screen-predmety" class="screen">
-      <div class="welcome-text">
-        <h2>Vítej, <span class="username" id="lbl-username-predmety"></span>! 👋</h2>
-        <div class="guest-badge" id="guest-badge-predmety">👤 Režim hosta — rekordy se neukládají</div>
-      </div>
-      <div class="welcome-title">Vyber si předmět:</div>
-      <div class="game-choice-grid">
-        <div class="game-choice-card matematika" id="btn-predmet-matematika">
-          <span class="game-choice-icon">🔢</span>
-          <div class="game-choice-title">Matematika</div>
-          <div class="game-choice-sub">Počítání a logika</div>
-        </div>
-        <div class="game-choice-card cestina" id="btn-predmet-cestina">
-          <span class="game-choice-icon">📖</span>
-          <div class="game-choice-title">Český jazyk</div>
-          <div class="game-choice-sub">Pravopis a gramatika</div>
-        </div>
-      </div>
-      <div class="nav-link" id="btn-zebricek-predmety">🏆 <span>Žebříček</span></div>
+    <div class="mb-3">
+      <label class="form-label fw-bold text-uppercase small" style="letter-spacing:.05em;color:#555">Uživatelské jméno</label>
+      <input type="text" id="inp-username" class="form-control form-control-lg" placeholder="např. jana123" autocomplete="off"/>
     </div>
-
-    <!-- ═══ VÝBĚR HRY ════════════════════════════════════ -->
-    <div id="screen-vyber" class="screen">
-      <div class="welcome-text">
-        <h2>Vítej, <span class="username" id="lbl-username"></span>! 👋</h2>
-        <div class="guest-badge" id="guest-badge">👤 Režim hosta — rekordy se neukládají</div>
-      </div>
-      <div class="welcome-title">Vyber si hru:</div>
-      <div class="game-choice-grid">
-        <div class="game-choice-card nasobilka" id="btn-volba-nasobilka" data-predmet="matematika">
-          <span class="game-choice-icon">✖️</span>
-          <div class="game-choice-title">Malá násobilka</div>
-          <div class="game-choice-sub">Počítej příklady</div>
-        </div>
-       
-      <div class="game-choice-card vyjmenovana" id="btn-volba-vyjmenovana" data-predmet="cestina">
-          <span class="game-choice-icon">📝</span>
-          <div class="game-choice-title">Vyjmenovaná slova</div>
-          <div class="game-choice-sub">Doplňuj y/i</div>
-        </div>
-        <div class="game-choice-card mocniny" id="btn-volba-mocniny" data-predmet="matematika">
-          <span class="game-choice-icon">🔢</span>
-          <div class="game-choice-title">Mocniny</div>
-          <div class="game-choice-sub">Mocniny a odmocniny</div>
-        </div>
-      </div>
-      <div class="nav-link" id="btn-zebricek-vyber">🏆 <span>Žebříček</span></div>
-      <button class="btn btn-outline mt12" id="btn-zpet-vyber">← Zpět na výběr předmětů</button>
+    <div class="d-grid mb-1">
+      <button class="btn btn-app-orange btn-lg" id="btn-prihlasit">Přihlásit se 🚀</button>
     </div>
-
-    <!-- ═══ UVÍTÁNÍ: NÁSOBILKA ═══════════════════════════ -->
-    <div id="screen-welcome-nasobilka" class="screen">
-      <div class="welcome-text"><h2>✖️ Malá násobilka</h2></div>
-      <div class="score-grid">
-        <div class="score-box personal"><div class="score-label">Tvůj rekord</div><div class="score-value" id="lbl-osobni-nas">0</div></div>
-        <div class="score-box global"><div class="score-label">Rekord školy</div><div class="score-value" id="lbl-global-nas">0</div></div>
-      </div>
-      <button class="btn btn-green" id="btn-start-nasobilka">▶ Začít hru</button>
-      <button class="btn btn-outline mt12" id="btn-zpet-nasobilka">← Zpět na výběr</button>
-      <div class="nav-link" id="btn-zebricek-welcome-nas">🏆 <span>Žebříček násobilky</span></div>
+    <div class="error-msg mb-1" id="login-error"></div>
+    <div class="login-divider my-3"><span>nebo</span></div>
+    <div class="d-grid">
+      <button class="btn btn-outline-secondary btn-lg" id="btn-host">Hrát bez přihlášení 👤</button>
     </div>
+    <div class="nav-link-app text-center mt-3" id="btn-zebricek-login">🏆 <span>Zobrazit žebříček</span></div>
+  </div>
 
-    <!-- ═══ UVÍTÁNÍ: MOCNINY + VÝBĚR KATEGORIE ════════════ -->
-    <div id="screen-welcome-mocniny" class="screen">
-      <div class="welcome-text"><h2>🔢 Mocniny a odmocniny</h2></div>
-      <div class="mocniny-sekce-label">Typ příkladu</div>
-      <div class="mocniny-grid">
+  <!-- ═══ VÝBĚR PŘEDMĚTU ══════════════════════════════════ -->
+  <div id="screen-predmety" class="screen">
+    <div class="text-center mb-4">
+      <h2 class="app-heading">Vítej, <span class="text-app-orange" id="lbl-username-predmety"></span>! 👋</h2>
+      <div class="guest-badge mt-2" id="guest-badge-predmety">👤 Režim hosta — rekordy se neukládají</div>
+    </div>
+    <p class="section-label text-center">Vyber si předmět:</p>
+    <div class="row g-3 mb-3">
+      <div class="col-6">
+        <div class="game-card matematika" id="btn-predmet-matematika">
+          <span class="game-card-icon">🔢</span>
+          <div class="game-card-title">Matematika</div>
+          <div class="game-card-sub">Počítání a logika</div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="game-card cestina" id="btn-predmet-cestina">
+          <span class="game-card-icon">📖</span>
+          <div class="game-card-title">Český jazyk</div>
+          <div class="game-card-sub">Pravopis a gramatika</div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-link-app text-center" id="btn-zebricek-predmety">🏆 <span>Žebříček</span></div>
+  </div>
+
+  <!-- ═══ VÝBĚR HRY ════════════════════════════════════════ -->
+  <div id="screen-vyber" class="screen">
+    <div class="text-center mb-4">
+      <h2 class="app-heading">Vítej, <span class="text-app-orange" id="lbl-username"></span>! 👋</h2>
+      <div class="guest-badge mt-2" id="guest-badge">👤 Režim hosta — rekordy se neukládají</div>
+    </div>
+    <p class="section-label text-center">Vyber si hru:</p>
+    <div class="row g-3 mb-3">
+      <div class="col-6">
+        <div class="game-card nasobilka" id="btn-volba-nasobilka" data-predmet="matematika">
+          <span class="game-card-icon">✖️</span>
+          <div class="game-card-title">Malá násobilka</div>
+          <div class="game-card-sub">Počítej příklady</div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="game-card vyjmenovana" id="btn-volba-vyjmenovana" data-predmet="cestina">
+          <span class="game-card-icon">📝</span>
+          <div class="game-card-title">Vyjmenovaná slova</div>
+          <div class="game-card-sub">Doplňuj y/i</div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="game-card mocniny" id="btn-volba-mocniny" data-predmet="matematika">
+          <span class="game-card-icon">🔢</span>
+          <div class="game-card-title">Mocniny</div>
+          <div class="game-card-sub">Mocniny a odmocniny</div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-link-app text-center mb-3" id="btn-zebricek-vyber">🏆 <span>Žebříček</span></div>
+    <div class="d-grid">
+      <button class="btn btn-outline-secondary" id="btn-zpet-vyber">← Zpět na výběr předmětů</button>
+    </div>
+  </div>
+
+  <!-- ═══ UVÍTÁNÍ: NÁSOBILKA ══════════════════════════════ -->
+  <div id="screen-welcome-nasobilka" class="screen">
+    <div class="text-center mb-4">
+      <h2 class="app-heading">✖️ Malá násobilka</h2>
+    </div>
+    <div class="row g-2 mb-4">
+      <div class="col-6">
+        <div class="score-box personal text-center p-3">
+          <div class="score-label">Tvůj rekord</div>
+          <div class="score-value text-app-orange" id="lbl-osobni-nas">0</div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="score-box global text-center p-3">
+          <div class="score-label">Rekord školy</div>
+          <div class="score-value text-app-blue" id="lbl-global-nas">0</div>
+        </div>
+      </div>
+    </div>
+    <div class="d-grid gap-2">
+      <button class="btn btn-app-green btn-lg" id="btn-start-nasobilka">▶ Začít hru</button>
+      <button class="btn btn-outline-secondary" id="btn-zpet-nasobilka">← Zpět na výběr</button>
+    </div>
+    <div class="nav-link-app text-center mt-3" id="btn-zebricek-welcome-nas">🏆 <span>Žebříček násobilky</span></div>
+  </div>
+
+  <!-- ═══ UVÍTÁNÍ: MOCNINY ═════════════════════════════════ -->
+  <div id="screen-welcome-mocniny" class="screen">
+    <div class="text-center mb-3">
+      <h2 class="app-heading">🔢 Mocniny a odmocniny</h2>
+    </div>
+    <p class="section-label">Typ příkladu</p>
+    <div class="row g-2 mb-3">
+      <div class="col-6">
         <div class="mocniny-card pow2" id="btn-mocniny-2pow">
           <span class="mocniny-icon">x²</span>
           <div class="mocniny-title">Druhá mocnina</div>
           <div class="mocniny-sub">5² = ?</div>
         </div>
+      </div>
+      <div class="col-6">
         <div class="mocniny-card root2" id="btn-mocniny-2root">
           <span class="mocniny-icon">√x</span>
           <div class="mocniny-title">Druhá odmocnina</div>
           <div class="mocniny-sub">√25 = ?</div>
         </div>
+      </div>
+      <div class="col-6">
         <div class="mocniny-card pow3" id="btn-mocniny-3pow">
           <span class="mocniny-icon">x³</span>
           <div class="mocniny-title">Třetí mocnina</div>
           <div class="mocniny-sub">3³ = ?</div>
         </div>
+      </div>
+      <div class="col-6">
         <div class="mocniny-card root3" id="btn-mocniny-3root">
           <span class="mocniny-icon">∛x</span>
           <div class="mocniny-title">Třetí odmocnina</div>
           <div class="mocniny-sub">∛27 = ?</div>
         </div>
       </div>
-      <div class="mocniny-sekce-label">Rozšíření</div>
-      <div class="cisla-grid">
+    </div>
+    <p class="section-label">Rozšíření</p>
+    <div class="row g-2 mb-2">
+      <div class="col-4">
         <div class="mocniny-card neg" id="btn-mocniny-neg">
           <span class="mocniny-icon">−x</span>
           <div class="mocniny-title">Záporná čísla</div>
           <div class="mocniny-sub">(-3)² = ?</div>
         </div>
+      </div>
+      <div class="col-4">
         <div class="mocniny-card dec" id="btn-mocniny-dec">
           <span class="mocniny-icon">0,5</span>
           <div class="mocniny-title">Desetinná čísla</div>
           <div class="mocniny-sub">(0,5)² = ?</div>
         </div>
+      </div>
+      <div class="col-4">
         <div class="mocniny-card frac" id="btn-mocniny-frac">
           <span class="mocniny-icon">½</span>
           <div class="mocniny-title">Zlomky</div>
           <div class="mocniny-sub">(1/2)² = ?</div>
         </div>
       </div>
-      <div class="mocniny-error" id="mocniny-error"></div>
-      <button class="btn btn-blue mt12" id="btn-start-mocniny">▶ Spustit hru</button>
-      <button class="btn btn-outline mt12" id="btn-zpet-mocniny">← Zpět na výběr</button>
     </div>
+    <div class="mocniny-error text-center mb-2" id="mocniny-error"></div>
+    <div class="d-grid gap-2">
+      <button class="btn btn-app-blue btn-lg" id="btn-start-mocniny">▶ Spustit hru</button>
+      <button class="btn btn-outline-secondary" id="btn-zpet-mocniny">← Zpět na výběr</button>
+    </div>
+  </div>
 
-    <!-- ═══ HRA: MOCNINY ═════════════════════════════════ -->
-    <div id="screen-game-mocniny" class="screen">
-      <div class="game-header">
-        <div class="game-stat"><div class="stat-label">Příklad</div><div class="stat-value priklad-count" id="lbl-priklad-mocniny">0/10</div></div>
-        <div class="game-stat"><div class="stat-label">Správně</div><div class="stat-value score-live" id="lbl-body-mocniny">0</div></div>
-        <div class="game-stat"><div class="stat-label">Rekord</div><div class="stat-value" id="lbl-rekord-mocniny">0</div></div>
+  <!-- ═══ HRA: MOCNINY ════════════════════════════════════ -->
+  <div id="screen-game-mocniny" class="screen">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+      <div class="game-stat text-center">
+        <div class="stat-label">Příklad</div>
+        <div class="stat-value text-app-purple" id="lbl-priklad-mocniny">0/10</div>
       </div>
-      <div class="progress-bar-wrap"><div class="progress-bar-fill mocniny" id="progress-mocniny" style="width:0%"></div></div>
-      <div class="mocniny-zadani">
-        <div id="lbl-priklad-latex" class="mocniny-priklad"></div>
-        <div class="komentar" id="lbl-komentar-mocniny"></div>
+      <div class="game-stat text-center">
+        <div class="stat-label">Správně</div>
+        <div class="stat-value text-app-green" id="lbl-body-mocniny">0</div>
       </div>
-      <div class="answer-row">
-        <input type="text" id="inp-odpoved-mocniny" placeholder="např. 4 nebo 1/4" autocomplete="off" inputmode="decimal"/>
-        <button id="btn-potvrdit-mocniny">✓</button>
+      <div class="game-stat text-center">
+        <div class="stat-label">Rekord</div>
+        <div class="stat-value" id="lbl-rekord-mocniny">0</div>
       </div>
+    </div>
+    <div class="progress mb-4" style="height:10px">
+      <div class="progress-bar progress-mocniny" id="progress-mocniny" role="progressbar" style="width:0%"></div>
+    </div>
+    <div class="text-center mb-3" style="min-height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center">
+      <div id="lbl-priklad-latex" class="mocniny-priklad"></div>
+      <div class="komentar" id="lbl-komentar-mocniny"></div>
+    </div>
+    <div class="input-group mb-2">
+      <input type="text" id="inp-odpoved-mocniny" class="form-control form-control-lg text-center" placeholder="např. 4 nebo 1/4" autocomplete="off" inputmode="decimal"/>
+      <button class="btn btn-app-blue px-4" id="btn-potvrdit-mocniny" style="font-size:1.5rem">✓</button>
+    </div>
+    <div class="d-grid mb-2">
       <button class="btn-neexistuje" id="btn-neexistuje-mocniny">✗ Neexistuje</button>
-      <div class="touch-keypad" id="keypad-mocniny">
-        <div class="keypad-grid keypad-4col">
-          <button class="kkey" data-k="7">7</button>
-          <button class="kkey" data-k="8">8</button>
-          <button class="kkey" data-k="9">9</button>
-          <button class="kkey kkey-back" data-k="back">⌫</button>
-          <button class="kkey" data-k="4">4</button>
-          <button class="kkey" data-k="5">5</button>
-          <button class="kkey" data-k="6">6</button>
-          <button class="kkey kkey-spec" data-k="/">/</button>
-          <button class="kkey" data-k="1">1</button>
-          <button class="kkey" data-k="2">2</button>
-          <button class="kkey" data-k="3">3</button>
-          <button class="kkey kkey-spec" data-k="-">−</button>
-          <button class="kkey kkey-spec" data-k=",">,</button>
-          <button class="kkey" data-k="0">0</button>
-          <button class="kkey kkey-empty" disabled></button>
-          <button class="kkey kkey-confirm" data-k="ok">✓</button>
-        </div>
-      </div>
-      <div class="record-hint" id="record-hint-mocniny"></div>
-      <div class="ukoncit-wrap">
-        <button class="btn-ukoncit" id="btn-ukoncit-mocniny">✕ Ukončit hru</button>
-        <div class="ukoncit-upozorneni">⚠️ Předčasné ukončení se nezapočítá do žebříčku</div>
+    </div>
+    <div class="touch-keypad" id="keypad-mocniny">
+      <div class="keypad-grid keypad-4col">
+        <button class="kkey" data-k="7">7</button>
+        <button class="kkey" data-k="8">8</button>
+        <button class="kkey" data-k="9">9</button>
+        <button class="kkey kkey-back" data-k="back">⌫</button>
+        <button class="kkey" data-k="4">4</button>
+        <button class="kkey" data-k="5">5</button>
+        <button class="kkey" data-k="6">6</button>
+        <button class="kkey kkey-spec" data-k="/">/</button>
+        <button class="kkey" data-k="1">1</button>
+        <button class="kkey" data-k="2">2</button>
+        <button class="kkey" data-k="3">3</button>
+        <button class="kkey kkey-spec" data-k="-">−</button>
+        <button class="kkey kkey-spec" data-k=",">,</button>
+        <button class="kkey" data-k="0">0</button>
+        <button class="kkey kkey-empty" disabled></button>
+        <button class="kkey kkey-confirm" data-k="ok">✓</button>
       </div>
     </div>
+    <div class="record-hint text-center mt-3" id="record-hint-mocniny"></div>
+    <div class="text-center mt-3">
+      <button class="btn-ukoncit" id="btn-ukoncit-mocniny">✕ Ukončit hru</button>
+      <div class="ukoncit-upozorneni">⚠️ Předčasné ukončení se nezapočítá do žebříčku</div>
+    </div>
+  </div>
 
-    <!-- ═══ UVÍTÁNÍ: VYJMENOVANÁ + VÝBĚR KATEGORIÍ ══════ -->
-    <div id="screen-welcome-vyjmenovana" class="screen">
-      <div class="welcome-text"><h2>📝 Vyjmenovaná slova</h2></div>
-      <div class="welcome-title">Vyber stupeň:</div>
-      <div class="stupen-grid">
+  <!-- ═══ UVÍTÁNÍ: VYJMENOVANÁ ════════════════════════════ -->
+  <div id="screen-welcome-vyjmenovana" class="screen">
+    <div class="text-center mb-4">
+      <h2 class="app-heading">📝 Vyjmenovaná slova</h2>
+    </div>
+    <p class="section-label text-center">Vyber stupeň:</p>
+    <div class="row g-3 mb-4">
+      <div class="col-6">
         <div class="stupen-card stupen-1" id="btn-stupen-1">
           <span class="stupen-icon">🌱</span>
           <div class="stupen-title">1. stupeň</div>
           <div class="stupen-sub"></div>
         </div>
+      </div>
+      <div class="col-6">
         <div class="stupen-card stupen-2" id="btn-stupen-2">
           <span class="stupen-icon">🌳</span>
           <div class="stupen-title">2. stupeň</div>
           <div class="stupen-sub"></div>
         </div>
       </div>
-      <button class="btn btn-outline mt12" id="btn-zpet-vyjmenovana">← Zpět na výběr</button>
-      <div class="nav-link" id="btn-zebricek-welcome-vyjm">🏆 <span>Žebříček vyjmenovaných</span></div>
     </div>
-
-    <!-- ═══ HRA: NÁSOBILKA ═══════════════════════════════ -->
-    <div id="screen-game-nasobilka" class="screen">
-      <div class="game-header">
-        <div class="game-stat"><div class="stat-label">Čas</div><div class="stat-value timer" id="lbl-cas-nas">15</div></div>
-        <div class="game-stat"><div class="stat-label">Body</div><div class="stat-value score-live" id="lbl-body-nas">0</div></div>
-        <div class="game-stat"><div class="stat-label">Rekord</div><div class="stat-value" id="lbl-rekord-nas">0</div></div>
-      </div>
-      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-nas"></div></div>
-      <div class="priklad-wrap">
-        <div class="priklad" id="lbl-priklad">? × ?</div>
-        <div class="komentar" id="lbl-komentar-nas"></div>
-      </div>
-      <div class="answer-row">
-        <input type="number" id="inp-odpoved-nas" placeholder="?" min="1" max="100" autocomplete="off"/>
-        <button id="btn-potvrdit-nas">✓</button>
-      </div>
-      <div class="touch-keypad" id="keypad-nas">
-        <div class="keypad-grid keypad-3col">
-          <button class="kkey" data-k="7">7</button>
-          <button class="kkey" data-k="8">8</button>
-          <button class="kkey" data-k="9">9</button>
-          <button class="kkey" data-k="4">4</button>
-          <button class="kkey" data-k="5">5</button>
-          <button class="kkey" data-k="6">6</button>
-          <button class="kkey" data-k="1">1</button>
-          <button class="kkey" data-k="2">2</button>
-          <button class="kkey" data-k="3">3</button>
-          <button class="kkey kkey-back" data-k="back">⌫</button>
-          <button class="kkey" data-k="0">0</button>
-          <button class="kkey kkey-confirm" data-k="ok">✓</button>
-        </div>
-      </div>
-      <div class="record-hint" id="record-hint-nas"></div>
+    <div class="d-grid gap-2">
+      <button class="btn btn-outline-secondary" id="btn-zpet-vyjmenovana">← Zpět na výběr</button>
     </div>
-
-    <!-- ═══ HRA: VYJMENOVANÁ ══════════════════════════════ -->
-    <div id="screen-game-vyjmenovana" class="screen">
-      <div class="game-header">
-        <div class="game-stat"><div class="stat-label">Příklad</div><div class="stat-value priklad-count" id="lbl-priklad-vyjm">0/10</div></div>
-        <div class="game-stat"><div class="stat-label">Správně</div><div class="stat-value score-live" id="lbl-body-vyjm">0</div></div>
-        <div class="game-stat"><div class="stat-label">Rekord</div><div class="stat-value" id="lbl-rekord-vyjm">0</div></div>
-      </div>
-      <div class="progress-bar-wrap"><div class="progress-bar-fill vyjm" id="progress-vyjm" style="width:0%"></div></div>
-      <div class="vyjm-zadani">
-        <div class="vyjm-veta" id="lbl-veta">Načítám...</div>
-        <div class="komentar" id="lbl-komentar-vyjm"></div>
-      </div>
-      <div class="vyjm-buttons">
-        <button class="vyjm-btn y"  data-val="y">y</button>
-        <button class="vyjm-btn i"  data-val="i">i</button>
-        <button class="vyjm-btn yy" data-val="ý">ý</button>
-        <button class="vyjm-btn ii" data-val="í">í</button>
-      </div>
-      <div class="record-hint" id="record-hint-vyjm"></div>
-      <div class="ukoncit-wrap">
-        <button class="btn-ukoncit" id="btn-ukoncit-vyjm">✕ Ukončit hru</button>
-        <div class="ukoncit-upozorneni">⚠️ Předčasné ukončení se nezapočítá do žebříčku</div>
-      </div>
-    </div>
-
-    <!-- ═══ VÝSLEDKY ══════════════════════════════════════ -->
-    <div id="screen-result" class="screen">
-      <div class="result-center">
-        <span class="result-emoji" id="result-emoji">🎉</span>
-        <div class="result-title" id="result-title">Konec hry!</div>
-        <div class="result-score" id="result-score">0</div>
-        <div class="result-sub" id="result-sub">bodů</div>
-        <div class="result-uspesnost" id="result-uspesnost"></div>
-        <div class="result-new-record" id="result-new-record">🏆 Nový rekord!</div>
-      </div>
-      <div class="prehled-wrap" id="result-prehled"></div>
-      <div class="btn-row">
-        <button class="btn btn-green" id="btn-znovu">↺ Znovu</button>
-        <button class="btn btn-blue" id="btn-zebricek-result">🏆 Žebříček</button>
-      </div>
-      <button class="btn btn-outline mt12" id="btn-jina-hra">← Jiná hra</button>
-    </div>
-
-    <!-- ═══ ŽEBŘÍČEK ══════════════════════════════════════ -->
-    <div id="screen-leaderboard" class="screen">
-      <div class="lb-title">🏆 Žebříček</div>
-      <div class="lb-tabs">
-        <div class="lb-tab active" id="lb-tab-nas">✖️ Násobilka</div>
-        <div class="lb-tab vyjm" id="lb-tab-vyjm">📝 Vyjmenovaná</div>
-      </div>
-      <ul class="lb-list" id="lb-list"><li style="text-align:center;color:#aaa;padding:20px">Načítám...</li></ul>
-      <button class="btn btn-primary" id="btn-zpet-lb">← Zpět</button>
-    </div>
-
+    <div class="nav-link-app text-center mt-3" id="btn-zebricek-welcome-vyjm">🏆 <span>Žebříček vyjmenovaných</span></div>
   </div>
-</div>
 
-<!-- Vstupní bod — spouští všechny moduly -->
+  <!-- ═══ HRA: NÁSOBILKA ══════════════════════════════════ -->
+  <div id="screen-game-nasobilka" class="screen">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+      <div class="game-stat text-center">
+        <div class="stat-label">Čas</div>
+        <div class="stat-value text-app-orange" id="lbl-cas-nas">120</div>
+      </div>
+      <div class="game-stat text-center">
+        <div class="stat-label">Body</div>
+        <div class="stat-value text-app-green" id="lbl-body-nas">0</div>
+      </div>
+      <div class="game-stat text-center">
+        <div class="stat-label">Rekord</div>
+        <div class="stat-value" id="lbl-rekord-nas">0</div>
+      </div>
+    </div>
+    <div class="progress mb-4" style="height:10px">
+      <div class="progress-bar progress-nasobilka" id="progress-nas" role="progressbar" style="width:100%"></div>
+    </div>
+    <div class="text-center mb-4">
+      <div class="priklad" id="lbl-priklad">? × ?</div>
+      <div class="komentar" id="lbl-komentar-nas"></div>
+    </div>
+    <div class="input-group mb-2">
+      <input type="number" id="inp-odpoved-nas" class="form-control form-control-lg text-center" placeholder="?" min="1" max="100" autocomplete="off"/>
+      <button class="btn btn-app-blue px-4" id="btn-potvrdit-nas" style="font-size:1.5rem">✓</button>
+    </div>
+    <div class="touch-keypad" id="keypad-nas">
+      <div class="keypad-grid keypad-3col">
+        <button class="kkey" data-k="7">7</button>
+        <button class="kkey" data-k="8">8</button>
+        <button class="kkey" data-k="9">9</button>
+        <button class="kkey" data-k="4">4</button>
+        <button class="kkey" data-k="5">5</button>
+        <button class="kkey" data-k="6">6</button>
+        <button class="kkey" data-k="1">1</button>
+        <button class="kkey" data-k="2">2</button>
+        <button class="kkey" data-k="3">3</button>
+        <button class="kkey kkey-back" data-k="back">⌫</button>
+        <button class="kkey" data-k="0">0</button>
+        <button class="kkey kkey-confirm" data-k="ok">✓</button>
+      </div>
+    </div>
+    <div class="record-hint text-center mt-3" id="record-hint-nas"></div>
+  </div>
+
+  <!-- ═══ HRA: VYJMENOVANÁ ════════════════════════════════ -->
+  <div id="screen-game-vyjmenovana" class="screen">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+      <div class="game-stat text-center">
+        <div class="stat-label">Příklad</div>
+        <div class="stat-value text-app-purple" id="lbl-priklad-vyjm">0/20</div>
+      </div>
+      <div class="game-stat text-center">
+        <div class="stat-label">Správně</div>
+        <div class="stat-value text-app-green" id="lbl-body-vyjm">0</div>
+      </div>
+      <div class="game-stat text-center">
+        <div class="stat-label">Rekord</div>
+        <div class="stat-value" id="lbl-rekord-vyjm">0</div>
+      </div>
+    </div>
+    <div class="progress mb-4" style="height:10px">
+      <div class="progress-bar progress-vyjm" id="progress-vyjm" role="progressbar" style="width:0%"></div>
+    </div>
+    <div class="text-center mb-3">
+      <div class="vyjm-veta" id="lbl-veta">Načítám...</div>
+      <div class="komentar" id="lbl-komentar-vyjm"></div>
+    </div>
+    <div class="row g-2 mb-3">
+      <div class="col-6"><button class="btn vyjm-btn y  w-100" data-val="y">y</button></div>
+      <div class="col-6"><button class="btn vyjm-btn i  w-100" data-val="i">i</button></div>
+      <div class="col-6"><button class="btn vyjm-btn yy w-100" data-val="ý">ý</button></div>
+      <div class="col-6"><button class="btn vyjm-btn ii w-100" data-val="í">í</button></div>
+    </div>
+    <div class="record-hint text-center" id="record-hint-vyjm"></div>
+    <div class="text-center mt-3">
+      <button class="btn-ukoncit" id="btn-ukoncit-vyjm">✕ Ukončit hru</button>
+      <div class="ukoncit-upozorneni">⚠️ Předčasné ukončení se nezapočítá do žebříčku</div>
+    </div>
+  </div>
+
+  <!-- ═══ VÝSLEDKY ════════════════════════════════════════ -->
+  <div id="screen-result" class="screen">
+    <div class="text-center mb-3">
+      <span class="result-emoji" id="result-emoji">🎉</span>
+      <div class="result-title" id="result-title">Konec hry!</div>
+      <div class="result-score" id="result-score">0</div>
+      <div class="text-muted small mb-2" id="result-sub">bodů</div>
+      <div class="result-uspesnost" id="result-uspesnost"></div>
+      <div class="result-new-record" id="result-new-record">🏆 Nový rekord!</div>
+    </div>
+    <div class="prehled-wrap mb-3" id="result-prehled"></div>
+    <div class="row g-2 mb-2">
+      <div class="col-6"><button class="btn btn-app-green w-100 btn-lg" id="btn-znovu">↺ Znovu</button></div>
+      <div class="col-6"><button class="btn btn-app-blue  w-100 btn-lg" id="btn-zebricek-result">🏆 Žebříček</button></div>
+    </div>
+    <div class="d-grid">
+      <button class="btn btn-outline-secondary" id="btn-jina-hra">← Jiná hra</button>
+    </div>
+  </div>
+
+  <!-- ═══ ŽEBŘÍČEK ════════════════════════════════════════ -->
+  <div id="screen-leaderboard" class="screen">
+    <h2 class="app-heading text-center mb-4">🏆 Žebříček</h2>
+    <ul class="nav nav-tabs mb-3">
+      <li class="nav-item flex-fill">
+        <button class="nav-link active w-100" id="lb-tab-nas">✖️ Násobilka</button>
+      </li>
+      <li class="nav-item flex-fill">
+        <button class="nav-link w-100" id="lb-tab-vyjm">📝 Vyjmenovaná</button>
+      </li>
+    </ul>
+    <ul class="lb-list" id="lb-list">
+      <li class="text-center text-muted py-4">Načítám...</li>
+    </ul>
+    <div class="d-grid">
+      <button class="btn btn-app-orange btn-lg" id="btn-zpet-lb">← Zpět</button>
+    </div>
+  </div>
+
+</div><!-- .app-card -->
+</main>
+
 <script type="module">
-  console.log('Script start');
-  import { initHvezdicky } from './main.js';
-  import { initAuth }      from './auth.js';
-  import { initVysledky }  from './vysledky.js';
-  import { initMocniny }   from './mocniny.js';
+  import { initHvezdicky } from './js/main.js';
+  import { initAuth }      from './js/auth.js';
+  import { initVysledky }  from './js/vysledky.js';
+  import { initMocniny }   from './js/mocniny.js';
 
-  console.log('Imports done');
   initHvezdicky();
-  console.log('initHvezdicky done');
   initAuth();
-  console.log('initAuth done');
   initVysledky();
-  console.log('initVysledky done');
   initMocniny();
-  console.log('initMocniny done');
 </script>
 
 </body>

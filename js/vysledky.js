@@ -1,17 +1,14 @@
-// ═══════════════════════════════════════════════════════
-// vysledky.js  —  Obrazovka výsledků
-// ═══════════════════════════════════════════════════════
+// vysledky.js — Obrazovka výsledků
 
 import { stav, showScreen, ulozSkore, nactiZebricek } from './main.js';
 import { initZebricek } from './zebricek.js';
 import { initVyjmenovana } from './vyjmenovana.js';
 import { initMocniny } from './mocniny.js';
 
-// ── Inicializace tlačítek na obrazovce výsledků ───────
 export function initVysledky() {
-  document.getElementById('btn-znovu').onclick           = znovu;
-  document.getElementById('btn-jina-hra').onclick        = () => showScreen('screen-predmety');
-  document.getElementById('btn-zebricek-result').onclick = () => initZebricek('screen-result', stav.aktualniHra);
+  document.getElementById('btn-znovu').addEventListener('click', znovu);
+  document.getElementById('btn-jina-hra').addEventListener('click', () => showScreen('screen-predmety'));
+  document.getElementById('btn-zebricek-result').addEventListener('click', () => initZebricek('screen-result', stav.aktualniHra));
 }
 
 function znovu() {
@@ -26,7 +23,6 @@ function znovu() {
   }
 }
 
-// ── Výsledky násobilky ────────────────────────────────
 export async function zobrazVysledkyNasobilka(body) {
   showScreen('screen-result');
   document.getElementById('result-sub').textContent       = 'bodů za 120 sekund';
@@ -39,7 +35,6 @@ export async function zobrazVysledkyNasobilka(body) {
 
   try {
     if (stav.jeHost) {
-      // Host — neukládáme, jen zobrazíme výsledek
       document.getElementById('result-new-record').style.display = 'none';
       document.getElementById('result-title').textContent = body >= 10 ? 'Skvělý výkon!' : 'Konec hry!';
     } else {
@@ -55,12 +50,11 @@ export async function zobrazVysledkyNasobilka(body) {
       const zb = await nactiZebricek('nasobilka');
       stav.globalMaxNas = zb.length > 0 ? zb[0].max : 0;
     }
-  } catch(e) { document.getElementById('result-title').textContent = 'Konec hry!'; }
+  } catch (_e) {
+    document.getElementById('result-title').textContent = 'Konec hry!';
+  }
 }
 
-// ── Výsledky mocnin ───────────────────────────────────
-// body    = počet příkladů správně na první pokus
-// historie = [{popis, spravne}] — spravne=true jen pokud byl první pokus správný
 export async function zobrazVysledkyMocniny(body, historie) {
   showScreen('screen-result');
 
@@ -73,17 +67,13 @@ export async function zobrazVysledkyMocniny(body, historie) {
   document.getElementById('result-sub').textContent       = 'správně za 2 minuty';
   document.getElementById('result-uspesnost').textContent = `Špatně (s opravou): ${spatne.length}`;
 
-  if (spatne.length === 0) {
-    document.getElementById('result-prehled').innerHTML = '';
-  } else {
-    document.getElementById('result-prehled').innerHTML =
-      '<div class="prehled-nadpis">Špatně zodpovězené příklady:</div>' +
-      spatne.map(h => `
-        <div class="prehled-item chyba">
-          <span class="prehled-icon">✗</span>
-          <span class="prehled-text"><span class="prehled-veta">${h.popis}</span></span>
-        </div>`).join('');
-  }
+  document.getElementById('result-prehled').innerHTML = spatne.length === 0 ? '' :
+    '<div class="prehled-nadpis">Špatně zodpovězené příklady:</div>' +
+    spatne.map(h => `
+      <div class="prehled-item chyba">
+        <span class="prehled-icon">✗</span>
+        <span class="prehled-text"><span class="prehled-veta">${h.popis}</span></span>
+      </div>`).join('');
 
   try {
     if (stav.jeHost) {
@@ -100,15 +90,17 @@ export async function zobrazVysledkyMocniny(body, historie) {
         document.getElementById('result-title').textContent = titul;
       }
     }
-  } catch(e) { document.getElementById('result-title').textContent = 'Konec hry!'; }
+  } catch (_e) {
+    document.getElementById('result-title').textContent = 'Konec hry!';
+  }
 }
 
-// ── Výsledky vyjmenovaných slov ───────────────────────
 export async function zobrazVysledkyVyjmenovana(body, pocet, historie) {
   showScreen('screen-result');
 
   const uspesnost = Math.round((body / pocet) * 100);
   const emoji     = uspesnost < 40 ? '😅' : uspesnost < 60 ? '🙂' : uspesnost < 80 ? '😊' : uspesnost < 100 ? '🔥' : '👑';
+  const titul     = uspesnost === 100 ? 'Perfektní! 👑' : uspesnost >= 80 ? 'Skvělý výkon! 🔥' : uspesnost >= 50 ? 'Dobrá práce! 😊' : 'Příště lépe! 💪';
 
   document.getElementById('result-emoji').textContent     = emoji;
   document.getElementById('result-score').textContent     = `${body}/${pocet}`;
@@ -126,12 +118,9 @@ export async function zobrazVysledkyVyjmenovana(body, pocet, historie) {
 
   try {
     if (stav.jeHost) {
-      // Host — neukládáme, jen zobrazíme výsledek
       document.getElementById('result-new-record').style.display = 'none';
-      document.getElementById('result-title').textContent =
-        uspesnost === 100 ? 'Perfektní! 👑' : uspesnost >= 80 ? 'Skvělý výkon! 🔥' : uspesnost >= 50 ? 'Dobrá práce! 😊' : 'Příště lépe! 💪';
+      document.getElementById('result-title').textContent = titul;
     } else {
-      // Ukládáme procentuální úspěšnost do Firebase
       const jeNovy = await ulozSkore(stav.jmeno, stav.trida, 'vyjmenovana', uspesnost);
       if (jeNovy) {
         stav.osobniMaxVyjm = uspesnost;
@@ -139,11 +128,12 @@ export async function zobrazVysledkyVyjmenovana(body, pocet, historie) {
         document.getElementById('result-title').textContent        = 'Nový rekord! 🎉';
       } else {
         document.getElementById('result-new-record').style.display = 'none';
-        document.getElementById('result-title').textContent        =
-          uspesnost === 100 ? 'Perfektní! 👑' : uspesnost >= 80 ? 'Skvělý výkon! 🔥' : uspesnost >= 50 ? 'Dobrá práce! 😊' : 'Příště lépe! 💪';
+        document.getElementById('result-title').textContent = titul;
       }
       const zb = await nactiZebricek('vyjmenovana');
       stav.globalMaxVyjm = zb.length > 0 ? zb[0].max : 0;
     }
-  } catch(e) { document.getElementById('result-title').textContent = 'Konec hry!'; }
+  } catch (_e) {
+    document.getElementById('result-title').textContent = 'Konec hry!';
+  }
 }
