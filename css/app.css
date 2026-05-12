@@ -430,7 +430,7 @@ body {
     background: #fff; border-top: 2px solid #e8e8e8;
     box-shadow: 0 -6px 20px rgba(0,0,0,.1); z-index: 200;
   }
-  #screen-game-mocniny, #screen-game-nasobilka {
+  #screen-game-mocniny, #screen-game-nasobilka, #screen-game-nsd-nsn {
     padding-bottom: calc(245px + env(safe-area-inset-bottom));
   }
 }
@@ -528,6 +528,106 @@ body {
 .profil-rank.bronze { background: #fff4ec; color: #a05a2c; border: 1px solid #d4845a; }
 .profil-rank.dim    { background: #f5f5f5; color: #ccc; }
 .profil-z           { font-weight: 400; opacity: .7; }
+
+/* ── Dělitelnost – sestřel čísla ─────────────────────── */
+.game-card.delitelnost       { background: #fff8e1; border-color: #ffca28; }
+.game-card.delitelnost:hover { border-color: #f9a825; }
+
+.btn-app-amber { background: #fb8c00; color: #fff; border: none; box-shadow: 0 6px 0 #e65100; }
+.btn-app-amber:hover, .btn-app-amber:focus { color: #fff; background: #fb8c00; box-shadow: 0 4px 0 #e65100; transform: translateY(2px); }
+
+.del-progress { background: linear-gradient(90deg, #fb8c00, #ffca28); transition: width .4s ease; }
+
+.mocniny-card.del-lehka        { background: #e8f8ee; border-color: #6BCB77; }
+.mocniny-card.del-lehka:hover  { border-color: #3d9e4a; }
+.mocniny-card.del-stredni      { background: #fff3e0; border-color: var(--yellow); }
+.mocniny-card.del-stredni:hover{ border-color: var(--orange); }
+.mocniny-card.del-tezka        { background: #ffeef0; border-color: var(--red); }
+.mocniny-card.del-tezka:hover  { border-color: #cc3030; }
+
+.mocniny-card.del-lehka.selected  { background: #c8e6c9; border-color: #3d9e4a;      box-shadow: 0 4px 0 #3d9e4a; }
+.mocniny-card.del-stredni.selected{ background: #ffd090; border-color: var(--orange); box-shadow: 0 4px 0 #c44a1a; }
+.mocniny-card.del-tezka.selected  { background: #ffc0c0; border-color: #cc3030;      box-shadow: 0 4px 0 #cc3030; }
+
+.del-plocha {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  background: linear-gradient(180deg, #0a1628 0%, #0d2040 60%, #0a1628 100%);
+  border-radius: 16px;
+  overflow: hidden;
+  border: 2px solid rgba(77, 150, 255, 0.25);
+  cursor: default;
+}
+
+.del-cislo {
+  position: absolute;
+  font-family: 'Potta One', cursive;
+  font-size: 1.2rem;
+  color: #ddeeff;
+  background: rgba(77, 150, 255, 0.18);
+  border: 2px solid rgba(77, 150, 255, 0.45);
+  border-radius: 12px;
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  transition: background .15s, border-color .15s;
+}
+.del-cislo:active { opacity: .75; transform: scale(.92); }
+.del-correct { background: rgba(107, 203, 119, 0.85) !important; border-color: #6BCB77 !important; color: #fff !important; }
+.del-wrong   { background: rgba(255, 107, 107, 0.85) !important; border-color: #FF6B6B !important; color: #fff !important; }
+
+.del-vyzva-box {
+  font-family: 'Potta One', cursive;
+  font-size: .92rem;
+  color: var(--dark);
+  background: #fff8e1;
+  border: 2px solid #ffca28;
+  border-radius: 10px;
+  padding: 6px 14px;
+  text-align: center;
+  width: 100%;
+}
+.del-uroven-label { font-size: .73rem; font-weight: 700; color: #aaa; white-space: nowrap; }
+.del-zivoty { font-size: 1rem; letter-spacing: 1px; }
+.del-hint { font-size: .88rem; font-weight: 700; color: #bbb; min-height: 20px; }
+.del-hint.del-ok      { color: var(--green); }
+.del-hint.del-nok     { color: var(--red); }
+.del-hint.del-levelup { color: var(--purple); }
+
+/* ── NSN a NSD ───────────────────────────────────────── */
+.game-card.nsd-nsn       { background: #e8f5e9; border-color: #81c784; }
+.game-card.nsd-nsn:hover { border-color: #2e7d32; }
+
+.btn-app-teal { background: #43a047; color: #fff; border: none; box-shadow: 0 6px 0 #1b5e20; }
+.btn-app-teal:hover, .btn-app-teal:focus { color: #fff; background: #43a047; box-shadow: 0 4px 0 #1b5e20; transform: translateY(2px); }
+
+.progress-nsd-nsn { background: linear-gradient(90deg, #43a047, #a5d6a7); transition: width .4s ease; }
+
+.mocniny-card.nsn-card       { background: #e8f4fd; border-color: var(--blue); }
+.mocniny-card.nsn-card:hover { border-color: #1a5fcc; }
+.mocniny-card.nsd-card       { background: #fff3e0; border-color: var(--yellow); }
+.mocniny-card.nsd-card:hover { border-color: var(--orange); }
+.mocniny-card.obe-card       { background: #f0e8ff; border-color: #d4b0ff; }
+.mocniny-card.obe-card:hover { border-color: var(--purple); }
+
+.mocniny-card.nsn-card.selected { background: #b8dcf4; border-color: #1a5fcc;      box-shadow: 0 4px 0 #1a5fcc; }
+.mocniny-card.nsd-card.selected { background: #ffd090; border-color: var(--orange); box-shadow: 0 4px 0 #c44a1a; }
+.mocniny-card.obe-card.selected { background: #d8c8ff; border-color: #8a3dcc;      box-shadow: 0 4px 0 #8a3dcc; }
+
+.nsd-nsn-oper-label {
+  font-family: 'Potta One', cursive;
+  font-size: 1.2rem;
+  color: #43a047;
+  letter-spacing: .08em;
+  margin-bottom: 2px;
+}
 
 /* ── Viditelnost obrazovek ───────────────────────────── */
 .screen         { display: none; }

@@ -155,7 +155,7 @@ function startHra(slova) {
   pouzitaIndexy    = new Set();
 
   document.getElementById('lbl-body-vyjm').textContent     = 0;
-  document.getElementById('lbl-rekord-vyjm').textContent   = stav.osobniMaxVyjm;
+  document.getElementById('lbl-rekord-vyjm').textContent   = stav.jeHost ? '—' : stav.osobniMaxVyjm;
   document.getElementById('lbl-priklad-vyjm').textContent  = `0/${pocetPrikladu}`;
   document.getElementById('progress-vyjm').style.width     = '0%';
   document.getElementById('lbl-komentar-vyjm').textContent = '';

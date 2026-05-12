@@ -31,6 +31,8 @@ export const stav = {
   osobniMaxPravopisE: 0,  globalMaxPravopisE: 0,
   osobniMaxKlavesnice: 0, globalMaxKlavesnice: 0,
   osobniMaxPrepis: 0,     globalMaxPrepis: 0,
+  osobniMaxNsdNsn: 0,          globalMaxNsdNsn: 0,
+  osobniMaxDelitelnost: 0,     globalMaxDelitelnost: 0,
 };
 
 // ── Přepnutí obrazovky ────────────────────────────────
@@ -54,6 +56,8 @@ export async function najdiHrace(username) {
       pravopis_e:  d.pravopis_e  || 0,
       klavesnice:  d.klavesnice  || 0,
       prepis:      d.prepis      || 0,
+      nsd_nsn:      d.nsd_nsn      || 0,
+      delitelnost:  d.delitelnost  || 0,
     },
   };
 }

@@ -136,7 +136,7 @@
         <div class="game-card pravopis-e" id="btn-volba-pravopis-e" data-predmet="cestina">
           <span class="game-card-icon">✍️</span>
           <div class="game-card-title">Pravopis ě</div>
-          <div class="game-card-sub">ě nebo je?</div>
+          <div class="game-card-sub">ě, je nebo ně?</div>
         </div>
       </div>
       <div class="col-6">
@@ -151,6 +151,20 @@
           <span class="game-card-icon">📄</span>
           <div class="game-card-title">Přepis textu</div>
           <div class="game-card-sub">Přepisuj věty</div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="game-card nsd-nsn" id="btn-volba-nsd-nsn" data-predmet="matematika">
+          <span class="game-card-icon">🔗</span>
+          <div class="game-card-title">NSN a NSD</div>
+          <div class="game-card-sub">Násobky a dělitelé</div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="game-card delitelnost" id="btn-volba-delitelnost" data-predmet="matematika">
+          <span class="game-card-icon">🎯</span>
+          <div class="game-card-title">Sestřel čísla</div>
+          <div class="game-card-sub">Dělitelnost — arkáda</div>
         </div>
       </div>
     </div>
@@ -655,6 +669,157 @@
     </div>
   </div>
 
+  <!-- ═══ UVÍTÁNÍ: DĚLITELNOST ══════════════════════════ -->
+  <div id="screen-welcome-del" class="screen">
+    <div class="text-center mb-3">
+      <h2 class="app-heading">🎯 Sestřel čísla</h2>
+      <p class="text-muted small mt-1">Sestřeluj čísla dělitelná zadaným číslem</p>
+    </div>
+    <p class="section-label">Obtížnost:</p>
+    <div class="row g-2 mb-3">
+      <div class="col-4">
+        <div class="mocniny-card del-lehka" id="btn-del-lehka">
+          <span class="mocniny-icon">🐢</span>
+          <div class="mocniny-title">Lehká</div>
+          <div class="mocniny-sub">5 životů · 1 dělitel</div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="mocniny-card del-stredni" id="btn-del-stredni">
+          <span class="mocniny-icon">⚡</span>
+          <div class="mocniny-title">Střední</div>
+          <div class="mocniny-sub">3 životy · kombinace</div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="mocniny-card del-tezka" id="btn-del-tezka">
+          <span class="mocniny-icon">🔥</span>
+          <div class="mocniny-title">Těžká</div>
+          <div class="mocniny-sub">3 životy · a / nebo</div>
+        </div>
+      </div>
+    </div>
+    <div class="mocniny-error text-center mb-2" id="del-error"></div>
+    <div class="d-grid gap-2">
+      <button class="btn btn-app-amber btn-lg" id="btn-start-del">▶ Spustit hru</button>
+      <button class="btn btn-outline-secondary" id="btn-zpet-del">← Zpět na výběr</button>
+    </div>
+  </div>
+
+  <!-- ═══ HRA: DĚLITELNOST ════════════════════════════════ -->
+  <div id="screen-game-del" class="screen">
+    <div class="d-flex justify-content-between align-items-start mb-2">
+      <div class="game-stat text-center">
+        <div class="stat-label">Skóre</div>
+        <div class="stat-value text-app-orange" id="lbl-skore-del">0</div>
+      </div>
+      <div class="text-center">
+        <div class="stat-label">Životy</div>
+        <div class="del-zivoty" id="lbl-zivoty-del">❤️❤️❤️</div>
+      </div>
+    </div>
+    <div class="del-vyzva-box mb-1" id="lbl-vyzva-del">Dělitelné číslem 2</div>
+    <div class="d-flex align-items-center gap-2 mb-2">
+      <div class="progress flex-grow-1 mb-0" style="height:7px">
+        <div class="progress-bar del-progress" id="progress-del" role="progressbar" style="width:0%"></div>
+      </div>
+      <span class="del-uroven-label" id="lbl-uroven-del">0/10</span>
+    </div>
+    <div class="del-plocha" id="del-plocha"></div>
+    <div class="del-hint text-center mt-2" id="del-hint"></div>
+    <div class="text-center mt-2">
+      <button class="btn-ukoncit" id="btn-ukoncit-del">✕ Ukončit hru</button>
+      <div class="ukoncit-upozorneni">⚠️ Předčasné ukončení se nezapočítá do žebříčku</div>
+    </div>
+  </div>
+
+  <!-- ═══ UVÍTÁNÍ: NSN A NSD ════════════════════════════ -->
+  <div id="screen-welcome-nsd-nsn" class="screen">
+    <div class="text-center mb-3">
+      <h2 class="app-heading">🔗 NSN a NSD</h2>
+    </div>
+    <p class="section-label">Typ výpočtu:</p>
+    <div class="row g-2 mb-3">
+      <div class="col-4">
+        <div class="mocniny-card nsn-card" id="btn-nsd-nsn-nsn">
+          <span class="mocniny-icon" style="font-size:1.3rem">NSN</span>
+          <div class="mocniny-title">Nejmenší spol. násobek</div>
+          <div class="mocniny-sub">NSN(4, 6) = 12</div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="mocniny-card nsd-card" id="btn-nsd-nsn-nsd">
+          <span class="mocniny-icon" style="font-size:1.3rem">NSD</span>
+          <div class="mocniny-title">Největší spol. dělitel</div>
+          <div class="mocniny-sub">NSD(12, 8) = 4</div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="mocniny-card obe-card" id="btn-nsd-nsn-obe">
+          <span class="mocniny-icon">🔀</span>
+          <div class="mocniny-title">Oboje</div>
+          <div class="mocniny-sub">NSN i NSD</div>
+        </div>
+      </div>
+    </div>
+    <div class="mocniny-error text-center mb-2" id="nsd-nsn-error"></div>
+    <div class="d-grid gap-2">
+      <button class="btn btn-app-teal btn-lg" id="btn-start-nsd-nsn">▶ Spustit hru</button>
+      <button class="btn btn-outline-secondary" id="btn-zpet-nsd-nsn">← Zpět na výběr</button>
+    </div>
+  </div>
+
+  <!-- ═══ HRA: NSN A NSD ══════════════════════════════════ -->
+  <div id="screen-game-nsd-nsn" class="screen">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+      <div class="game-stat text-center">
+        <div class="stat-label">Příklad</div>
+        <div class="stat-value text-app-purple" id="lbl-priklad-nsd-nsn">0/20</div>
+      </div>
+      <div class="game-stat text-center">
+        <div class="stat-label">Správně</div>
+        <div class="stat-value text-app-green" id="lbl-body-nsd-nsn">0</div>
+      </div>
+      <div class="game-stat text-center">
+        <div class="stat-label">Rekord</div>
+        <div class="stat-value" id="lbl-rekord-nsd-nsn">0</div>
+      </div>
+    </div>
+    <div class="progress mb-4" style="height:10px">
+      <div class="progress-bar progress-nsd-nsn" id="progress-nsd-nsn" role="progressbar" style="width:0%"></div>
+    </div>
+    <div class="text-center mb-3" style="min-height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center">
+      <div class="nsd-nsn-oper-label" id="lbl-oper-nsd-nsn">NSN</div>
+      <div class="priklad" id="lbl-cisla-nsd-nsn">? a ?</div>
+      <div class="komentar" id="lbl-komentar-nsd-nsn"></div>
+    </div>
+    <div class="input-group mb-2">
+      <input type="number" id="inp-odpoved-nsd-nsn" class="form-control form-control-lg text-center" placeholder="?" min="1" autocomplete="off" inputmode="numeric"/>
+      <button class="btn btn-app-teal px-4" id="btn-potvrdit-nsd-nsn" style="font-size:1.5rem">✓</button>
+    </div>
+    <div class="touch-keypad" id="keypad-nsd-nsn">
+      <div class="keypad-grid keypad-3col">
+        <button class="kkey" data-k="7">7</button>
+        <button class="kkey" data-k="8">8</button>
+        <button class="kkey" data-k="9">9</button>
+        <button class="kkey" data-k="4">4</button>
+        <button class="kkey" data-k="5">5</button>
+        <button class="kkey" data-k="6">6</button>
+        <button class="kkey" data-k="1">1</button>
+        <button class="kkey" data-k="2">2</button>
+        <button class="kkey" data-k="3">3</button>
+        <button class="kkey kkey-back" data-k="back">⌫</button>
+        <button class="kkey" data-k="0">0</button>
+        <button class="kkey kkey-confirm" data-k="ok">✓</button>
+      </div>
+    </div>
+    <div class="record-hint text-center mt-3" id="record-hint-nsd-nsn"></div>
+    <div class="text-center mt-3">
+      <button class="btn-ukoncit" id="btn-ukoncit-nsd-nsn">✕ Ukončit hru</button>
+      <div class="ukoncit-upozorneni">⚠️ Předčasné ukončení se nezapočítá do žebříčku</div>
+    </div>
+  </div>
+
   <!-- ═══ VÝSLEDKY ════════════════════════════════════════ -->
   <div id="screen-result" class="screen">
     <div class="text-center mb-3">
@@ -702,12 +867,16 @@
   import { initAuth }          from './js/auth.js';
   import { initVysledky }      from './js/vysledky.js';
   import { initMocniny }       from './js/mocniny.js';
+  import { initNsdNsn }        from './js/nsd_nsn.js';
+  import { initDelitelnost }   from './js/delitelnost.js';
   import { initProfilHandlers } from './js/profil.js';
 
   initHvezdicky();
   initAuth();
   initVysledky();
   initMocniny();
+  initNsdNsn();
+  initDelitelnost();
   initProfilHandlers();
 </script>
 

@@ -9,6 +9,8 @@ import { initPredpony }   from './predpony.js';
 import { initPravopisE }  from './pravopis_e.js';
 import { initKlavesnice } from './klavesnice.js';
 import { initPrepis }    from './prepis.js';
+import { initNsdNsn }      from './nsd_nsn.js';
+import { initDelitelnost } from './delitelnost.js';
 import { initZebricek }   from './zebricek.js';
 
 export function initAuth() {
@@ -27,6 +29,8 @@ export function initAuth() {
   document.getElementById('btn-volba-pravopis-e').addEventListener('click', () => volbaHry('pravopis_e'));
   document.getElementById('btn-volba-klavesnice').addEventListener('click', () => volbaHry('klavesnice'));
   document.getElementById('btn-volba-prepis').addEventListener('click', () => volbaHry('prepis'));
+  document.getElementById('btn-volba-nsd-nsn').addEventListener('click', () => volbaHry('nsd_nsn'));
+  document.getElementById('btn-volba-delitelnost').addEventListener('click', () => volbaHry('delitelnost'));
   document.getElementById('btn-zebricek-login').addEventListener('click', () => initZebricek('screen-login', 'nasobilka'));
   document.getElementById('btn-zebricek-vyber').addEventListener('click', () => initZebricek('screen-vyber', stav.aktualniHra || 'nasobilka'));
   document.getElementById('btn-zebricek-predmety').addEventListener('click', () => initZebricek('screen-predmety', 'nasobilka'));
@@ -58,6 +62,8 @@ async function prihlasit() {
     stav.osobniMaxPravopisE   = data.pravopis_e  || 0;
     stav.osobniMaxKlavesnice  = data.klavesnice  || 0;
     stav.osobniMaxPrepis      = data.prepis      || 0;
+    stav.osobniMaxNsdNsn       = data.nsd_nsn      || 0;
+    stav.osobniMaxDelitelnost  = data.delitelnost  || 0;
 
     nastavUzivateleUI(username, false);
     err.textContent = '';
@@ -68,13 +74,27 @@ async function prihlasit() {
 }
 
 function hostovat() {
-  stav.jmeno         = 'Host';
-  stav.trida         = '';
-  stav.jeHost        = true;
-  stav.osobniMaxNas  = 0;
-  stav.osobniMaxVyjm = 0;
-  stav.globalMaxNas  = 0;
-  stav.globalMaxVyjm = 0;
+  stav.jmeno                = 'Host';
+  stav.trida                = '';
+  stav.jeHost               = true;
+  stav.osobniMaxNas         = 0;
+  stav.osobniMaxVyjm        = 0;
+  stav.osobniMaxMocniny     = 0;
+  stav.osobniMaxPredpony    = 0;
+  stav.osobniMaxPravopisE   = 0;
+  stav.osobniMaxKlavesnice  = 0;
+  stav.osobniMaxPrepis      = 0;
+  stav.osobniMaxNsdNsn      = 0;
+  stav.osobniMaxDelitelnost = 0;
+  stav.globalMaxNas         = 0;
+  stav.globalMaxVyjm        = 0;
+  stav.globalMaxMocniny     = 0;
+  stav.globalMaxPredpony    = 0;
+  stav.globalMaxPravopisE   = 0;
+  stav.globalMaxKlavesnice  = 0;
+  stav.globalMaxPrepis      = 0;
+  stav.globalMaxNsdNsn      = 0;
+  stav.globalMaxDelitelnost = 0;
 
   nastavUzivateleUI('Host', true);
   document.getElementById('login-error').textContent = '';
@@ -120,6 +140,12 @@ function volbaHry(hra) {
   } else if (hra === 'prepis') {
     initPrepis();
     showScreen('screen-welcome-prepis');
+  } else if (hra === 'nsd_nsn') {
+    initNsdNsn();
+    showScreen('screen-welcome-nsd-nsn');
+  } else if (hra === 'delitelnost') {
+    initDelitelnost();
+    showScreen('screen-welcome-del');
   } else {
     initMocniny();
     showScreen('screen-welcome-mocniny');
