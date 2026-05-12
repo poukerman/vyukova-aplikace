@@ -6,7 +6,7 @@
   <title>Eduhry</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Potta+One&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Potta+One&family=Roboto:wght@400;500;700&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
@@ -48,7 +48,7 @@
       <div class="guest-badge mt-2" id="guest-badge-predmety">👤 Režim hosta — rekordy se neukládají</div>
     </div>
     <p class="section-label text-center">Vyber si předmět:</p>
-    <div class="row g-3 mb-3">
+    <div class="row g-3 mb-3 justify-content-center">
       <div class="col-6">
         <div class="game-card matematika" id="btn-predmet-matematika">
           <span class="game-card-icon">🔢</span>
@@ -61,6 +61,13 @@
           <span class="game-card-icon">📖</span>
           <div class="game-card-title">Český jazyk</div>
           <div class="game-card-sub">Pravopis a gramatika</div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="game-card informatika" id="btn-predmet-informatika">
+          <span class="game-card-icon">💻</span>
+          <div class="game-card-title">Informatika</div>
+          <div class="game-card-sub">Klávesnice a počítač</div>
         </div>
       </div>
     </div>
@@ -108,6 +115,20 @@
           <span class="game-card-icon">✍️</span>
           <div class="game-card-title">Pravopis ě</div>
           <div class="game-card-sub">ě nebo je?</div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="game-card klavesnice" id="btn-volba-klavesnice" data-predmet="informatika">
+          <span class="game-card-icon">⌨️</span>
+          <div class="game-card-title">Klávesnice</div>
+          <div class="game-card-sub">Piš co nejrychleji</div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="game-card prepis" id="btn-volba-prepis" data-predmet="informatika">
+          <span class="game-card-icon">📄</span>
+          <div class="game-card-title">Přepis textu</div>
+          <div class="game-card-sub">Přepisuj věty</div>
         </div>
       </div>
     </div>
@@ -439,6 +460,63 @@
     </div>
   </div>
 
+  <!-- ═══ UVÍTÁNÍ: KLÁVESNICE ════════════════════════════ -->
+  <div id="screen-welcome-klav" class="screen">
+    <div class="text-center mb-4">
+      <h2 class="app-heading">⌨️ Psaní na klávesnici</h2>
+      <p class="text-muted small mt-1">Písmena, číslice i diakritika — 2 minuty</p>
+    </div>
+    <div class="row g-2 mb-4">
+      <div class="col-6">
+        <div class="score-box personal text-center p-3">
+          <div class="score-label">Tvůj rekord</div>
+          <div class="score-value text-app-orange" id="lbl-osobni-klav">0</div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="score-box global text-center p-3">
+          <div class="score-label">Rekord školy</div>
+          <div class="score-value text-app-blue" id="lbl-global-klav">0</div>
+        </div>
+      </div>
+    </div>
+    <div class="d-grid gap-2">
+      <button class="btn btn-app-indigo btn-lg" id="btn-start-klav">▶ Začít hru</button>
+      <button class="btn btn-outline-secondary" id="btn-zpet-klav">← Zpět na výběr</button>
+    </div>
+    <div class="nav-link-app text-center mt-3" id="btn-zebricek-welcome-klav">🏆 <span>Žebříček psaní</span></div>
+  </div>
+
+  <!-- ═══ HRA: KLÁVESNICE ══════════════════════════════ -->
+  <div id="screen-game-klav" class="screen">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+      <div class="game-stat text-center">
+        <div class="stat-label">Čas</div>
+        <div class="stat-value text-app-orange" id="lbl-cas-klav">120</div>
+      </div>
+      <div class="game-stat text-center">
+        <div class="stat-label">Správně</div>
+        <div class="stat-value text-app-green" id="lbl-body-klav">0</div>
+      </div>
+      <div class="game-stat text-center">
+        <div class="stat-label">Rekord</div>
+        <div class="stat-value" id="lbl-rekord-klav">0</div>
+      </div>
+    </div>
+    <div class="progress mb-3" style="height:10px">
+      <div class="progress-bar progress-klav" id="progress-klav" role="progressbar" style="width:100%"></div>
+    </div>
+    <div class="text-center mb-2" style="min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center">
+      <span class="klav-znak" id="lbl-znak-klav"></span>
+      <div class="komentar" id="lbl-komentar-klav"></div>
+    </div>
+    <div class="record-hint text-center" id="record-hint-klav"></div>
+    <div class="text-center mt-3">
+      <button class="btn-ukoncit" id="btn-ukoncit-klav">✕ Ukončit hru</button>
+      <div class="ukoncit-upozorneni">⚠️ Předčasné ukončení se nezapočítá do žebříčku</div>
+    </div>
+  </div>
+
   <!-- ═══ UVÍTÁNÍ: PRAVOPIS Ě ════════════════════════════ -->
   <div id="screen-welcome-pe" class="screen">
     <div class="text-center mb-4">
@@ -497,6 +575,60 @@
     <div class="record-hint text-center" id="record-hint-pe"></div>
     <div class="text-center mt-3">
       <button class="btn-ukoncit" id="btn-ukoncit-pe">✕ Ukončit hru</button>
+      <div class="ukoncit-upozorneni">⚠️ Předčasné ukončení se nezapočítá do žebříčku</div>
+    </div>
+  </div>
+
+  <!-- ═══ UVÍTÁNÍ: PŘEPIS TEXTU ══════════════════════════ -->
+  <div id="screen-welcome-prepis" class="screen">
+    <div class="text-center mb-4">
+      <h2 class="app-heading">📄 Přepis textu</h2>
+      <p class="text-muted small mt-1">Přepisuj věty co nejrychleji</p>
+    </div>
+    <div class="row g-2 mb-4">
+      <div class="col-6">
+        <div class="score-box personal text-center p-3">
+          <div class="score-label">Tvůj rekord</div>
+          <div class="score-value text-app-orange" id="lbl-osobni-prepis">0</div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="score-box global text-center p-3">
+          <div class="score-label">Rekord školy</div>
+          <div class="score-value text-app-blue" id="lbl-global-prepis">0</div>
+        </div>
+      </div>
+    </div>
+    <div class="error-msg mb-2" id="prepis-error"></div>
+    <div class="d-grid gap-2">
+      <button class="btn btn-app-indigo btn-lg" id="btn-start-prepis">▶ Začít hru</button>
+      <button class="btn btn-outline-secondary" id="btn-zpet-prepis">← Zpět na výběr</button>
+    </div>
+    <div class="nav-link-app text-center mt-3" id="btn-zebricek-welcome-prepis">🏆 <span>Žebříček přepisu</span></div>
+  </div>
+
+  <!-- ═══ HRA: PŘEPIS TEXTU ════════════════════════════ -->
+  <div id="screen-game-prepis" class="screen">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+      <div class="game-stat text-center">
+        <div class="stat-label">Čas</div>
+        <div class="stat-value text-app-orange" id="lbl-cas-prepis">0:00</div>
+      </div>
+      <div class="game-stat text-center">
+        <div class="stat-label">ZPM</div>
+        <div class="stat-value text-app-green" id="lbl-wpm-prepis">0</div>
+      </div>
+      <div class="game-stat text-center">
+        <div class="stat-label">Chyby</div>
+        <div class="stat-value text-app-red" id="lbl-chyby-prepis">0</div>
+      </div>
+    </div>
+    <div class="progress mb-3" style="height:10px">
+      <div class="progress-bar progress-prepis" id="progress-prepis" role="progressbar" style="width:0%"></div>
+    </div>
+    <div class="prepis-box" id="prepis-text"></div>
+    <div class="text-center mt-4">
+      <button class="btn-ukoncit" id="btn-ukoncit-prepis">✕ Ukončit hru</button>
       <div class="ukoncit-upozorneni">⚠️ Předčasné ukončení se nezapočítá do žebříčku</div>
     </div>
   </div>

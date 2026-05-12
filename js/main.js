@@ -17,6 +17,10 @@ export const stav = {
   globalMaxPredpony: 0,
   osobniMaxPravopisE: 0,
   globalMaxPravopisE: 0,
+  osobniMaxKlavesnice: 0,
+  globalMaxKlavesnice: 0,
+  osobniMaxPrepis: 0,
+  globalMaxPrepis: 0,
 };
 
 // ── Přepnutí obrazovky ────────────────────────────────

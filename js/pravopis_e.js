@@ -70,6 +70,7 @@ async function spravnoSpustit() {
 
     startHra(slova);
   } catch (e) {
+    console.error('[pravopis_e] chyba:', e);
     btnStart.disabled    = false;
     btnStart.textContent = '▶ Začít hru';
     errEl.textContent    = 'Chyba načítání: ' + e.message;

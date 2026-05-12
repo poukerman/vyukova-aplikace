@@ -6,6 +6,8 @@ import { initVyjmenovana } from './vyjmenovana.js';
 import { initMocniny } from './mocniny.js';
 import { initPredpony } from './predpony.js';
 import { initPravopisE } from './pravopis_e.js';
+import { initKlavesnice } from './klavesnice.js';
+import { initPrepis }    from './prepis.js';
 
 export function initVysledky() {
   document.getElementById('btn-znovu').addEventListener('click', znovu);
@@ -25,6 +27,12 @@ function znovu() {
   } else if (stav.aktualniHra === 'pravopis_e') {
     initPravopisE();
     showScreen('screen-welcome-pe');
+  } else if (stav.aktualniHra === 'klavesnice') {
+    initKlavesnice();
+    showScreen('screen-welcome-klav');
+  } else if (stav.aktualniHra === 'prepis') {
+    initPrepis();
+    showScreen('screen-welcome-prepis');
   } else {
     initVyjmenovana();
     showScreen('screen-welcome-vyjmenovana');
@@ -226,6 +234,78 @@ export async function zobrazVysledkyPravopisE(body, pocet, historie) {
       }
       const zb = await nactiZebricek('pravopis_e');
       stav.globalMaxPravopisE = zb.length > 0 ? zb[0].max : 0;
+    }
+  } catch (_e) {
+    document.getElementById('result-title').textContent = 'Konec hry!';
+  }
+}
+
+export async function zobrazVysledkyPrepis(cpm, chyby, cas) {
+  showScreen('screen-result');
+
+  const min = Math.floor(cas / 60);
+  const sec = Math.floor(cas % 60);
+  const casStr = `${min}:${sec.toString().padStart(2, '0')}`;
+
+  const emoji = cpm < 100 ? '😅' : cpm < 150 ? '🙂' : cpm < 220 ? '😊' : cpm < 320 ? '🔥' : '👑';
+  const titul = cpm < 100 ? 'Příště lépe! 💪' : cpm < 220 ? 'Dobrá práce! 😊' : cpm < 320 ? 'Skvělý výkon! 🔥' : 'Fantastické! 👑';
+
+  document.getElementById('result-emoji').textContent     = emoji;
+  document.getElementById('result-score').textContent     = cpm;
+  document.getElementById('result-sub').textContent       = `znaků za minutu · chyby: ${chyby}`;
+  document.getElementById('result-uspesnost').textContent = '';
+  document.getElementById('result-prehled').innerHTML     = '';
+
+  try {
+    if (stav.jeHost) {
+      document.getElementById('result-new-record').style.display = 'none';
+      document.getElementById('result-title').textContent = titul;
+    } else {
+      const jeNovy = await ulozSkore(stav.jmeno, stav.trida, 'prepis', cpm);
+      if (jeNovy) {
+        stav.osobniMaxPrepis = cpm;
+        document.getElementById('result-new-record').style.display = 'block';
+        document.getElementById('result-title').textContent        = 'Nový rekord! 🎉';
+      } else {
+        document.getElementById('result-new-record').style.display = 'none';
+        document.getElementById('result-title').textContent = titul;
+      }
+      const zb = await nactiZebricek('prepis');
+      stav.globalMaxPrepis = zb.length > 0 ? zb[0].max : 0;
+    }
+  } catch (_e) {
+    document.getElementById('result-title').textContent = 'Konec hry!';
+  }
+}
+
+export async function zobrazVysledkyKlavesnice(body) {
+  showScreen('screen-result');
+  document.getElementById('result-sub').textContent       = 'správných znaků za 2 minuty';
+  document.getElementById('result-uspesnost').textContent = '';
+  document.getElementById('result-prehled').innerHTML     = '';
+
+  const emoji = body < 20 ? '😅' : body < 40 ? '🙂' : body < 60 ? '😊' : body < 90 ? '🔥' : '👑';
+  const titul = body < 20 ? 'Příště lépe! 💪' : body < 60 ? 'Dobrá práce! 😊' : body < 90 ? 'Skvělý výkon! 🔥' : 'Fantastické! 👑';
+
+  document.getElementById('result-emoji').textContent = emoji;
+  document.getElementById('result-score').textContent = body;
+
+  try {
+    if (stav.jeHost) {
+      document.getElementById('result-new-record').style.display = 'none';
+      document.getElementById('result-title').textContent = titul;
+    } else {
+      const jeNovy = await ulozSkore(stav.jmeno, stav.trida, 'klavesnice', body);
+      if (jeNovy) {
+        stav.osobniMaxKlavesnice = body;
+        document.getElementById('result-new-record').style.display = 'block';
+        document.getElementById('result-title').textContent        = 'Nový rekord! 🎉';
+      } else {
+        document.getElementById('result-new-record').style.display = 'none';
+        document.getElementById('result-title').textContent = titul;
+      }
+      const zb = await nactiZebricek('klavesnice');
+      stav.globalMaxKlavesnice = zb.length > 0 ? zb[0].max : 0;
     }
   } catch (_e) {
     document.getElementById('result-title').textContent = 'Konec hry!';

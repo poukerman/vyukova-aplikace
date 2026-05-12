@@ -6,6 +6,8 @@ import { initVyjmenovana } from './vyjmenovana.js';
 import { initMocniny }    from './mocniny.js';
 import { initPredpony }   from './predpony.js';
 import { initPravopisE }  from './pravopis_e.js';
+import { initKlavesnice } from './klavesnice.js';
+import { initPrepis }    from './prepis.js';
 import { initZebricek }   from './zebricek.js';
 
 export function initAuth() {
@@ -16,11 +18,14 @@ export function initAuth() {
   document.getElementById('btn-host').addEventListener('click', hostovat);
   document.getElementById('btn-predmet-matematika').addEventListener('click', () => volbaPredmetu('matematika'));
   document.getElementById('btn-predmet-cestina').addEventListener('click', () => volbaPredmetu('cestina'));
+  document.getElementById('btn-predmet-informatika').addEventListener('click', () => volbaPredmetu('informatika'));
   document.getElementById('btn-volba-nasobilka').addEventListener('click', () => volbaHry('nasobilka'));
   document.getElementById('btn-volba-vyjmenovana').addEventListener('click', () => volbaHry('vyjmenovana'));
   document.getElementById('btn-volba-mocniny').addEventListener('click', () => volbaHry('mocniny'));
   document.getElementById('btn-volba-predpony').addEventListener('click', () => volbaHry('predpony'));
   document.getElementById('btn-volba-pravopis-e').addEventListener('click', () => volbaHry('pravopis_e'));
+  document.getElementById('btn-volba-klavesnice').addEventListener('click', () => volbaHry('klavesnice'));
+  document.getElementById('btn-volba-prepis').addEventListener('click', () => volbaHry('prepis'));
   document.getElementById('btn-zebricek-login').addEventListener('click', () => initZebricek('screen-login', 'nasobilka'));
   document.getElementById('btn-zebricek-vyber').addEventListener('click', () => initZebricek('screen-vyber', stav.aktualniHra || 'nasobilka'));
   document.getElementById('btn-zebricek-predmety').addEventListener('click', () => initZebricek('screen-predmety', 'nasobilka'));
@@ -106,6 +111,12 @@ function volbaHry(hra) {
   } else if (hra === 'pravopis_e') {
     initPravopisE();
     showScreen('screen-welcome-pe');
+  } else if (hra === 'klavesnice') {
+    initKlavesnice();
+    showScreen('screen-welcome-klav');
+  } else if (hra === 'prepis') {
+    initPrepis();
+    showScreen('screen-welcome-prepis');
   } else {
     initMocniny();
     showScreen('screen-welcome-mocniny');
