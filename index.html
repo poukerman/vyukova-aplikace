@@ -96,6 +96,20 @@
           <div class="game-card-sub">Mocniny a odmocniny</div>
         </div>
       </div>
+      <div class="col-6">
+        <div class="game-card predpony" id="btn-volba-predpony" data-predmet="cestina">
+          <span class="game-card-icon">🔤</span>
+          <div class="game-card-title">Předpony</div>
+          <div class="game-card-sub">s, z nebo vz?</div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="game-card pravopis-e" id="btn-volba-pravopis-e" data-predmet="cestina">
+          <span class="game-card-icon">✍️</span>
+          <div class="game-card-title">Pravopis ě</div>
+          <div class="game-card-sub">ě nebo je?</div>
+        </div>
+      </div>
     </div>
     <div class="nav-link-app text-center mb-3" id="btn-zebricek-vyber">🏆 <span>Žebříček</span></div>
     <div class="d-grid">
@@ -255,27 +269,27 @@
 
   <!-- ═══ UVÍTÁNÍ: VYJMENOVANÁ ════════════════════════════ -->
   <div id="screen-welcome-vyjmenovana" class="screen">
-    <div class="text-center mb-4">
+    <div class="text-center mb-3">
       <h2 class="app-heading">📝 Vyjmenovaná slova</h2>
     </div>
-    <p class="section-label text-center">Vyber stupeň:</p>
-    <div class="row g-3 mb-4">
-      <div class="col-6">
-        <div class="stupen-card stupen-1" id="btn-stupen-1">
-          <span class="stupen-icon">🌱</span>
-          <div class="stupen-title">1. stupeň</div>
-          <div class="stupen-sub"></div>
-        </div>
-      </div>
-      <div class="col-6">
-        <div class="stupen-card stupen-2" id="btn-stupen-2">
-          <span class="stupen-icon">🌳</span>
-          <div class="stupen-title">2. stupeň</div>
-          <div class="stupen-sub"></div>
-        </div>
-      </div>
+    <p class="section-label">Vyber písmena:</p>
+    <div class="row g-2 mb-2">
+      <div class="col-3"><div class="kat-card kat-b" id="btn-kat-b" data-kat="b"><span class="kat-letter">B</span><div class="kat-hint">bývat</div></div></div>
+      <div class="col-3"><div class="kat-card kat-l" id="btn-kat-l" data-kat="l"><span class="kat-letter">L</span><div class="kat-hint">lyže</div></div></div>
+      <div class="col-3"><div class="kat-card kat-m" id="btn-kat-m" data-kat="m"><span class="kat-letter">M</span><div class="kat-hint">mýt</div></div></div>
+      <div class="col-3"><div class="kat-card kat-p" id="btn-kat-p" data-kat="p"><span class="kat-letter">P</span><div class="kat-hint">pykat</div></div></div>
+      <div class="col-3"><div class="kat-card kat-s" id="btn-kat-s" data-kat="s"><span class="kat-letter">S</span><div class="kat-hint">syn</div></div></div>
+      <div class="col-3"><div class="kat-card kat-v" id="btn-kat-v" data-kat="v"><span class="kat-letter">V</span><div class="kat-hint">výr</div></div></div>
+      <div class="col-3"><div class="kat-card kat-z" id="btn-kat-z" data-kat="z"><span class="kat-letter">Z</span><div class="kat-hint">zvyk</div></div></div>
     </div>
+    <div class="text-center mb-2" style="font-size:.88rem">
+      <span class="nav-link-app" id="btn-vyjm-vse">Vybrat vše</span>
+      <span class="text-muted mx-2">·</span>
+      <span class="nav-link-app" id="btn-vyjm-nic">Zrušit výběr</span>
+    </div>
+    <div class="text-center fw-bold mb-2" id="vyjm-kat-error" style="min-height:18px;font-size:.88rem;color:var(--red)"></div>
     <div class="d-grid gap-2">
+      <button class="btn btn-app-purple btn-lg" id="btn-start-vyjmenovana">▶ Začít hru</button>
       <button class="btn btn-outline-secondary" id="btn-zpet-vyjmenovana">← Zpět na výběr</button>
     </div>
     <div class="nav-link-app text-center mt-3" id="btn-zebricek-welcome-vyjm">🏆 <span>Žebříček vyjmenovaných</span></div>
@@ -359,6 +373,130 @@
     <div class="record-hint text-center" id="record-hint-vyjm"></div>
     <div class="text-center mt-3">
       <button class="btn-ukoncit" id="btn-ukoncit-vyjm">✕ Ukončit hru</button>
+      <div class="ukoncit-upozorneni">⚠️ Předčasné ukončení se nezapočítá do žebříčku</div>
+    </div>
+  </div>
+
+  <!-- ═══ UVÍTÁNÍ: PŘEDPONY ══════════════════════════════ -->
+  <div id="screen-welcome-predpony" class="screen">
+    <div class="text-center mb-4">
+      <h2 class="app-heading">🔤 Předpony s, z, vz</h2>
+    </div>
+    <div class="row g-2 mb-4">
+      <div class="col-6">
+        <div class="score-box personal text-center p-3">
+          <div class="score-label">Tvůj rekord</div>
+          <div class="score-value text-app-orange" id="lbl-osobni-predp">0</div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="score-box global text-center p-3">
+          <div class="score-label">Rekord školy</div>
+          <div class="score-value text-app-blue" id="lbl-global-predp">0</div>
+        </div>
+      </div>
+    </div>
+    <div class="error-msg mb-2" id="predp-error"></div>
+    <div class="d-grid gap-2">
+      <button class="btn btn-app-green btn-lg" id="btn-start-predpony">▶ Začít hru</button>
+      <button class="btn btn-outline-secondary" id="btn-zpet-predpony">← Zpět na výběr</button>
+    </div>
+    <div class="nav-link-app text-center mt-3" id="btn-zebricek-welcome-predp">🏆 <span>Žebříček předpon</span></div>
+  </div>
+
+  <!-- ═══ HRA: PŘEDPONY ═══════════════════════════════════ -->
+  <div id="screen-game-predpony" class="screen">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+      <div class="game-stat text-center">
+        <div class="stat-label">Příklad</div>
+        <div class="stat-value text-app-purple" id="lbl-priklad-predp">0/20</div>
+      </div>
+      <div class="game-stat text-center">
+        <div class="stat-label">Správně</div>
+        <div class="stat-value text-app-green" id="lbl-body-predp">0</div>
+      </div>
+      <div class="game-stat text-center">
+        <div class="stat-label">Rekord</div>
+        <div class="stat-value" id="lbl-rekord-predp">0</div>
+      </div>
+    </div>
+    <div class="progress mb-4" style="height:10px">
+      <div class="progress-bar progress-predp" id="progress-predp" role="progressbar" style="width:0%"></div>
+    </div>
+    <div class="text-center mb-3">
+      <div class="vyjm-veta" id="lbl-veta-predp">Načítám...</div>
+      <div class="komentar" id="lbl-komentar-predp"></div>
+    </div>
+    <div class="row g-2 mb-3">
+      <div class="col-4"><button class="btn predp-btn predp-s w-100" data-val="s">s-</button></div>
+      <div class="col-4"><button class="btn predp-btn predp-z w-100" data-val="z">z-</button></div>
+      <div class="col-4"><button class="btn predp-btn predp-vz w-100" data-val="vz">vz-</button></div>
+    </div>
+    <div class="record-hint text-center" id="record-hint-predp"></div>
+    <div class="text-center mt-3">
+      <button class="btn-ukoncit" id="btn-ukoncit-predp">✕ Ukončit hru</button>
+      <div class="ukoncit-upozorneni">⚠️ Předčasné ukončení se nezapočítá do žebříčku</div>
+    </div>
+  </div>
+
+  <!-- ═══ UVÍTÁNÍ: PRAVOPIS Ě ════════════════════════════ -->
+  <div id="screen-welcome-pe" class="screen">
+    <div class="text-center mb-4">
+      <h2 class="app-heading">✍️ Pravopis ě / je</h2>
+    </div>
+    <div class="row g-2 mb-4">
+      <div class="col-6">
+        <div class="score-box personal text-center p-3">
+          <div class="score-label">Tvůj rekord</div>
+          <div class="score-value text-app-orange" id="lbl-osobni-pe">0</div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="score-box global text-center p-3">
+          <div class="score-label">Rekord školy</div>
+          <div class="score-value text-app-blue" id="lbl-global-pe">0</div>
+        </div>
+      </div>
+    </div>
+    <div class="error-msg mb-2" id="pe-error"></div>
+    <div class="d-grid gap-2">
+      <button class="btn btn-app-pink btn-lg" id="btn-start-pe">▶ Začít hru</button>
+      <button class="btn btn-outline-secondary" id="btn-zpet-pe">← Zpět na výběr</button>
+    </div>
+    <div class="nav-link-app text-center mt-3" id="btn-zebricek-welcome-pe">🏆 <span>Žebříček pravopisu</span></div>
+  </div>
+
+  <!-- ═══ HRA: PRAVOPIS Ě ══════════════════════════════ -->
+  <div id="screen-game-pe" class="screen">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+      <div class="game-stat text-center">
+        <div class="stat-label">Příklad</div>
+        <div class="stat-value text-app-purple" id="lbl-priklad-pe">0/20</div>
+      </div>
+      <div class="game-stat text-center">
+        <div class="stat-label">Správně</div>
+        <div class="stat-value text-app-green" id="lbl-body-pe">0</div>
+      </div>
+      <div class="game-stat text-center">
+        <div class="stat-label">Rekord</div>
+        <div class="stat-value" id="lbl-rekord-pe">0</div>
+      </div>
+    </div>
+    <div class="progress mb-4" style="height:10px">
+      <div class="progress-bar progress-pe" id="progress-pe" role="progressbar" style="width:0%"></div>
+    </div>
+    <div class="text-center mb-3">
+      <div class="vyjm-veta" id="lbl-veta-pe">Načítám...</div>
+      <div class="komentar" id="lbl-komentar-pe"></div>
+    </div>
+    <div class="row g-2 mb-3">
+      <div class="col-4"><button class="btn pe-btn pe-e w-100" data-val="ě">ě</button></div>
+      <div class="col-4"><button class="btn pe-btn pe-je w-100" data-val="je">je</button></div>
+      <div class="col-4"><button class="btn pe-btn pe-ne w-100" data-val="ně">ně</button></div>
+    </div>
+    <div class="record-hint text-center" id="record-hint-pe"></div>
+    <div class="text-center mt-3">
+      <button class="btn-ukoncit" id="btn-ukoncit-pe">✕ Ukončit hru</button>
       <div class="ukoncit-upozorneni">⚠️ Předčasné ukončení se nezapočítá do žebříčku</div>
     </div>
   </div>

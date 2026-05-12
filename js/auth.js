@@ -1,10 +1,12 @@
 // auth.js — Přihlášení a výběr hry
 
 import { stav, showScreen, najdiHrace, nactiZebricek } from './main.js';
-import { initNasobilka } from './nasobilka.js';
+import { initNasobilka }  from './nasobilka.js';
 import { initVyjmenovana } from './vyjmenovana.js';
-import { initMocniny } from './mocniny.js';
-import { initZebricek } from './zebricek.js';
+import { initMocniny }    from './mocniny.js';
+import { initPredpony }   from './predpony.js';
+import { initPravopisE }  from './pravopis_e.js';
+import { initZebricek }   from './zebricek.js';
 
 export function initAuth() {
   document.getElementById('btn-prihlasit').addEventListener('click', prihlasit);
@@ -17,6 +19,8 @@ export function initAuth() {
   document.getElementById('btn-volba-nasobilka').addEventListener('click', () => volbaHry('nasobilka'));
   document.getElementById('btn-volba-vyjmenovana').addEventListener('click', () => volbaHry('vyjmenovana'));
   document.getElementById('btn-volba-mocniny').addEventListener('click', () => volbaHry('mocniny'));
+  document.getElementById('btn-volba-predpony').addEventListener('click', () => volbaHry('predpony'));
+  document.getElementById('btn-volba-pravopis-e').addEventListener('click', () => volbaHry('pravopis_e'));
   document.getElementById('btn-zebricek-login').addEventListener('click', () => initZebricek('screen-login', 'nasobilka'));
   document.getElementById('btn-zebricek-vyber').addEventListener('click', () => initZebricek('screen-vyber', stav.aktualniHra || 'nasobilka'));
   document.getElementById('btn-zebricek-predmety').addEventListener('click', () => initZebricek('screen-predmety', 'nasobilka'));
@@ -96,6 +100,12 @@ function volbaHry(hra) {
   } else if (hra === 'vyjmenovana') {
     initVyjmenovana();
     showScreen('screen-welcome-vyjmenovana');
+  } else if (hra === 'predpony') {
+    initPredpony();
+    showScreen('screen-welcome-predpony');
+  } else if (hra === 'pravopis_e') {
+    initPravopisE();
+    showScreen('screen-welcome-pe');
   } else {
     initMocniny();
     showScreen('screen-welcome-mocniny');

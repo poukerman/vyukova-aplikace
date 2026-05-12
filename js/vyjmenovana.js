@@ -1,83 +1,154 @@
-// vyjmenovana.js — Hra: Vyjmenovaná slova
+// vyjmenovana.js — Hra: Vyjmenovaná slova (kategorie z Firebase)
 
 import { stav, showScreen, updateHint } from './main.js';
 import { zobrazVysledkyVyjmenovana } from './vysledky.js';
 import { initZebricek } from './zebricek.js';
 
-const POCET_PRIKLADU = 20;
+import { initializeApp, getApps, getApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getDatabase, ref, get }           from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
-const SLOVA_1 = [
-  { veta: 'luční kob_lka',                    odpoved: 'y' },
-  { veta: 'b_lý kvítek',                      odpoved: 'í' },
-  { veta: 'pěkný slab_kář',                   odpoved: 'i' },
-  { veta: 'ab_ch nezapomněla',                odpoved: 'y' },
-  { veta: 'starob_lý dům',                    odpoved: 'y' },
-  { veta: 'vodní ml_n',                       odpoved: 'ý' },
-  { veta: 'm_mořádný úkaz',                   odpoved: 'i' },
-  { veta: 'je s_rotek',                       odpoved: 'i' },
-  { veta: 'jogurt se zkaz_l',                 odpoved: 'i' },
-  { veta: 'V_r sedí na větvi.',               odpoved: 'ý' },
-  { veta: 'pohled z v_šiny.',                 odpoved: 'ý' },
-  { veta: 'v_roba potravin',                  odpoved: 'ý' },
-  { veta: 'bílá p_voňka',                     odpoved: 'i' },
-  { veta: 'chlapec pyká a zp_tuje svědomí',   odpoved: 'y' },
-  { veta: 'v_měna',                           odpoved: 'ý' },
-  { veta: 'km_nová polévka',                  odpoved: 'í' },
-  { veta: 'v_hodit smetí',                    odpoved: 'y' },
-  { veta: 'prstýnek se bl_ská',               odpoved: 'ý' },
-  { veta: 'B_dlíme v novém domě.',            odpoved: 'y' },
-  { veta: 'velký vl_v',                       odpoved: 'i' },
-];
+const FIREBASE_CONFIG = {
+  apiKey:            'AIzaSyAE_kjebwQrSzeEz9-3c_Y66TUBAvRIjB4',
+  authDomain:        'malanasobilka.firebaseapp.com',
+  databaseURL:       'https://malanasobilka-default-rtdb.firebaseio.com',
+  projectId:         'malanasobilka',
+  storageBucket:     'malanasobilka.firebasestorage.app',
+  messagingSenderId: '712520835692',
+  appId:             '1:712520835692:web:6746f62321750e264a6e49',
+};
 
-const SLOVA_2 = [
-  { veta: 'ob_vatel starého hradu',            odpoved: 'y' },
-  { veta: 'nab_vat zkušenosti',                odpoved: 'ý' },
-  { veta: 'b_dliště v centru města',           odpoved: 'y' },
-  { veta: 'l_žování v horách',                 odpoved: 'y' },
-  { veta: 'marné pl_tvání energií',            odpoved: 'ý' },
-  { veta: 'hm_z žije v lese i trávě',         odpoved: 'y' },
-  { veta: 'zm_lil se ve výpočtu',             odpoved: 'ý' },
-  { veta: 'p_cha předchází pádu',             odpoved: 'ý' },
-  { veta: 'p_kat za své chyby',               odpoved: 'y' },
-  { veta: 's_r z kravského mléka',            odpoved: 'ý' },
-  { veta: 'V_r je noční dravec.',             odpoved: 'ý' },
-  { veta: 'jaz_k a řeč jsou spjaty',          odpoved: 'y' },
-  { veta: 'naz_val ho svým přítelem',         odpoved: 'ý' },
-  { veta: 'z_skat si první místo',            odpoved: 'í' },
-  { veta: 'slab_kář pro první třídu',         odpoved: 'i' },
-  { veta: 'hrd_nský čin vojáka',              odpoved: 'i' },
-  { veta: 'l_bit se každému',                 odpoved: 'í' },
-  { veta: 'záv_st kazí přátelství',           odpoved: 'i' },
-  { veta: 'čte č_slo na dveřích',             odpoved: 'í' },
-  { veta: 'velká s_la přírody',               odpoved: 'í' },
-];
+const APP_NAME = 'eduhry';
+const fbApp    = getApps().find(a => a.name === APP_NAME) ?? initializeApp(FIREBASE_CONFIG, APP_NAME);
+const db       = getDatabase(fbApp);
 
+const KATEGORIE = ['b', 'l', 'm', 'p', 's', 'v', 'z'];
+const POCET_MAX = 20;
+
+// ── Lokální stav ──────────────────────────────────────
+let vybraneKat       = new Set();
 let body             = 0;
 let celkemOtazek     = 0;
+let pocetPrikladu    = POCET_MAX;
 let historiePrikladu = [];
 let aktualniSlova    = [];
 let aktualniSlovo    = null;
 let pouzitaIndexy    = new Set();
 
+// ── Inicializace ──────────────────────────────────────
 export function initVyjmenovana() {
-  document.getElementById('btn-stupen-1').onclick = () => startHra(1);
-  document.getElementById('btn-stupen-2').onclick = () => startHra(2);
-  document.getElementById('btn-zpet-vyjmenovana').onclick      = () => showScreen('screen-vyber');
+  vybraneKat = new Set();
+
+  KATEGORIE.forEach(kat => {
+    const el = document.getElementById(`btn-kat-${kat}`);
+    if (!el) return;
+    el.classList.remove('selected');
+    el.onclick = () => prepniKat(kat);
+  });
+
+  document.getElementById('vyjm-kat-error').textContent = '';
+
+  document.getElementById('btn-vyjm-vse').onclick = () => {
+    KATEGORIE.forEach(k => {
+      vybraneKat.add(k);
+      document.getElementById(`btn-kat-${k}`)?.classList.add('selected');
+    });
+    document.getElementById('vyjm-kat-error').textContent = '';
+  };
+
+  document.getElementById('btn-vyjm-nic').onclick = () => {
+    vybraneKat.clear();
+    KATEGORIE.forEach(k => document.getElementById(`btn-kat-${k}`)?.classList.remove('selected'));
+  };
+
+  document.getElementById('btn-start-vyjmenovana').onclick    = spravnoSpustit;
+  document.getElementById('btn-zpet-vyjmenovana').onclick     = () => showScreen('screen-vyber');
   document.getElementById('btn-zebricek-welcome-vyjm').onclick = () => initZebricek('screen-welcome-vyjmenovana', 'vyjmenovana');
-  document.getElementById('btn-ukoncit-vyjm').onclick          = ukoncitHru;
+  document.getElementById('btn-ukoncit-vyjm').onclick         = ukoncitHru;
 
   document.querySelectorAll('.vyjm-btn').forEach(btn => {
     btn.onclick = () => odpovez(btn.dataset.val);
   });
 }
 
+// ── Přepnutí výběru kategorie ─────────────────────────
+function prepniKat(kat) {
+  const el = document.getElementById(`btn-kat-${kat}`);
+  if (vybraneKat.has(kat)) {
+    vybraneKat.delete(kat);
+    el.classList.remove('selected');
+  } else {
+    vybraneKat.add(kat);
+    el.classList.add('selected');
+  }
+  document.getElementById('vyjm-kat-error').textContent = '';
+}
+
+// ── Spuštění s validací ───────────────────────────────
+async function spravnoSpustit() {
+  const errEl   = document.getElementById('vyjm-kat-error');
+  const btnStart = document.getElementById('btn-start-vyjmenovana');
+
+  if (vybraneKat.size === 0) {
+    errEl.textContent = 'Vyber alespoň jedno písmeno!';
+    return;
+  }
+
+  errEl.textContent         = '';
+  btnStart.disabled         = true;
+  btnStart.textContent      = '⏳ Načítám...';
+
+  try {
+    const slova = await nactiSlova([...vybraneKat]);
+
+    btnStart.disabled    = false;
+    btnStart.textContent = '▶ Začít hru';
+
+    if (slova.length === 0) {
+      errEl.textContent = 'Pro vybraná písmena nejsou žádná slovní spojení v databázi.';
+      return;
+    }
+
+    startHra(slova);
+  } catch (e) {
+    btnStart.disabled    = false;
+    btnStart.textContent = '▶ Začít hru';
+    errEl.textContent    = 'Chyba načítání: ' + e.message;
+  }
+}
+
+// ── Načtení slov z Firebase ───────────────────────────
+async function nactiSlova(kategorie) {
+  const slova = [];
+
+  for (const kat of kategorie) {
+    const snap = await get(ref(db, `vyjmenovana/${kat}`));
+    if (!snap.exists()) continue;
+    Object.values(snap.val()).forEach(s => {
+      if (s.veta && s.odpoved) {
+        slova.push({ veta: s.veta, odpoved: s.odpoved });
+      }
+    });
+  }
+
+  // Fisher-Yates shuffle
+  for (let i = slova.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [slova[i], slova[j]] = [slova[j], slova[i]];
+  }
+
+  return slova;
+}
+
+// ── Předčasné ukončení ────────────────────────────────
 function ukoncitHru() {
   aktualniSlovo = null;
   showScreen('screen-welcome-vyjmenovana');
 }
 
-function startHra(stupen) {
-  aktualniSlova    = stupen === 1 ? [...SLOVA_1] : [...SLOVA_2];
+// ── Spuštění hry ──────────────────────────────────────
+function startHra(slova) {
+  aktualniSlova    = slova;
+  pocetPrikladu    = Math.min(POCET_MAX, slova.length);
   body             = 0;
   celkemOtazek     = 0;
   historiePrikladu = [];
@@ -85,7 +156,7 @@ function startHra(stupen) {
 
   document.getElementById('lbl-body-vyjm').textContent     = 0;
   document.getElementById('lbl-rekord-vyjm').textContent   = stav.osobniMaxVyjm;
-  document.getElementById('lbl-priklad-vyjm').textContent  = `0/${POCET_PRIKLADU}`;
+  document.getElementById('lbl-priklad-vyjm').textContent  = `0/${pocetPrikladu}`;
   document.getElementById('progress-vyjm').style.width     = '0%';
   document.getElementById('lbl-komentar-vyjm').textContent = '';
   document.getElementById('lbl-komentar-vyjm').className   = 'komentar';
@@ -97,9 +168,10 @@ function startHra(stupen) {
   novaOtazka();
 }
 
+// ── Nová otázka ───────────────────────────────────────
 function novaOtazka() {
-  document.getElementById('lbl-priklad-vyjm').textContent = `${celkemOtazek}/${POCET_PRIKLADU}`;
-  document.getElementById('progress-vyjm').style.width   = (celkemOtazek / POCET_PRIKLADU * 100) + '%';
+  document.getElementById('lbl-priklad-vyjm').textContent = `${celkemOtazek}/${pocetPrikladu}`;
+  document.getElementById('progress-vyjm').style.width   = (celkemOtazek / pocetPrikladu * 100) + '%';
 
   if (pouzitaIndexy.size >= aktualniSlova.length) {
     pouzitaIndexy = new Set();
@@ -113,11 +185,12 @@ function novaOtazka() {
   pouzitaIndexy.add(idx);
   aktualniSlovo = aktualniSlova[idx];
 
-  document.getElementById('lbl-veta').innerHTML           = aktualniSlovo.veta.replace('_', '<span class="blank">_</span>');
+  document.getElementById('lbl-veta').innerHTML            = aktualniSlovo.veta.replace('_', '<span class="blank">_</span>');
   document.getElementById('lbl-komentar-vyjm').textContent = '';
   document.getElementById('lbl-komentar-vyjm').className   = 'komentar';
 }
 
+// ── Zpracování odpovědi ───────────────────────────────
 function odpovez(val) {
   if (!aktualniSlovo) return;
   document.querySelectorAll('.vyjm-btn').forEach(b => { b.disabled = true; });
@@ -163,8 +236,8 @@ function odpovez(val) {
   aktualniSlovo = null;
   const prodleva = spravne ? 600 : 1000;
 
-  if (celkemOtazek >= POCET_PRIKLADU) {
-    setTimeout(() => zobrazVysledkyVyjmenovana(body, POCET_PRIKLADU, historiePrikladu), prodleva);
+  if (celkemOtazek >= pocetPrikladu) {
+    setTimeout(() => zobrazVysledkyVyjmenovana(body, pocetPrikladu, historiePrikladu), prodleva);
   } else {
     setTimeout(() => {
       document.querySelectorAll('.vyjm-btn').forEach(b => { b.disabled = false; });

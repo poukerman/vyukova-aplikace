@@ -13,6 +13,10 @@ export const stav = {
   globalMaxVyjm: 0,
   osobniMaxMocniny: 0,
   globalMaxMocniny: 0,
+  osobniMaxPredpony: 0,
+  globalMaxPredpony: 0,
+  osobniMaxPravopisE: 0,
+  globalMaxPravopisE: 0,
 };
 
 // ── Přepnutí obrazovky ────────────────────────────────

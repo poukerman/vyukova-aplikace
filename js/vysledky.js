@@ -4,6 +4,8 @@ import { stav, showScreen, ulozSkore, nactiZebricek } from './main.js';
 import { initZebricek } from './zebricek.js';
 import { initVyjmenovana } from './vyjmenovana.js';
 import { initMocniny } from './mocniny.js';
+import { initPredpony } from './predpony.js';
+import { initPravopisE } from './pravopis_e.js';
 
 export function initVysledky() {
   document.getElementById('btn-znovu').addEventListener('click', znovu);
@@ -17,6 +19,12 @@ function znovu() {
   } else if (stav.aktualniHra === 'mocniny') {
     initMocniny();
     showScreen('screen-welcome-mocniny');
+  } else if (stav.aktualniHra === 'predpony') {
+    initPredpony();
+    showScreen('screen-welcome-predpony');
+  } else if (stav.aktualniHra === 'pravopis_e') {
+    initPravopisE();
+    showScreen('screen-welcome-pe');
   } else {
     initVyjmenovana();
     showScreen('screen-welcome-vyjmenovana');
@@ -132,6 +140,92 @@ export async function zobrazVysledkyVyjmenovana(body, pocet, historie) {
       }
       const zb = await nactiZebricek('vyjmenovana');
       stav.globalMaxVyjm = zb.length > 0 ? zb[0].max : 0;
+    }
+  } catch (_e) {
+    document.getElementById('result-title').textContent = 'Konec hry!';
+  }
+}
+
+export async function zobrazVysledkyPredpony(body, pocet, historie) {
+  showScreen('screen-result');
+
+  const uspesnost = Math.round((body / pocet) * 100);
+  const emoji     = uspesnost < 40 ? '😅' : uspesnost < 60 ? '🙂' : uspesnost < 80 ? '😊' : uspesnost < 100 ? '🔥' : '👑';
+  const titul     = uspesnost === 100 ? 'Perfektní! 👑' : uspesnost >= 80 ? 'Skvělý výkon! 🔥' : uspesnost >= 50 ? 'Dobrá práce! 😊' : 'Příště lépe! 💪';
+
+  document.getElementById('result-emoji').textContent     = emoji;
+  document.getElementById('result-score').textContent     = `${body}/${pocet}`;
+  document.getElementById('result-sub').textContent       = 'správných odpovědí';
+  document.getElementById('result-uspesnost').textContent = `Úspěšnost: ${uspesnost} %`;
+
+  document.getElementById('result-prehled').innerHTML = historie.map(h => `
+    <div class="prehled-item ${h.spravne ? 'ok' : 'chyba'}">
+      <span class="prehled-icon">${h.spravne ? '✓' : '✗'}</span>
+      <span class="prehled-text">
+        <span class="prehled-veta">${h.vetaHotova}</span>
+        ${!h.spravne ? `<span class="prehled-chyba-txt">Tvá odpověď: ${h.uzivatelovaOdpoved}</span>` : ''}
+      </span>
+    </div>`).join('');
+
+  try {
+    if (stav.jeHost) {
+      document.getElementById('result-new-record').style.display = 'none';
+      document.getElementById('result-title').textContent = titul;
+    } else {
+      const jeNovy = await ulozSkore(stav.jmeno, stav.trida, 'predpony', uspesnost);
+      if (jeNovy) {
+        stav.osobniMaxPredpony = uspesnost;
+        document.getElementById('result-new-record').style.display = 'block';
+        document.getElementById('result-title').textContent        = 'Nový rekord! 🎉';
+      } else {
+        document.getElementById('result-new-record').style.display = 'none';
+        document.getElementById('result-title').textContent = titul;
+      }
+      const zb = await nactiZebricek('predpony');
+      stav.globalMaxPredpony = zb.length > 0 ? zb[0].max : 0;
+    }
+  } catch (_e) {
+    document.getElementById('result-title').textContent = 'Konec hry!';
+  }
+}
+
+export async function zobrazVysledkyPravopisE(body, pocet, historie) {
+  showScreen('screen-result');
+
+  const uspesnost = Math.round((body / pocet) * 100);
+  const emoji     = uspesnost < 40 ? '😅' : uspesnost < 60 ? '🙂' : uspesnost < 80 ? '😊' : uspesnost < 100 ? '🔥' : '👑';
+  const titul     = uspesnost === 100 ? 'Perfektní! 👑' : uspesnost >= 80 ? 'Skvělý výkon! 🔥' : uspesnost >= 50 ? 'Dobrá práce! 😊' : 'Příště lépe! 💪';
+
+  document.getElementById('result-emoji').textContent     = emoji;
+  document.getElementById('result-score').textContent     = `${body}/${pocet}`;
+  document.getElementById('result-sub').textContent       = 'správných odpovědí';
+  document.getElementById('result-uspesnost').textContent = `Úspěšnost: ${uspesnost} %`;
+
+  document.getElementById('result-prehled').innerHTML = historie.map(h => `
+    <div class="prehled-item ${h.spravne ? 'ok' : 'chyba'}">
+      <span class="prehled-icon">${h.spravne ? '✓' : '✗'}</span>
+      <span class="prehled-text">
+        <span class="prehled-veta">${h.vetaHotova}</span>
+        ${!h.spravne ? `<span class="prehled-chyba-txt">Tvá odpověď: ${h.uzivatelovaOdpoved}</span>` : ''}
+      </span>
+    </div>`).join('');
+
+  try {
+    if (stav.jeHost) {
+      document.getElementById('result-new-record').style.display = 'none';
+      document.getElementById('result-title').textContent = titul;
+    } else {
+      const jeNovy = await ulozSkore(stav.jmeno, stav.trida, 'pravopis_e', uspesnost);
+      if (jeNovy) {
+        stav.osobniMaxPravopisE = uspesnost;
+        document.getElementById('result-new-record').style.display = 'block';
+        document.getElementById('result-title').textContent        = 'Nový rekord! 🎉';
+      } else {
+        document.getElementById('result-new-record').style.display = 'none';
+        document.getElementById('result-title').textContent = titul;
+      }
+      const zb = await nactiZebricek('pravopis_e');
+      stav.globalMaxPravopisE = zb.length > 0 ? zb[0].max : 0;
     }
   } catch (_e) {
     document.getElementById('result-title').textContent = 'Konec hry!';
