@@ -1,6 +1,7 @@
 // auth.js — Přihlášení a výběr hry
 
-import { stav, showScreen, najdiHrace, nactiZebricek } from './main.js';
+import { stav, showScreen, najdiHrace } from './main.js';
+import { otevriProfil } from './profil.js';
 import { initNasobilka }  from './nasobilka.js';
 import { initVyjmenovana } from './vyjmenovana.js';
 import { initMocniny }    from './mocniny.js';
@@ -30,6 +31,7 @@ export function initAuth() {
   document.getElementById('btn-zebricek-vyber').addEventListener('click', () => initZebricek('screen-vyber', stav.aktualniHra || 'nasobilka'));
   document.getElementById('btn-zebricek-predmety').addEventListener('click', () => initZebricek('screen-predmety', 'nasobilka'));
   document.getElementById('btn-zpet-vyber').addEventListener('click', () => showScreen('screen-predmety'));
+  document.getElementById('btn-profil-predmety').addEventListener('click', otevriProfil);
 }
 
 async function prihlasit() {
@@ -46,19 +48,20 @@ async function prihlasit() {
     if (!vysledek) { err.textContent = '❌ Uživatelské jméno nebylo nalezeno.'; return; }
 
     const { trida, data } = vysledek;
-    stav.jmeno         = username;
-    stav.trida         = trida;
-    stav.jeHost        = false;
-    stav.osobniMaxNas  = data.nasobilka   || 0;
-    stav.osobniMaxVyjm = data.vyjmenovana || 0;
-
-    const [zbNas, zbVyjm] = await Promise.all([nactiZebricek('nasobilka'), nactiZebricek('vyjmenovana')]);
-    stav.globalMaxNas  = zbNas.length  > 0 ? zbNas[0].max  : 0;
-    stav.globalMaxVyjm = zbVyjm.length > 0 ? zbVyjm[0].max : 0;
+    stav.jmeno                = username;
+    stav.trida                = trida;
+    stav.jeHost               = false;
+    stav.osobniMaxNas         = data.nasobilka   || 0;
+    stav.osobniMaxVyjm        = data.vyjmenovana || 0;
+    stav.osobniMaxMocniny     = data.mocniny     || 0;
+    stav.osobniMaxPredpony    = data.predpony    || 0;
+    stav.osobniMaxPravopisE   = data.pravopis_e  || 0;
+    stav.osobniMaxKlavesnice  = data.klavesnice  || 0;
+    stav.osobniMaxPrepis      = data.prepis      || 0;
 
     nastavUzivateleUI(username, false);
     err.textContent = '';
-    showScreen('screen-predmety');
+    otevriProfil();
   } catch (e) {
     err.textContent = 'Chyba: ' + e.message;
   }

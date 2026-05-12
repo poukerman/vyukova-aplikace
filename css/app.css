@@ -453,6 +453,82 @@ body {
 .kkey-confirm:active { box-shadow: 0 1px 0 #3d9e4a; }
 .kkey-empty        { background: transparent; box-shadow: none; pointer-events: none; }
 
+/* ── Profil hráče ────────────────────────────────────── */
+.profil-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 18px;
+  padding: 20px 22px;
+}
+.profil-avatar {
+  font-size: 2.6rem;
+  width: 62px; height: 62px;
+  background: rgba(255,255,255,.2);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.profil-header-info { flex: 1; min-width: 0; }
+.profil-jmeno {
+  font-family: 'Potta One', cursive;
+  font-size: 1.5rem;
+  color: #fff;
+  line-height: 1.2;
+  word-break: break-word;
+}
+.profil-trida-badge {
+  display: inline-block;
+  background: rgba(255,255,255,.25);
+  border-radius: 20px;
+  padding: 3px 12px;
+  font-size: .8rem; font-weight: 700;
+  color: #fff; margin-top: 5px;
+}
+.profil-sekce { margin-bottom: 4px; }
+.profil-sekce-nadpis {
+  font-family: 'Potta One', cursive;
+  font-size: .82rem;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  padding: 14px 0 7px;
+}
+.profil-radek {
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 11px 14px;
+  margin-bottom: 7px;
+}
+.profil-radek-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 7px;
+}
+.profil-hra-icon  { font-size: 1.25rem; flex-shrink: 0; }
+.profil-hra-name  { flex: 1; font-weight: 700; font-size: .9rem; color: var(--dark); }
+.profil-hra-result {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.3rem; font-weight: 800;
+  color: var(--orange); white-space: nowrap;
+}
+.profil-hra-result.dim { color: #ccc; }
+.profil-unit { font-size: .7rem; font-weight: 600; color: #aaa; }
+.profil-ranky { display: flex; gap: 6px; flex-wrap: wrap; }
+.profil-rank {
+  font-size: .75rem; font-weight: 700;
+  padding: 4px 10px; border-radius: 20px;
+  background: #ececec; color: #888;
+  white-space: nowrap;
+}
+.profil-rank.gold   { background: #fffbe6; color: #b8860b; border: 1px solid #ffe066; }
+.profil-rank.silver { background: #f5f5f5; color: #555;    border: 1px solid #bbb; }
+.profil-rank.bronze { background: #fff4ec; color: #a05a2c; border: 1px solid #d4845a; }
+.profil-rank.dim    { background: #f5f5f5; color: #ccc; }
+.profil-z           { font-weight: 400; opacity: .7; }
+
 /* ── Viditelnost obrazovek ───────────────────────────── */
 .screen         { display: none; }
 .screen.active  { display: block; }

@@ -71,7 +71,29 @@
         </div>
       </div>
     </div>
-    <div class="nav-link-app text-center" id="btn-zebricek-predmety">🏆 <span>Žebříček</span></div>
+    <div class="d-flex justify-content-center gap-4">
+      <div class="nav-link-app" id="btn-profil-predmety">👤 <span>Profil</span></div>
+      <div class="nav-link-app" id="btn-zebricek-predmety">🏆 <span>Žebříček</span></div>
+    </div>
+  </div>
+
+  <!-- ═══ PROFIL HRÁČE ══════════════════════════════════════ -->
+  <div id="screen-profil" class="screen">
+    <div class="profil-header mb-4">
+      <span class="profil-avatar" id="profil-avatar">👤</span>
+      <div class="profil-header-info">
+        <div class="profil-jmeno" id="profil-jmeno">Hráč</div>
+        <span class="profil-trida-badge" id="profil-trida-badge">třída</span>
+      </div>
+    </div>
+    <div id="profil-loading" class="text-center text-muted py-3" style="display:none">⏳ Načítám výsledky...</div>
+    <div id="profil-obsah" style="display:none">
+      <div id="profil-rekordy"></div>
+    </div>
+    <div class="d-grid gap-2 mt-3">
+      <button class="btn btn-app-orange btn-lg" id="btn-hrat-profil">Hrát hry →</button>
+      <button class="btn btn-outline-secondary" id="btn-odhlasit-profil">← Odhlásit se</button>
+    </div>
   </div>
 
   <!-- ═══ VÝBĚR HRY ════════════════════════════════════════ -->
@@ -676,15 +698,17 @@
 </main>
 
 <script type="module">
-  import { initHvezdicky } from './js/main.js';
-  import { initAuth }      from './js/auth.js';
-  import { initVysledky }  from './js/vysledky.js';
-  import { initMocniny }   from './js/mocniny.js';
+  import { initHvezdicky }     from './js/main.js';
+  import { initAuth }          from './js/auth.js';
+  import { initVysledky }      from './js/vysledky.js';
+  import { initMocniny }       from './js/mocniny.js';
+  import { initProfilHandlers } from './js/profil.js';
 
   initHvezdicky();
   initAuth();
   initVysledky();
   initMocniny();
+  initProfilHandlers();
 </script>
 
 </body>
