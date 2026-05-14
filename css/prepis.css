@@ -1,0 +1,20 @@
+/* ── Přepis textu ─────────────────────────────────────── */
+.prepis-box {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.1rem;
+  line-height: 2.2rem;
+  height: calc(3 * 2.2rem + 28px);
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: 14px 16px;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.prepis-char         { color: #bbb; }
+.prepis-char.typed   { color: #3d9e4a; }
+.prepis-char.current { color: var(--dark); background: #ffe082; border-radius: 2px; }
+.prepis-char.error   { color: #fff; background: var(--red); border-radius: 2px; }
+
+/* ── Progress bar ────────────────────────────────────── */
+.progress-prepis { background: linear-gradient(90deg, #26a69a, #80cbc4); transition: width 1s linear; }

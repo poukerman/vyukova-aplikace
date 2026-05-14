@@ -1,0 +1,15 @@
+/* ── Násobilka – příklad ─────────────────────────────── */
+.priklad { font-family: 'Nunito', sans-serif; font-size: 3.5rem; font-weight: 800; color: var(--dark); line-height: 1; }
+@keyframes popIn { from{transform:scale(.7);opacity:0} to{transform:scale(1);opacity:1} }
+.komentar { min-height: 24px; font-size: 1rem; font-weight: 700; color: #888; text-align: center; margin-top: 6px; }
+.komentar.correct { color: var(--green); }
+.komentar.wrong   { color: var(--red); }
+
+/* ── Input group pro odpovědi ────────────────────────── */
+.input-group .btn { border-radius: 0 12px 12px 0 !important; }
+.input-group .form-control { border-radius: 12px 0 0 12px !important; }
+.shake { animation: shake .3s; border-color: var(--red) !important; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+
+/* ── Progress bar ────────────────────────────────────── */
+.progress-nasobilka { background: linear-gradient(90deg, var(--orange), var(--yellow)); transition: width 1s linear; }

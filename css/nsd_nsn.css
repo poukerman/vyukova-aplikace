@@ -1,0 +1,22 @@
+/* ── NSN a NSD – výběr kategorie ─────────────────────── */
+.mocniny-card.nsn-card       { background: #e8f4fd; border-color: var(--blue); }
+.mocniny-card.nsn-card:hover { border-color: #1a5fcc; }
+.mocniny-card.nsd-card       { background: #fff3e0; border-color: var(--yellow); }
+.mocniny-card.nsd-card:hover { border-color: var(--orange); }
+.mocniny-card.obe-card       { background: #f0e8ff; border-color: #d4b0ff; }
+.mocniny-card.obe-card:hover { border-color: var(--purple); }
+
+.mocniny-card.nsn-card.selected { background: #b8dcf4; border-color: #1a5fcc;      box-shadow: 0 4px 0 #1a5fcc; }
+.mocniny-card.nsd-card.selected { background: #ffd090; border-color: var(--orange); box-shadow: 0 4px 0 #c44a1a; }
+.mocniny-card.obe-card.selected { background: #d8c8ff; border-color: #8a3dcc;      box-shadow: 0 4px 0 #8a3dcc; }
+
+.nsd-nsn-oper-label {
+  font-family: 'Potta One', cursive;
+  font-size: 1.2rem;
+  color: #43a047;
+  letter-spacing: .08em;
+  margin-bottom: 2px;
+}
+
+/* ── Progress bar ────────────────────────────────────── */
+.progress-nsd-nsn { background: linear-gradient(90deg, #43a047, #a5d6a7); transition: width .4s ease; }

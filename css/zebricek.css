@@ -1,0 +1,19 @@
+/* ── Žebříček ────────────────────────────────────────── */
+.nav-tabs .nav-link { font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 700; color: #aaa; border: 2.5px solid #e0e0e0; border-radius: 10px 10px 0 0; }
+.nav-tabs .nav-link.active { color: var(--orange); border-color: var(--orange); background: #fff3e0; }
+.nav-tabs { border-bottom: 2.5px solid #e0e0e0; gap: 6px; }
+
+.lb-list { max-height: 300px; overflow-y: auto; margin-bottom: 20px; list-style: none; padding: 0; }
+.lb-list::-webkit-scrollbar { width: 4px; }
+.lb-list::-webkit-scrollbar-thumb { background: #ddd; border-radius: 999px; }
+.lb-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px; margin-bottom: 8px; background: #f9f9f9; }
+.lb-item.me     { background: #fff3e0; }
+.lb-item.gold   { background: #fffbe6; }
+.lb-item.silver { background: #f5f5f5; }
+.lb-item.bronze { background: #fff3e8; }
+.lb-rank  { font-family: 'Nunito', sans-serif; font-size: 1.3rem; width: 32px; text-align: center; }
+.lb-name  { flex: 1; font-weight: 700; font-size: 1rem; color: var(--dark); }
+.lb-score { font-family: 'Nunito', sans-serif; font-size: 1.4rem; color: var(--orange); font-weight: 800; }
+.lb-sekce-title { font-family: 'Potta One', cursive; font-size: .82rem; color: #aaa; text-transform: uppercase; letter-spacing: .08em; padding: 6px 14px; margin-bottom: 4px; }
+.lb-list-inner  { list-style: none; padding: 0; }
+.lb-trida { font-size: .7rem; font-weight: 700; background: #e8f4fd; color: var(--blue); border-radius: 4px; padding: 1px 6px; margin-left: 4px; }

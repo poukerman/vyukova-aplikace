@@ -1,0 +1,39 @@
+/* ── Kartičky výběru hry ─────────────────────────────── */
+.game-card {
+  border-radius: 16px;
+  padding: 22px 14px;
+  text-align: center;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: transform .2s, border-color .2s, box-shadow .2s;
+  height: 100%;
+}
+.game-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,.12); }
+.game-card-icon  { font-size: 40px; display: block; margin-bottom: 8px; }
+.game-card-title { font-family: 'Potta One', cursive; font-size: 1.05rem; color: var(--dark); }
+.game-card-sub   { font-size: .78rem; color: #888; margin-top: 4px; }
+
+.game-card.nasobilka       { background: #fff3e0; border-color: var(--yellow); }
+.game-card.nasobilka:hover { border-color: var(--orange); }
+.game-card.vyjmenovana       { background: #f0e8ff; border-color: #d4b0ff; }
+.game-card.vyjmenovana:hover { border-color: var(--purple); }
+.game-card.matematika       { background: #fff3e0; border-color: var(--yellow); }
+.game-card.matematika:hover { border-color: var(--orange); }
+.game-card.cestina       { background: #f0e8ff; border-color: #d4b0ff; }
+.game-card.cestina:hover { border-color: var(--purple); }
+.game-card.mocniny       { background: #e8f4fd; border-color: var(--blue); }
+.game-card.mocniny:hover { border-color: #1a5fcc; }
+.game-card.predpony       { background: #e0f7fa; border-color: #26C6DA; }
+.game-card.predpony:hover { border-color: #00838f; }
+.game-card.pravopis-e       { background: #fce4ec; border-color: #f48fb1; }
+.game-card.pravopis-e:hover { border-color: #e91e63; }
+.game-card.informatika       { background: #e8eaf6; border-color: #7986CB; }
+.game-card.informatika:hover { border-color: #3F51B5; }
+.game-card.klavesnice       { background: #e8eaf6; border-color: #7986CB; }
+.game-card.klavesnice:hover { border-color: #3F51B5; }
+.game-card.prepis       { background: #e0f2f1; border-color: #26a69a; }
+.game-card.prepis:hover { border-color: #00695c; }
+.game-card.delitelnost       { background: #fff8e1; border-color: #ffca28; }
+.game-card.delitelnost:hover { border-color: #f9a825; }
+.game-card.nsd-nsn       { background: #e8f5e9; border-color: #81c784; }
+.game-card.nsd-nsn:hover { border-color: #2e7d32; }

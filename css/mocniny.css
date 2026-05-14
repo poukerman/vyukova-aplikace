@@ -1,0 +1,55 @@
+/* ── Mocniny – výběr kategorie ───────────────────────── */
+.mocniny-card {
+  border-radius: 16px; padding: 16px 10px; text-align: center; cursor: pointer;
+  border: 3px solid transparent; transition: transform .2s, border-color .2s, box-shadow .2s;
+  user-select: none; -webkit-user-select: none; height: 100%;
+}
+.mocniny-card * { pointer-events: none; }
+.mocniny-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,.12); }
+.mocniny-icon  { font-size: 1.7rem; font-weight: 700; display: block; margin-bottom: 5px; color: var(--dark); }
+.mocniny-title { font-family: 'Potta One', cursive; font-size: .88rem; color: var(--dark); }
+.mocniny-sub   { font-size: .7rem; color: #888; margin-top: 3px; }
+
+.mocniny-card.pow2  { background: #fff3e0; border-color: var(--yellow); }
+.mocniny-card.pow2:hover  { border-color: var(--orange); }
+.mocniny-card.root2 { background: #e8f4fd; border-color: var(--blue); }
+.mocniny-card.root2:hover { border-color: #1a5fcc; }
+.mocniny-card.pow3  { background: #ffeef0; border-color: var(--red); }
+.mocniny-card.pow3:hover  { border-color: #cc3030; }
+.mocniny-card.root3 { background: #f0e8ff; border-color: var(--purple); }
+.mocniny-card.root3:hover { border-color: #8a3dcc; }
+.mocniny-card.neg   { background: #fce4ec; border-color: #f48fb1; }
+.mocniny-card.neg:hover   { border-color: #e91e63; }
+.mocniny-card.dec   { background: #e8f5e9; border-color: #a5d6a7; }
+.mocniny-card.dec:hover   { border-color: #4caf50; }
+.mocniny-card.frac  { background: #fff8e1; border-color: #ffe082; }
+.mocniny-card.frac:hover  { border-color: #ffc107; }
+
+.mocniny-card.selected { position: relative; }
+.mocniny-card.selected::after { content: '✓'; position: absolute; top: 6px; right: 10px; font-size: .9rem; font-weight: 900; }
+.mocniny-card.pow2.selected  { background: #ffd090; border-color: var(--orange); box-shadow: 0 4px 0 #c44a1a; }
+.mocniny-card.root2.selected { background: #b8dcf4; border-color: #1a5fcc;      box-shadow: 0 4px 0 #1a5fcc; }
+.mocniny-card.pow3.selected  { background: #ffc0c0; border-color: #cc3030;      box-shadow: 0 4px 0 #cc3030; }
+.mocniny-card.root3.selected { background: #d8c8ff; border-color: #8a3dcc;      box-shadow: 0 4px 0 #8a3dcc; }
+.mocniny-card.neg.selected   { background: #f8bbd0; border-color: #e91e63;      box-shadow: 0 4px 0 #c2185b; }
+.mocniny-card.dec.selected   { background: #c8e6c9; border-color: #4caf50;      box-shadow: 0 4px 0 #388e3c; }
+.mocniny-card.frac.selected  { background: #ffecb3; border-color: #ffc107;      box-shadow: 0 4px 0 #f57f17; }
+
+.mocniny-error { color: var(--red); font-size: .88rem; font-weight: 700; min-height: 18px; }
+
+/* ── Mocniny – herní obrazovka ───────────────────────── */
+.mocniny-priklad { font-size: 1.4rem; min-height: 70px; display: flex; align-items: center; justify-content: center; }
+.mocniny-priklad .katex-display { margin: 0; }
+
+.btn-neexistuje {
+  display: block; width: 100%; padding: 13px;
+  border: 2.5px solid #ddd; border-radius: 14px;
+  background: #f8f8f8; color: #999;
+  font-family: 'Potta One', cursive; font-size: 1rem;
+  cursor: pointer; transition: border-color .2s, color .2s, background .2s;
+}
+.btn-neexistuje:hover    { border-color: var(--red); color: var(--red); background: #fff0f0; }
+.btn-neexistuje:disabled { opacity: .35; cursor: default; pointer-events: none; }
+
+/* ── Progress bar ────────────────────────────────────── */
+.progress-mocniny { background: linear-gradient(90deg, var(--blue), #a0d4ff); transition: width .4s ease; }

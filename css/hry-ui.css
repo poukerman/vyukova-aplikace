@@ -1,0 +1,56 @@
+/* ── Boxy skóre ──────────────────────────────────────── */
+.score-box { border-radius: 14px; }
+.score-box.personal { background: #fff3e0; border: 2px solid var(--yellow); }
+.score-box.global   { background: #e8f4fd; border: 2px solid var(--blue); }
+.score-label { font-size: .76rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: #888; margin-bottom: 4px; }
+.score-value { font-family: 'Nunito', sans-serif; font-size: 2rem; font-weight: 800; }
+
+/* ── Herní statistiky ────────────────────────────────── */
+.game-stat .stat-label { font-size: .72rem; font-weight: 700; text-transform: uppercase; color: #aaa; letter-spacing: .05em; }
+.game-stat .stat-value { font-family: 'Potta One', cursive; font-size: 1.55rem; color: var(--dark); line-height: 1.1; }
+
+/* ── Progress bar (obecný) ───────────────────────────── */
+.progress { border-radius: 999px; }
+.progress-bar { border-radius: 999px; }
+
+/* ── Rekordní hint ───────────────────────────────────── */
+.record-hint { font-size: .9rem; font-weight: 700; color: #bbb; min-height: 20px; }
+.record-hint.beating { color: var(--purple); }
+
+/* ── Ukončit hru ─────────────────────────────────────── */
+.btn-ukoncit { background: none; border: 2px solid #e0e0e0; border-radius: 10px; padding: 8px 20px; font-family: 'Potta One', sans-serif; font-size: .85rem; color: #bbb; cursor: pointer; transition: border-color .2s, color .2s; }
+.btn-ukoncit:hover { border-color: var(--red); color: var(--red); }
+.ukoncit-upozorneni { font-size: .77rem; color: #ccc; margin-top: 6px; }
+
+/* ── Dotyková klávesnice ─────────────────────────────── */
+.touch-keypad { display: none; }
+@media (pointer: coarse) {
+  .touch-keypad {
+    display: block;
+    position: fixed; bottom: 0; left: 0; right: 0;
+    padding: 8px 12px calc(10px + env(safe-area-inset-bottom));
+    background: #fff; border-top: 2px solid #e8e8e8;
+    box-shadow: 0 -6px 20px rgba(0,0,0,.1); z-index: 200;
+  }
+  #screen-game-mocniny, #screen-game-nasobilka, #screen-game-nsd-nsn {
+    padding-bottom: calc(245px + env(safe-area-inset-bottom));
+  }
+}
+.keypad-grid { display: grid; gap: 8px; }
+.keypad-3col { grid-template-columns: repeat(3, 1fr); }
+.keypad-4col { grid-template-columns: repeat(4, 1fr); }
+.kkey {
+  padding: 16px 8px; border: none; border-radius: 12px;
+  font-family: 'Potta One', cursive; font-size: 1.4rem; cursor: pointer;
+  background: #f5f5f5; color: var(--dark); box-shadow: 0 3px 0 #d5d5d5;
+  transition: transform .1s, box-shadow .1s;
+  user-select: none; -webkit-user-select: none; touch-action: manipulation;
+}
+.kkey:active       { transform: translateY(2px); box-shadow: 0 1px 0 #d5d5d5; }
+.kkey-back         { background: #fff0f0; color: var(--red);   box-shadow: 0 3px 0 #f0b0b0; }
+.kkey-back:active  { box-shadow: 0 1px 0 #f0b0b0; }
+.kkey-spec         { background: #e8f4fd; color: var(--blue);  box-shadow: 0 3px 0 #90c0e8; }
+.kkey-spec:active  { box-shadow: 0 1px 0 #90c0e8; }
+.kkey-confirm      { background: var(--green); color: #fff;    box-shadow: 0 3px 0 #3d9e4a; }
+.kkey-confirm:active { box-shadow: 0 1px 0 #3d9e4a; }
+.kkey-empty        { background: transparent; box-shadow: none; pointer-events: none; }

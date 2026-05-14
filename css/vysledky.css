@@ -1,0 +1,19 @@
+/* ── Výsledky ────────────────────────────────────────── */
+.result-emoji     { font-size: 56px; display: block; margin-bottom: 6px; animation: bounce 1s ease-in-out infinite; }
+.result-title     { font-family: 'Potta One', cursive; font-size: 1.8rem; color: var(--dark); margin-bottom: 4px; }
+.result-score     { font-family: 'Nunito', sans-serif; font-size: 3.5rem; font-weight: 800; color: var(--orange); line-height: 1; }
+.result-uspesnost { font-family: 'Potta One', cursive; font-size: 1.1rem; color: var(--purple); margin-bottom: 10px; }
+.result-new-record { background: linear-gradient(135deg, var(--yellow), var(--orange)); color: #fff; border-radius: 12px; padding: 10px 20px; font-weight: 800; font-size: 1rem; margin-bottom: 14px; display: none; }
+
+.prehled-wrap { max-height: 200px; overflow-y: auto; border-radius: 12px; }
+.prehled-wrap::-webkit-scrollbar { width: 4px; }
+.prehled-wrap::-webkit-scrollbar-thumb { background: #ddd; border-radius: 999px; }
+.prehled-nadpis { font-weight: 700; font-size: .83rem; color: #888; padding: 4px 12px 6px; text-transform: uppercase; letter-spacing: .04em; }
+.prehled-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 12px; border-radius: 10px; margin-bottom: 6px; font-size: .87rem; }
+.prehled-item.ok    { background: #edfff0; border-left: 4px solid var(--green); }
+.prehled-item.chyba { background: #fff0f0; border-left: 4px solid var(--red); }
+.prehled-icon { font-size: 1rem; margin-top: 1px; flex-shrink: 0; }
+.prehled-text { flex: 1; }
+.prehled-veta { display: block; font-weight: 700; color: var(--dark); }
+.prehled-veta strong { color: var(--green); }
+.prehled-chyba-txt { display: block; font-size: .78rem; color: var(--red); margin-top: 2px; }
