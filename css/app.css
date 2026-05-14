@@ -318,6 +318,25 @@ body {
 .prepis-char.current { color: var(--dark); background: #ffe082; border-radius: 2px; }
 .prepis-char.error   { color: #fff; background: var(--red); border-radius: 2px; }
 
+/* ── Klávesnice – výběr úrovně ──────────────────────── */
+.klav-uroven-btn {
+  width: 44px;
+  height: 44px;
+  border: 2px solid #3F51B5;
+  color: #3F51B5;
+  background: #fff;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: .95rem;
+  padding: 0;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.klav-uroven-btn.active {
+  background: #3F51B5;
+  color: #fff;
+}
+
 /* ── Klávesnice – zobrazení znaku ────────────────────── */
 .klav-znak {
   font-family: 'JetBrains Mono', monospace;

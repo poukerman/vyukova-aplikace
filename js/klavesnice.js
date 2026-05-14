@@ -4,12 +4,26 @@ import { stav, showScreen, updateHint } from './main.js';
 import { zobrazVysledkyKlavesnice } from './vysledky.js';
 import { initZebricek } from './zebricek.js';
 
-const VSECHNY_ZNAKY = [
-  ...'abcdefghijklmnopqrstuvwxyz',
-  ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-  ...'0123456789',
-  ...'áčďéěíňóřšťúůýžÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ',
+// Znaky pro každou úroveň (vlastní přírůstek, bez kumulace)
+const UROVEN_ZNAKY = [
+  [...'abcdefghijklmnopqrstuvwxyz', ...'áčéěířšúůýž', ...'0123456789'], // 1
+  [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'],                                      // 2
+  [...'ÁČÉĚÍŘŠÚŮÝŽ'],                                                     // 3
+  [...'ďťňóĎŤŇÓ'],                                                        // 4
+  [],                                                                      // 5 (= 1–4 dohromady)
 ];
+
+const UROVEN_POPISY = [
+  'malá písmena s diakritikou a číslice',
+  '+ velká písmena (bez diakritiky)',
+  '+ velká písmena s diakritikou',
+  '+ ď, ť, ň, ó (malé i velké)',
+  'vše dohromady',
+];
+
+function znakyProUroven(uroven) {
+  return UROVEN_ZNAKY.slice(0, uroven).flat();
+}
 
 const CAS_HRY = 120;
 
@@ -20,6 +34,7 @@ let posledniZnak  = null;
 let casZbyvajici  = CAS_HRY;
 let timerInterval = null;
 let keyHandler    = null;
+let aktualniUroven = 1;
 
 // ── Inicializace ──────────────────────────────────────
 export function initKlavesnice() {
@@ -30,6 +45,15 @@ export function initKlavesnice() {
   document.getElementById('btn-zpet-klav').onclick             = () => showScreen('screen-vyber');
   document.getElementById('btn-zebricek-welcome-klav').onclick = () => initZebricek('screen-welcome-klav', 'klavesnice');
   document.getElementById('btn-ukoncit-klav').onclick          = ukoncitHru;
+
+  document.querySelectorAll('.klav-uroven-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      aktualniUroven = Number(btn.dataset.uroven);
+      document.querySelectorAll('.klav-uroven-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('klav-uroven-popis').textContent = UROVEN_POPISY[aktualniUroven - 1];
+    });
+  });
 }
 
 // ── Spuštění hry ──────────────────────────────────────
@@ -80,7 +104,8 @@ function ukoncitHru() {
 
 // ── Nový znak ─────────────────────────────────────────
 function novaOtazka() {
-  const dostupne = VSECHNY_ZNAKY.filter(z => z !== posledniZnak);
+  const vsechny  = znakyProUroven(aktualniUroven);
+  const dostupne = vsechny.filter(z => z !== posledniZnak);
   aktualniZnak   = dostupne[Math.floor(Math.random() * dostupne.length)];
   posledniZnak   = aktualniZnak;
 
